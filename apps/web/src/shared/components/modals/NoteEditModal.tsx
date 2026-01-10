@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NoteAttachmentUpload } from '../shared/NoteAttachmentUpload';
 import { apiService } from '@shared/api/client';
-import type { Note } from '@shogun/shared';
+import type { Note } from '@shared/api/client';
 
 interface NoteEditModalProps {
   note: Note;
@@ -18,7 +18,7 @@ export const NoteEditModal: React.FC<NoteEditModalProps> = ({ note, isOpen, onCl
     setIsSaving(true);
     try {
       // Call the API to update the note
-      const updatedNote = await apiService.updateNote(editedNote.id, {
+      const updatedNote = await apiService.updateNote(Number(editedNote.id), {
         subject: editedNote.subject,
         content: editedNote.content,
         isRead: editedNote.isRead,
@@ -97,19 +97,32 @@ export const NoteEditModal: React.FC<NoteEditModalProps> = ({ note, isOpen, onCl
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Content</label>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              Content
+            </label>
             <textarea
               value={editedNote.content}
               onChange={(e) => setEditedNote({ ...editedNote, content: e.target.value })}
               rows={6}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{
+                backgroundColor: 'var(--bg-tertiary)',
+                color: 'var(--text-primary)',
+                border: '1px solid var(--border-primary)',
+              }}
             />
           </div>
 
           {/* Current Attachments */}
           {editedNote.attachments && editedNote.attachments.length > 0 && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                className="block text-sm font-medium mb-2"
+                style={{ color: 'var(--text-secondary)' }}
+              >
                 Current Attachments ({editedNote.attachments.length})
               </label>
               <div className="space-y-2">
@@ -166,7 +179,10 @@ export const NoteEditModal: React.FC<NoteEditModalProps> = ({ note, isOpen, onCl
 
           {/* Attachment Upload */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              className="block text-sm font-medium mb-2"
+              style={{ color: 'var(--text-secondary)' }}
+            >
               Add New Attachments
             </label>
             <NoteAttachmentUpload
@@ -179,7 +195,12 @@ export const NoteEditModal: React.FC<NoteEditModalProps> = ({ note, isOpen, onCl
 
           {/* Assigned To */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Assigned To</label>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              Assigned To
+            </label>
             <input
               type="text"
               value={editedNote.assignedTo ?? ''}
@@ -189,7 +210,12 @@ export const NoteEditModal: React.FC<NoteEditModalProps> = ({ note, isOpen, onCl
                   assignedTo: e.target.value ? parseInt(e.target.value, 10) : undefined,
                 })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{
+                backgroundColor: 'var(--bg-tertiary)',
+                color: 'var(--text-primary)',
+                border: '1px solid var(--border-primary)',
+              }}
             />
           </div>
 
