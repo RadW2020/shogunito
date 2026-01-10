@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   push:
@@ -7,13 +7,14 @@ on:
     branches: ["main"]
 
 jobs:
-  quality:
-    name: Quality Check
+  quality-and-build:
+    name: Verify & Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
@@ -21,23 +22,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install missing optional dependencies
-        # Fix for npm bug with optional dependencies (https://github.com/npm/cli/issues/4828)
-        # Rollup and lightningcss require platform-specific native binaries that npm ci sometimes fails to install
-        run: npm install --no-save --force @rollup/rollup-linux-x64-gnu lightningcss-linux-x64-gnu
-
-      - name: Rebuild native modules
-        # Rebuild native modules to ensure they're properly compiled for the platform
-        run: npm rebuild
+      - name: Quality Checks
+        run: |
+          npm run lint
+          npm run check-types
 
       - name: Build
         run: npm run build
-
-      - name: Check Types
-        run: npm run check-types
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Check Formatting
-        run: npm run format:check

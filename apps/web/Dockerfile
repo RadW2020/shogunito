@@ -26,10 +26,9 @@ COPY packages/typescript-config/package*.json ./packages/typescript-config/
 COPY turbo.json ./
 
 # Install all dependencies
-# npm ci has a bug with optional dependencies, so we use npm install
-# and then explicitly ensure native binaries are installed and rebuilt
+# npm ci has a bug with optional dependencies in some environments, 
+# so we use a standard install and rebuild to ensure native binaries match the platform
 RUN npm install && \
-    npm install --no-save --force @rollup/rollup-linux-arm64-gnu lightningcss-linux-arm64-gnu && \
     npm rebuild
 
 # Stage 2: Build
