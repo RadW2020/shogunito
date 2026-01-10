@@ -1,7 +1,7 @@
 import { IsString, IsOptional, IsEnum, IsDefined, IsNumber } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { VersionStatus } from '../../entities';
+import { VersionStatus } from '../../entities/version.entity';
 import {
   IsNotSQLInjection,
   IsNotXSS,

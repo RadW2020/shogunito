@@ -2,7 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SearchQueryDto, SearchEntity } from './dto/search-query.dto';
-import { Project, Episode, Sequence, Asset, Note } from '../entities';
+import { Project } from '../entities/project.entity';
+import { Episode } from '../entities/episode.entity';
+import { Sequence } from '../entities/sequence.entity';
+import { Asset } from '../entities/asset.entity';
+import { Note } from '../entities/note.entity';
 import { PaginatedResponse, createPaginatedResponse } from '../common/dto/pagination.dto';
 import { UserContext, ProjectAccessService } from '../auth/services';
 

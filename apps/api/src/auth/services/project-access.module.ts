@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProjectAccessService } from './project-access.service';
-import { ProjectPermission, Project, Episode, Sequence } from '../../entities';
+import { ProjectPermission } from '../../entities/project-permission.entity';
+import { Project } from '../../entities/project.entity';
+import { Episode } from '../../entities/episode.entity';
+import { Sequence } from '../../entities/sequence.entity';
 
 /**
  * Module providing centralized project access control.
