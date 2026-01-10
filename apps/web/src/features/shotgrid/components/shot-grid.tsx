@@ -44,7 +44,6 @@ export function ShotGrid() {
     assets: apiAssets,
     sequences: apiSequences,
     versions: apiVersions,
-    playlists: apiPlaylists,
     statuses: apiStatuses,
     users: apiUsers,
     isRefreshing,
@@ -142,7 +141,6 @@ export function ShotGrid() {
       sequences: 'sequences',
       assets: 'assets',
       versions: 'versions',
-      playlists: 'playlists',
     }),
     [],
   );
@@ -237,14 +235,12 @@ export function ShotGrid() {
             onEditAsset={editHandlers.handleEditAsset}
             onEditSequence={editHandlers.handleEditSequence}
             onEditVersion={editHandlers.handleEditVersion}
-            onEditPlaylist={editHandlers.handleEditPlaylist}
             onEditStatus={editHandlers.handleEditStatus}
             onAddNoteToProject={addNoteHandlers.handleAddNoteToProject}
             onAddNoteToEpisode={addNoteHandlers.handleAddNoteToEpisode}
             onAddNoteToAsset={addNoteHandlers.handleAddNoteToAsset}
             onAddNoteToSequence={addNoteHandlers.handleAddNoteToSequence}
             onAddNoteToVersion={addNoteHandlers.handleAddNoteToVersion}
-            onAddNoteToPlaylist={addNoteHandlers.handleAddNoteToPlaylist}
             onViewNotes={handleViewNotes}
             onRefresh={refreshData}
             onClearSearch={handleClearSearch}
@@ -253,7 +249,6 @@ export function ShotGrid() {
             assets={apiAssets}
             sequences={apiSequences}
             versions={apiVersions}
-            playlists={apiPlaylists}
             statuses={apiStatuses}
             users={apiUsers}
           />
@@ -279,7 +274,6 @@ export function ShotGrid() {
         assets={apiAssets}
         sequences={apiSequences}
         versions={apiVersions}
-        playlists={apiPlaylists}
       />
     </div>
   );

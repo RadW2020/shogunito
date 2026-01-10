@@ -64,7 +64,6 @@ export const NotesTab: React.FC<NotesTabProps> = ({
             {item.linkType === 'Episode' && '🎬'}
             {item.linkType === 'Asset' && '🎨'}
             {item.linkType === 'Sequence' && '🎞️'}
-            {item.linkType === 'Playlist' && '📋'}
             {item.linkType === 'Version' && '🔄'}
           </span>
           <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>

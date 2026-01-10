@@ -5,11 +5,10 @@ import { EpisodesTabWrapper } from '@features/episodes/components/EpisodesTabWra
 import { AssetsTabWrapper } from '@features/assets/components/AssetsTabWrapper';
 import { SequencesTabWrapper } from '@features/sequences/components/SequencesTabWrapper';
 import { VersionsTabWrapper } from '@features/versions/components/VersionsTabWrapper';
-import { PlaylistsTabWrapper } from '@features/playlists/components/PlaylistsTabWrapper';
 import { NotesTabWrapper } from '@features/notes/components/NotesTabWrapper';
 import { UsersTab, StatusTab } from './tabs';
-import type { Project, Episode, Asset, Sequence, Status } from '@shogun/shared';
-import type { ApiVersion, Playlist } from '@shared/api/client';
+import type { Project, Episode, Asset, Sequence, Status, User } from '@shogun/shared';
+import type { ApiVersion } from '@shared/api/client';
 
 interface ShotGridContentProps {
   activeTab: TabType;
@@ -24,14 +23,12 @@ interface ShotGridContentProps {
   onEditAsset: (asset: Asset) => void;
   onEditSequence: (sequence: Sequence) => void;
   onEditVersion: (version: ApiVersion) => void;
-  onEditPlaylist: (playlist: Playlist) => void;
   onEditStatus: (status: Status) => void;
   onAddNoteToProject: (project: Project) => void;
   onAddNoteToEpisode: (episode: Episode) => void;
   onAddNoteToAsset: (asset: Asset) => void;
   onAddNoteToSequence: (sequence: Sequence) => void;
   onAddNoteToVersion: (version: ApiVersion) => void;
-  onAddNoteToPlaylist: (playlist: Playlist) => void;
   onViewNotes: (linkId: string, linkType: string, linkName: string) => void;
   onRefresh: () => Promise<void>;
   onClearSearch: () => void;
@@ -40,14 +37,8 @@ interface ShotGridContentProps {
   assets: Asset[];
   sequences: Sequence[];
   versions: ApiVersion[];
-  playlists: Playlist[];
   statuses: Status[];
-  users: Array<{
-    id: string;
-    name: string;
-    email: string | undefined;
-    role: string;
-  }>;
+  users: User[];
 }
 
 /**
@@ -66,14 +57,12 @@ export const ShotGridContent: React.FC<ShotGridContentProps> = ({
   onEditAsset,
   onEditSequence,
   onEditVersion,
-  onEditPlaylist,
   onEditStatus,
   onAddNoteToProject,
   onAddNoteToEpisode,
   onAddNoteToAsset,
   onAddNoteToSequence,
   onAddNoteToVersion,
-  onAddNoteToPlaylist,
   onViewNotes,
   onRefresh,
   onClearSearch,
@@ -88,8 +77,6 @@ export const ShotGridContent: React.FC<ShotGridContentProps> = ({
   sequences: _sequences,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   versions: _versions,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  playlists: _playlists,
   statuses: _statuses,
   users,
 }) => {
@@ -165,21 +152,6 @@ export const ShotGridContent: React.FC<ShotGridContentProps> = ({
           onItemClick={onItemClick}
           onEditVersion={onEditVersion}
           onAddNoteToVersion={onAddNoteToVersion}
-          onViewNotes={onViewNotes}
-        />
-      );
-
-    case 'playlists':
-      return (
-        <PlaylistsTabWrapper
-          statusMap={statusMap}
-          selectedItems={selectedItems}
-          searchTerm={searchTerm}
-          onItemSelect={onItemSelect}
-          onSelectAll={onSelectAll}
-          onItemClick={onItemClick}
-          onEditPlaylist={onEditPlaylist}
-          onAddNoteToPlaylist={onAddNoteToPlaylist}
           onViewNotes={onViewNotes}
         />
       );

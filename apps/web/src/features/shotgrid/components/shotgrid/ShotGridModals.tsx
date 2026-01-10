@@ -5,21 +5,19 @@ import {
   AddAssetModal,
   AddSequenceModal,
   AddVersionModal,
-  AddPlaylistModal,
   AddStatusModal,
   ProjectEditModal,
   EpisodeEditModal,
   AssetEditModal,
   SequenceEditModal,
   VersionEditModal,
-  PlaylistEditModal,
   StatusEditModal,
   NotesViewerModal,
 } from '@shared/components/modals';
 import { GeneralNoteCreatorModal } from '@shared/components/modals/GeneralNoteCreatorModal';
 import { NoteCreator } from '@shared/components/shared/NoteCreator';
 import type { Project, Episode, Asset, Sequence, Status } from '@shogun/shared';
-import type { ApiVersion, Playlist } from '@shared/api/client';
+import type { ApiVersion } from '@shared/api/client';
 
 interface ShotGridModalsProps {
   modals: {
@@ -28,7 +26,6 @@ interface ShotGridModalsProps {
     showAddEpisode: boolean;
     showAddAsset: boolean;
     showAddSequence: boolean;
-    showAddPlaylist: boolean;
     showAddVersion: boolean;
     showAddNote: boolean;
     showAddStatus: boolean;
@@ -39,7 +36,6 @@ interface ShotGridModalsProps {
     showEditAsset: boolean;
     showEditSequence: boolean;
     showEditVersion: boolean;
-    showEditPlaylist: boolean;
     showEditStatus: boolean;
 
     // Other modals
@@ -51,7 +47,6 @@ interface ShotGridModalsProps {
     editingAsset: Asset | null;
     editingSequence: Sequence | null;
     editingVersion: ApiVersion | null;
-    editingPlaylist: Playlist | null;
     editingStatus: Status | null;
 
     // Note creator
@@ -74,7 +69,6 @@ interface ShotGridModalsProps {
         | 'asset'
         | 'sequence'
         | 'version'
-        | 'playlist'
         | 'note'
         | 'status',
     ) => void;
@@ -85,7 +79,6 @@ interface ShotGridModalsProps {
         | 'asset'
         | 'sequence'
         | 'version'
-        | 'playlist'
         | 'status',
     ) => void;
     setNoteCreatorEntity: (
@@ -101,7 +94,6 @@ interface ShotGridModalsProps {
   assets: Asset[];
   sequences: Sequence[];
   versions: ApiVersion[];
-  playlists: Playlist[];
 }
 
 /**
@@ -115,7 +107,6 @@ export const ShotGridModals: React.FC<ShotGridModalsProps> = ({
   assets,
   sequences,
   versions,
-  playlists,
 }) => {
   return (
     <>
@@ -161,12 +152,6 @@ export const ShotGridModals: React.FC<ShotGridModalsProps> = ({
         onSuccess={onRefresh}
       />
 
-      <PlaylistEditModal
-        playlist={modals.editingPlaylist}
-        isOpen={modals.showEditPlaylist && modals.editingPlaylist !== null}
-        onClose={() => modals.closeEditModal('playlist')}
-        onSuccess={onRefresh}
-      />
 
       <NotesViewerModal
         isOpen={modals.showNotesViewer && modals.viewingNotesFor !== null}
@@ -178,7 +163,6 @@ export const ShotGridModals: React.FC<ShotGridModalsProps> = ({
             | 'Episode'
             | 'Asset'
             | 'Sequence'
-            | 'Playlist'
             | 'Version'
         }
         linkName={modals.viewingNotesFor?.linkName || ''}
@@ -207,11 +191,6 @@ export const ShotGridModals: React.FC<ShotGridModalsProps> = ({
       />
 
 
-      <AddPlaylistModal
-        isOpen={modals.showAddPlaylist}
-        onClose={() => modals.closeAddModal('playlist')}
-        onSuccess={onRefresh}
-      />
 
       <AddVersionModal
         isOpen={modals.showAddVersion}
@@ -229,7 +208,6 @@ export const ShotGridModals: React.FC<ShotGridModalsProps> = ({
         episodes={episodes}
         assets={assets}
         sequences={sequences}
-        playlists={playlists}
         versions={versions}
       />
 
@@ -304,7 +282,6 @@ export const ShotGridModals: React.FC<ShotGridModalsProps> = ({
                     | 'Episode'
                     | 'Asset'
                     | 'Sequence'
-                    | 'Playlist'
                     | 'Version'
                 }
                 linkName={modals.noteCreatorEntity.linkName}

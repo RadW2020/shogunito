@@ -19,9 +19,7 @@ Shogunito es una API RESTful para gestionar proyectos de producción de contenid
 ### Características Principales
 
 - **Gestión jerárquica**: Projects → Episodes → Sequences
-- **Control de versiones**: Sistema de versionado para sequences, assets y playlists
-- **Integración con IA**: Metadatos para contenido generado (prompts, seeds, lineage)
-- **Sistema de playlists**: Compilación de versiones para revisión
+- **Control de versiones**: Sistema de versionado para sequences y assets
 - **Notas colaborativas**: Feedback vinculado a cualquier entidad
 - **Estados personalizables**: Workflows personalizados
 - **Gestión de assets**: Imágenes, subtítulos, audio, scripts, texto
@@ -111,8 +109,6 @@ Project
 │       └── Versions
 ├── Assets
 │   └── Versions
-└── Playlists
-    └── Versions
 
 Entidades Transversales:
 ├── Users
@@ -130,7 +126,6 @@ Entidades Transversales:
 | **Sequence** | Secuencia/escena dentro de un episodio |
 | **Asset** | Recurso reutilizable (imagen, audio, script, etc.) |
 | **Version** | Versión de contenido con metadatos de IA |
-| **Playlist** | Compilación de versiones para revisión |
 | **Note** | Feedback vinculado a cualquier entidad |
 | **Status** | Estados personalizables para workflows |
 
@@ -219,18 +214,8 @@ Entidades Transversales:
 | POST | `/versions/:id/file` | Subir archivo |
 | POST | `/versions/:id/thumbnail` | Subir thumbnail |
 | POST | `/versions/asset` | Crear asset con versión |
-| POST | `/versions/playlist` | Crear playlist con versión |
 | POST | `/versions/sequence` | Crear secuencia con versión |
 
-### Playlists (`/playlists`)
-
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/playlists` | Crear playlist |
-| GET | `/playlists` | Listar playlists |
-| GET | `/playlists/:code` | Obtener playlist |
-| PATCH | `/playlists/:code` | Actualizar playlist |
-| DELETE | `/playlists/:code` | Eliminar playlist |
 
 ### Notas (`/notes`)
 

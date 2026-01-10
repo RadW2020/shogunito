@@ -25,7 +25,6 @@ const ENTITY_OPTIONS = [
   { value: 'project', label: 'Project' },
   { value: 'episode', label: 'Episode' },
   { value: 'sequence', label: 'Sequence' },
-  { value: 'shot', label: 'Shot' },
   { value: 'version', label: 'Version' },
   { value: 'asset', label: 'Asset' },
   { value: 'note', label: 'Note' },

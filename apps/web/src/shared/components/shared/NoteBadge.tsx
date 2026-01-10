@@ -6,8 +6,6 @@ export type LinkType =
   | 'Episode'
   | 'Asset'
   | 'Sequence'
-  | 'Shot'
-  | 'Playlist'
   | 'Version';
 
 interface NoteBadgeProps {

@@ -77,7 +77,6 @@ interface VersionsTabProps {
   onEditVersion?: (version: ApiVersion) => void;
   onAddNoteToVersion?: (version: ApiVersion) => void;
   onViewNotes?: (linkId: string, linkType: string, linkName: string) => void;
-  onCreatePlaylist?: () => void;
 }
 
 export const VersionsTab: React.FC<VersionsTabProps> = ({
@@ -91,7 +90,6 @@ export const VersionsTab: React.FC<VersionsTabProps> = ({
   onEditVersion,
   onAddNoteToVersion,
   onViewNotes,
-  onCreatePlaylist,
 }) => {
   // Use notes sorting hook
   const { dataWithNotesCounts, sortByUnreadNotes } = useNotesSorting(versions, 'code', 'Version');
@@ -514,8 +512,8 @@ export const VersionsTab: React.FC<VersionsTabProps> = ({
 
   return (
     <div className="space-y-4">
-      {/* Toolbar with Create Playlist button */}
-      {selectedItems.size > 0 && onCreatePlaylist && (
+      {/* Toolbar */}
+      {selectedItems.size > 0 && (
         <div
           className="flex items-center justify-between p-3 rounded-lg"
           style={{
@@ -529,29 +527,6 @@ export const VersionsTab: React.FC<VersionsTabProps> = ({
             </span>{' '}
             version{selectedItems.size > 1 ? 's' : ''} selected
           </div>
-          <button
-            onClick={onCreatePlaylist}
-            className="px-4 py-2 rounded-md transition-colors flex items-center space-x-2"
-            style={{
-              backgroundColor: 'var(--status-success)',
-              color: 'white',
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundColor = 'var(--status-success-hover)')
-            }
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--status-success)')}
-            title="Create playlist from selected versions"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            <span>Create Playlist</span>
-          </button>
         </div>
       )}
 

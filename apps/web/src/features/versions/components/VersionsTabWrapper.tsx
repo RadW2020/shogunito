@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { VersionsTab } from '@features/shotgrid/components/shotgrid/tabs/VersionsTab';
 import { useVersions } from '../api/useVersions';
 import { useSequences } from '@features/sequences/api/useSequences';
 import { useEpisodes } from '@features/episodes/api/useEpisodes';
 import { useUiStore } from '@app/stores/uiStore';
 import { LoadingSpinner, EmptyState } from '@shared/ui';
-import { CreatePlaylistFromVersionsModal } from '@shared/components/modals/CreatePlaylistFromVersionsModal';
 import type { StatusMeta, TabType } from '@shogun/shared';
 import type { ApiVersion } from '@shared/api/client';
 
@@ -23,7 +22,6 @@ interface VersionsTabWrapperProps {
 
 export const VersionsTabWrapper: React.FC<VersionsTabWrapperProps> = (props) => {
   const { filters, viewModes } = useUiStore();
-  const [showCreatePlaylistModal, setShowCreatePlaylistModal] = useState(false);
 
   // Use entity filters if available
   const {
@@ -91,7 +89,7 @@ export const VersionsTabWrapper: React.FC<VersionsTabWrapperProps> = (props) => 
         const episode = episodes.find(e => e.id === sequence.episodeId);
         if (!episode || episode.projectId !== projectId) return false;
       }
-      // Note: asset and playlist should also link to project, but for now we focus on the main ones
+      // Note: asset should also link to project, but for now we focus on the main ones
     }
 
     // Filter by episode
@@ -185,15 +183,6 @@ export const VersionsTabWrapper: React.FC<VersionsTabWrapperProps> = (props) => 
     );
   }
 
-  const handleCreatePlaylist = () => {
-    setShowCreatePlaylistModal(true);
-  };
-
-  const handlePlaylistCreated = () => {
-    setShowCreatePlaylistModal(false);
-    // Clear selection after creating playlist
-    props.selectedItems.clear();
-  };
 
   return (
     <>
@@ -201,17 +190,7 @@ export const VersionsTabWrapper: React.FC<VersionsTabWrapperProps> = (props) => 
         {...props}
         versions={filteredVersions}
         viewMode={viewModes.versions}
-        onCreatePlaylist={handleCreatePlaylist}
       />
-
-      {showCreatePlaylistModal && props.selectedItems.size > 0 && (
-        <CreatePlaylistFromVersionsModal
-          versionCodes={Array.from(props.selectedItems)}
-          isOpen={showCreatePlaylistModal}
-          onClose={() => setShowCreatePlaylistModal(false)}
-          onSuccess={handlePlaylistCreated}
-        />
-      )}
     </>
   );
 };

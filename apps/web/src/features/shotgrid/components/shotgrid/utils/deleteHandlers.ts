@@ -76,11 +76,6 @@ export async function handleDeleteSelected({
         }
         break;
 
-      case 'playlists':
-        for (const id of ids) {
-          await apiService.deletePlaylist(Number(id));
-        }
-        break;
 
       default:
         console.log(`Delete functionality for ${activeTab} not implemented yet`);

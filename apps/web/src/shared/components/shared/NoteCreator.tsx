@@ -7,8 +7,6 @@ export type LinkType =
   | 'Episode'
   | 'Asset'
   | 'Sequence'
-  | 'Shot'
-  | 'Playlist'
   | 'Version';
 
 interface NoteCreatorProps {
@@ -74,8 +72,6 @@ export const NoteCreator: React.FC<NoteCreatorProps> = ({
       Episode: '🎬',
       Asset: '🎨',
       Sequence: '🎞️',
-      Shot: '📸',
-      Playlist: '📋',
       Version: '🔄',
     };
     return icons[type] || '📝';

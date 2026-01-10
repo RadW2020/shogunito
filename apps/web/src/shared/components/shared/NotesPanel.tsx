@@ -9,8 +9,6 @@ export type LinkType =
   | 'Episode'
   | 'Asset'
   | 'Sequence'
-  | 'Shot'
-  | 'Playlist'
   | 'Version';
 
 interface NotesPanelProps {
@@ -87,8 +85,6 @@ export const NotesPanel: React.FC<NotesPanelProps> = ({
       Episode: '🎬',
       Asset: '🎨',
       Sequence: '🎞️',
-      Shot: '📸',
-      Playlist: '📋',
       Version: '🔄',
     };
     return icons[type] || '📝';

@@ -13,8 +13,6 @@ export type LinkType =
   | 'Episode'
   | 'Asset'
   | 'Sequence'
-  | 'Shot'
-  | 'Playlist'
   | 'Version';
 
 interface NotesViewerModalProps {
@@ -83,8 +81,6 @@ export const NotesViewerModal: React.FC<NotesViewerModalProps> = ({
       Episode: '🎬',
       Asset: '🎨',
       Sequence: '🎞️',
-      Shot: '📸',
-      Playlist: '📋',
       Version: '🔄',
     };
     return icons[type] || '📝';

@@ -142,18 +142,6 @@ curl -X POST http://localhost:3000/versions/asset \
   }'
 ```
 
-### Crear Playlist
-
-```bash
-curl -X POST http://localhost:3000/playlists \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "code": "PL_REVIEW_001",
-    "name": "Review Semanal",
-    "projectId": "ID_DEL_PROYECTO"
-  }'
-```
 
 ### Agregar Nota
 

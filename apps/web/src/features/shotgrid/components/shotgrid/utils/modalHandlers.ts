@@ -8,7 +8,6 @@ interface ModalActions {
       | 'asset'
       | 'sequence'
       | 'version'
-      | 'playlist'
       | 'note'
       | 'status',
   ) => void;
@@ -25,7 +24,6 @@ export function createAddClickHandler(activeTab: TabType, modalActions: ModalAct
       assets: 'asset',
       sequences: 'sequence',
       versions: 'version',
-      playlists: 'playlist',
       notes: 'note',
       status: 'status',
     };

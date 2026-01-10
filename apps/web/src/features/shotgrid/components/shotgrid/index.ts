@@ -7,7 +7,6 @@ export type {
   Asset,
   Sequence,
   Version,
-  Playlist,
   Note,
   Status,
   User,

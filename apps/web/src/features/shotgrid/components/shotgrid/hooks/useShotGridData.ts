@@ -1,16 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { apiService } from '@shared/api/client';
-import type { Project, Episode, Asset, Sequence, Status } from '@shogun/shared';
+import type { Project, Episode, Asset, Sequence, Status, User } from '@shogun/shared';
 import type { ApiVersion } from '@shared/api/client';
 
-// Simplified user type for UI display
-interface DisplayUser {
-  id: string;
-  name: string;
-  email: string | undefined;
-  role: string;
-}
 
 interface UseShotGridDataReturn {
   // Data
@@ -20,7 +13,7 @@ interface UseShotGridDataReturn {
   sequences: Sequence[];
   versions: ApiVersion[];
   statuses: Status[];
-  users: DisplayUser[];
+  users: User[];
 
   // Loading state
   isRefreshing: boolean;
@@ -48,7 +41,7 @@ export function useShotGridData(): UseShotGridDataReturn {
   const [sequences, setSequences] = useState<Sequence[]>([]);
   const [versions, setVersions] = useState<ApiVersion[]>([]);
   const [statuses, setStatuses] = useState<Status[]>([]);
-  const [users, setUsers] = useState<DisplayUser[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
 
   // Function to refresh all data
   const refreshData = useCallback(async () => {
@@ -100,7 +93,7 @@ export function useShotGridData(): UseShotGridDataReturn {
           id: String(u.id),
           name: u.name,
           email: u.email,
-          role: u.role,
+          role: u.role as 'admin' | 'member',
         })),
       );
 

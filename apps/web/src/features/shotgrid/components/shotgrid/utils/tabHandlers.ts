@@ -1,9 +1,9 @@
 import type { Project, Episode, Asset, Sequence, Status } from '@shogun/shared';
-import type { ApiVersion, Playlist } from '@shared/api/client';
+import type { ApiVersion } from '@shared/api/client';
 
 interface ModalActions {
   openEditModal: (
-    type: 'project' | 'episode' | 'asset' | 'sequence' | 'version' | 'playlist' | 'status',
+    type: 'project' | 'episode' | 'asset' | 'sequence' | 'version' | 'status',
     entity: any,
   ) => void;
   setNoteCreatorEntity: (
@@ -15,7 +15,7 @@ interface ModalActions {
  * Factory function to create edit handlers for different entity types
  */
 export function createEditHandler<T extends { id?: string | number }>(
-  type: 'project' | 'episode' | 'asset' | 'sequence' | 'version' | 'playlist' | 'status',
+  type: 'project' | 'episode' | 'asset' | 'sequence' | 'version' | 'status',
   modalActions: ModalActions,
 ) {
   return (entity: T) => {
@@ -27,7 +27,7 @@ export function createEditHandler<T extends { id?: string | number }>(
  * Factory function to create "add note" handlers for different entity types
  */
 export function createAddNoteHandler<T extends { id?: string | number; name?: string }>(
-  type: 'Project' | 'Episode' | 'Asset' | 'Sequence' | 'Version' | 'Playlist',
+  type: 'Project' | 'Episode' | 'Asset' | 'Sequence' | 'Version',
   modalActions: ModalActions,
 ) {
   return (entity: T) => {
@@ -54,7 +54,6 @@ export function createEditHandlers(modalActions: ModalActions) {
     handleEditAsset: createEditHandler<Asset>('asset', modalActions),
     handleEditSequence: createEditHandler<Sequence>('sequence', modalActions),
     handleEditVersion: createEditHandler<ApiVersion>('version', modalActions),
-    handleEditPlaylist: createEditHandler<Playlist>('playlist', modalActions),
     handleEditStatus: createEditHandler<Status>('status', modalActions),
   };
 }
@@ -69,6 +68,5 @@ export function createAddNoteHandlers(modalActions: ModalActions) {
     handleAddNoteToAsset: createAddNoteHandler<Asset>('Asset', modalActions),
     handleAddNoteToSequence: createAddNoteHandler<Sequence>('Sequence', modalActions),
     handleAddNoteToVersion: createAddNoteHandler<ApiVersion>('Version', modalActions),
-    handleAddNoteToPlaylist: createAddNoteHandler<Playlist>('Playlist', modalActions),
   };
 }

@@ -13,7 +13,6 @@ interface FilterState {
   selectedSequenceId: string;
   selectedFormat: string;
   selectedVersionStatus: string;
-  selectedPlaylistStatus: string;
   selectedEntityType: string;
   latestOnly: boolean;
 }
@@ -61,7 +60,6 @@ const initialFilters: FilterState = {
   selectedSequenceId: 'all',
   selectedFormat: 'all',
   selectedVersionStatus: 'all',
-  selectedPlaylistStatus: 'all',
   selectedEntityType: 'all',
   latestOnly: false,
 };

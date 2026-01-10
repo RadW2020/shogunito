@@ -96,8 +96,8 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
       </div>,
     );
 
-    // Episode filter - show for episodes, sequences, versions, playlists
-    if (['episodes', 'sequences', 'versions', 'playlists'].includes(activeTab)) {
+    // Episode filter - show for episodes, sequences, versions
+    if (['episodes', 'sequences', 'versions'].includes(activeTab)) {
       filters.push(
         <div
           key="episode"
@@ -170,8 +170,8 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
       );
     }
 
-    // Sequence filter - show for sequences, versions, playlists
-    if (['sequences', 'versions', 'playlists'].includes(activeTab)) {
+    // Sequence filter - show for sequences, versions
+    if (['sequences', 'versions'].includes(activeTab)) {
       filters.push(
         <div key="sequence" className="flex items-center space-x-2">
           <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>
@@ -210,7 +210,6 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
             <option value="Episode">Episode</option>
             <option value="Sequence">Sequence</option>
             <option value="Asset">Asset</option>
-            <option value="Playlist">Playlist</option>
             <option value="Version">Version</option>
           </select>
         </div>,
