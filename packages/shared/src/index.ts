@@ -14,7 +14,6 @@ export const AssetType = {
   AUDIO: 'audio',
   SCRIPT: 'script',
   TEXT: 'text',
-  VIDEO: 'video',
 } as const;
 
 export type AssetType = (typeof AssetType)[keyof typeof AssetType];
@@ -69,24 +68,6 @@ export interface Sequence extends BaseEntity {
   versionName?: string;
 }
 
-export interface Shot extends BaseEntity {
-  code: string;
-  name: string;
-  description?: string;
-  sequenceId: number;
-  sequenceNumber: number;
-  status?: string;
-  shotType?: 'establishing' | 'medium' | 'closeup' | 'detail';
-  duration?: number;
-  cutOrder?: number;
-  versionId?: number;
-  versionCode?: string;
-  versionName?: string;
-  sequence?: {
-    code: string;
-    name: string;
-  };
-}
 
 export interface Status extends BaseEntity {
   code: string;
@@ -97,7 +78,6 @@ export interface Status extends BaseEntity {
     | 'project'
     | 'episode'
     | 'sequence'
-    | 'shot'
     | 'version'
     | 'asset'
     | 'note'
@@ -127,7 +107,7 @@ export interface Version extends BaseEntity {
   name: string;
   entityId?: number; // ID for migrated entities (shot, asset, sequence, playlist)
   entityCode?: string; // Code for non-migrated entities (backward compatibility)
-  entityType: 'shot' | 'asset' | 'sequence' | 'playlist' | 'episode' | 'project';
+  entityType: 'asset' | 'sequence' | 'playlist' | 'episode' | 'project';
   versionNumber: number;
   format?: '16:9' | '9:16' | '1:1' | 'custom';
   status?: string;
@@ -151,7 +131,7 @@ export interface Version extends BaseEntity {
 export interface Note extends BaseEntity {
   projectId: number;
   linkId: string | number;
-  linkType: 'Project' | 'Episode' | 'Asset' | 'Sequence' | 'Shot' | 'Playlist' | 'Version';
+  linkType: 'Project' | 'Episode' | 'Asset' | 'Sequence' | 'Playlist' | 'Version';
   subject: string;
   content: string;
   noteType: 'note' | 'approval' | 'revision' | 'client_note';
@@ -172,7 +152,6 @@ export type TabType =
   | 'episodes'
   | 'assets'
   | 'sequences'
-  | 'shots'
   | 'playlists'
   | 'versions'
   | 'notes'
@@ -184,7 +163,6 @@ export const TAB_CONFIG = [
   { id: 'episodes', label: 'Episodes' },
   { id: 'assets', label: 'Assets' },
   { id: 'sequences', label: 'Sequences' },
-  { id: 'shots', label: 'Shots' },
   { id: 'versions', label: 'Versions' },
   { id: 'playlists', label: 'Playlists' },
   { id: 'notes', label: 'Notes' },
@@ -198,7 +176,6 @@ export type EntityTypeForStatus =
   | 'project'
   | 'episode'
   | 'sequence'
-  | 'shot'
   | 'version'
   | 'asset'
   | 'note'

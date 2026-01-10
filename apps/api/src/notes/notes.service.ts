@@ -9,7 +9,6 @@ import { MinioService } from '../files/minio.service';
 import { Project } from '../entities/project.entity';
 import { Episode } from '../entities/episode.entity';
 import { Sequence } from '../entities/sequence.entity';
-import { Shot } from '../entities/shot.entity';
 import { Version } from '../entities/version.entity';
 import { Asset } from '../entities/asset.entity';
 import { Playlist } from '../entities/playlist.entity';
@@ -27,8 +26,6 @@ export class NotesService {
     private episodeRepository: Repository<Episode>,
     @InjectRepository(Sequence)
     private sequenceRepository: Repository<Sequence>,
-    @InjectRepository(Shot)
-    private shotRepository: Repository<Shot>,
     @InjectRepository(Version)
     private versionRepository: Repository<Version>,
     @InjectRepository(Asset)

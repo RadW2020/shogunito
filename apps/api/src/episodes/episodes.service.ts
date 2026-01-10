@@ -6,10 +6,10 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Episode, Project, Sequence, Shot, Status, ProjectRole } from '../entities';
 import { CreateEpisodeDto } from './dto/create-episode.dto';
 import { UpdateEpisodeDto } from './dto/update-episode.dto';
 import { FilterEpisodesDto } from './dto/filter-episodes.dto';
+import { Episode, Project, Sequence, Status, ProjectRole } from '../entities';
 import { ProjectAccessService, UserContext } from '../auth/services/project-access.service';
 
 @Injectable()
@@ -144,18 +144,9 @@ export class EpisodesService {
       const sequences = episode.sequences || [];
 
       for (const sequence of sequences) {
-        const shots = await this.episodeRepository.manager
-          .createQueryBuilder(Shot, 'shot')
-          .where('shot.sequence_id = :sequenceId', { sequenceId: sequence.id })
-          .orderBy('shot.sequenceNumber', 'ASC', 'NULLS LAST')
-          .getMany();
 
-        sequence.shots = shots;
         (sequence as any).notes = await this.loadNotesForEntity(sequence.id.toString(), 'Sequence');
 
-        for (const shot of shots) {
-          (shot as any).notes = await this.loadNotesForEntity(shot.id.toString(), 'Shot');
-        }
       }
     }
 
@@ -185,18 +176,9 @@ export class EpisodesService {
     const sequences = episode.sequences;
 
     for (const sequence of sequences || []) {
-      const shots = await this.episodeRepository.manager
-        .createQueryBuilder(Shot, 'shot')
-        .where('shot.sequence_id = :sequenceId', { sequenceId: sequence.id })
-        .orderBy('shot.sequenceNumber', 'ASC', 'NULLS LAST')
-        .getMany();
 
-      sequence.shots = shots;
       (sequence as any).notes = await this.loadNotesForEntity(sequence.id.toString(), 'Sequence');
 
-      for (const shot of shots) {
-        (shot as any).notes = await this.loadNotesForEntity(shot.id.toString(), 'Shot');
-      }
     }
 
     return episode;
@@ -220,18 +202,9 @@ export class EpisodesService {
     const sequences = episode.sequences;
 
     for (const sequence of sequences || []) {
-      const shots = await this.episodeRepository.manager
-        .createQueryBuilder(Shot, 'shot')
-        .where('shot.sequence_id = :sequenceId', { sequenceId: sequence.id })
-        .orderBy('shot.sequenceNumber', 'ASC', 'NULLS LAST')
-        .getMany();
 
-      sequence.shots = shots;
       (sequence as any).notes = await this.loadNotesForEntity(sequence.id.toString(), 'Sequence');
 
-      for (const shot of shots) {
-        (shot as any).notes = await this.loadNotesForEntity(shot.id.toString(), 'Shot');
-      }
     }
 
     return episode;

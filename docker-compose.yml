@@ -12,7 +12,6 @@
 # - PostgreSQL: Database (port 5432)
 # - MinIO: Object storage (port 9000, console 9001)
 # - PgAdmin: Database management UI (port 8080)
-# - FFmpeg: Video processing utilities
 # - API: Backend service with hot reload (port 3000)
 # - Web: Frontend with hot reload (port 5173)
 
@@ -97,24 +96,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    restart: unless-stopped
-    networks:
-      - shogun-dev-network
-
-  # ============================================
-  # Video Processing Utilities
-  # ============================================
-  ffmpeg:
-    image: alpine:latest
-    container_name: shogun-ffmpeg-dev
-    volumes:
-      - ./apps/api/src/seeds/temp-videos:/tmp/videos
-    command:
-      [
-        "sh",
-        "-c",
-        "apk add --no-cache ffmpeg fontconfig ttf-dejavu && mkdir -p /tmp/videos && while true; do sleep 30; done",
-      ]
     restart: unless-stopped
     networks:
       - shogun-dev-network

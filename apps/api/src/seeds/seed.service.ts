@@ -7,8 +7,6 @@ import {
   Episode,
   Asset,
   Sequence,
-  Shot,
-  ShotType,
   Version,
   Status,
   User,
@@ -35,8 +33,6 @@ export class SeedService {
     private assetRepository: Repository<Asset>,
     @InjectRepository(Sequence)
     private sequenceRepository: Repository<Sequence>,
-    @InjectRepository(Shot)
-    private shotRepository: Repository<Shot>,
     @InjectRepository(Version)
     private versionRepository: Repository<Version>,
     @InjectRepository(Status)

@@ -6,7 +6,6 @@ import { Note } from '../entities/note.entity';
 import { Project } from '../entities/project.entity';
 import { Episode } from '../entities/episode.entity';
 import { Sequence } from '../entities/sequence.entity';
-import { Shot } from '../entities/shot.entity';
 import { Version } from '../entities/version.entity';
 import { Asset } from '../entities/asset.entity';
 import { Playlist } from '../entities/playlist.entity';
@@ -15,7 +14,6 @@ import { ProjectAccessModule } from '../auth/services/project-access.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Note, Project, Episode, Sequence, Shot, Version, Asset, Playlist]),
     FilesModule,
     ProjectAccessModule,
   ],

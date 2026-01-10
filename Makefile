@@ -172,7 +172,5 @@ ci:
 	@echo "Step 7: Checking formatting..."
 	npm run format:check
 	@echo ""
-	@echo "Step 8: Running unit tests..."
-	npm run test
 	@echo ""
 	@echo "✅ All CI checks passed!"

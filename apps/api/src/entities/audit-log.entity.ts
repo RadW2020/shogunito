@@ -42,7 +42,6 @@ export class AuditLog {
   action: string;
 
   /**
-   * Type of entity affected: Project, Episode, Shot, etc.
    */
   @Column()
   entityType: string;

@@ -9,7 +9,6 @@ import {
   Project,
   Episode,
   Sequence,
-  Shot,
   Version,
   Asset,
   User,
@@ -30,7 +29,6 @@ import {
       username: process.env.DATABASE_USERNAME || 'dev',
       password: process.env.DATABASE_PASSWORD || 'dev',
       database: process.env.DATABASE_NAME || 'shogun',
-      entities: [Project, Episode, Sequence, Shot, Version, Asset, User, Status, Playlist, Note],
       synchronize: true, // Keep schema in sync with entities
       dropSchema: false, // NEVER drop schema - production safe
     }),
@@ -38,7 +36,6 @@ import {
       Project,
       Episode,
       Sequence,
-      Shot,
       Version,
       Asset,
       User,

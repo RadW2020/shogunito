@@ -8,10 +8,10 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Sequence, Episode, Version, Shot, Status, ProjectRole } from '../entities';
 import { CreateSequenceDto } from './dto/create-sequence.dto';
 import { UpdateSequenceDto } from './dto/update-sequence.dto';
 import { FilterSequencesDto } from './dto/filter-sequences.dto';
+import { Sequence, Episode, Version, Status, ProjectRole } from '../entities';
 import { EpisodesService } from '../episodes/episodes.service';
 import { ProjectAccessService, UserContext } from '../auth/services/project-access.service';
 
@@ -222,23 +222,10 @@ export class SequencesService {
     // Load shots and notes for all sequences, and transform to include status code
     const transformedSequences = [];
     for (const sequence of sequences) {
-      // Load shots for this sequence
-      const shots = await this.sequenceRepository.manager
-        .createQueryBuilder(Shot, 'shot')
-        .where('shot.sequenceId = :sequenceId', {
-          sequenceId: sequence.id,
-        })
-        .orderBy('shot.sequenceNumber', 'ASC', 'NULLS LAST')
-        .getMany();
 
-      (sequence as any).shots = shots;
 
-      // Load notes for sequence and shots
       (sequence as any).notes = await this.loadNotesForEntity(sequence.id.toString(), 'Sequence');
 
-      for (const shot of shots) {
-        (shot as any).notes = await this.loadNotesForEntity(shot.id.toString(), 'Shot');
-      }
 
       // Transform sequence to include status code
       transformedSequences.push(await this.transformSequence(sequence));
@@ -269,23 +256,10 @@ export class SequencesService {
       );
     }
 
-    // Load shots and notes for this sequence
-    const shots = await this.sequenceRepository.manager
-      .createQueryBuilder(Shot, 'shot')
-      .where('shot.sequenceId = :sequenceId', {
-        sequenceId: sequence.id,
-      })
-      .orderBy('shot.sequenceNumber', 'ASC', 'NULLS LAST')
-      .getMany();
 
-    (sequence as any).shots = shots;
 
-    // Load notes for sequence and shots
     (sequence as any).notes = await this.loadNotesForEntity(sequence.id.toString(), 'Sequence');
 
-    for (const shot of shots) {
-      (shot as any).notes = await this.loadNotesForEntity(shot.id.toString(), 'Shot');
-    }
 
     // Transform sequence to include status code
     return await this.transformSequence(sequence);
@@ -308,23 +282,10 @@ export class SequencesService {
       );
     }
 
-    // Load shots and notes for this sequence
-    const shots = await this.sequenceRepository.manager
-      .createQueryBuilder(Shot, 'shot')
-      .where('shot.sequenceId = :sequenceId', {
-        sequenceId: sequence.id,
-      })
-      .orderBy('shot.sequenceNumber', 'ASC', 'NULLS LAST')
-      .getMany();
 
-    (sequence as any).shots = shots;
 
-    // Load notes for sequence and shots
     (sequence as any).notes = await this.loadNotesForEntity(sequence.id.toString(), 'Sequence');
 
-    for (const shot of shots) {
-      (shot as any).notes = await this.loadNotesForEntity(shot.id.toString(), 'Shot');
-    }
 
     // Transform sequence to include status code
     return await this.transformSequence(sequence);

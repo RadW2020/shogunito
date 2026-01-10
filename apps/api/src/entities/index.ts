@@ -1,7 +1,6 @@
 export { Project } from './project.entity';
 export { Episode } from './episode.entity';
 export { Sequence } from './sequence.entity';
-export { Shot, ShotType } from './shot.entity';
 export { Version, VersionStatus } from './version.entity';
 export { Asset } from './asset.entity';
 export { User } from './user.entity';

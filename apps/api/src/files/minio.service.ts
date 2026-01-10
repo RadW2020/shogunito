@@ -549,11 +549,10 @@ export class MinioService {
       case 'media':
         return {
           allowedTypes: [
-            'video/mp4',
-            'video/quicktime',
-            'video/x-msvideo',
             'image/x-exr',
             'image/png', // For sequences/storyboards
+            'image/jpeg',
+            'image/webp',
             'text/plain', // For prompts
             'application/octet-stream', // For .exr files
           ],
@@ -566,8 +565,6 @@ export class MinioService {
             'image/png',
             'image/webp',
             'application/pdf',
-            'video/mp4',
-            'video/quicktime',
             'text/plain',
           ],
           maxSize: this.getMaxSizeInBytes('ATTACHMENT_MAX_SIZE_MB', 100),

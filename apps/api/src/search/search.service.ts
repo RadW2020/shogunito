@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Project, Episode, Sequence, Shot, Asset, Note } from '../entities';
 import { SearchQueryDto, SearchEntity } from './dto/search-query.dto';
 import { PaginatedResponse, createPaginatedResponse } from '../common/dto/pagination.dto';
 import { UserContext, ProjectAccessService } from '../auth/services';
@@ -67,8 +66,6 @@ export class SearchService {
     private episodeRepository: Repository<Episode>,
     @InjectRepository(Sequence)
     private sequenceRepository: Repository<Sequence>,
-    @InjectRepository(Shot)
-    private shotRepository: Repository<Shot>,
     @InjectRepository(Asset)
     private assetRepository: Repository<Asset>,
     @InjectRepository(Note)

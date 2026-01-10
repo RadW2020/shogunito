@@ -221,7 +221,6 @@ export class NotesController {
           type: 'array',
           items: { type: 'string' },
           example: [
-            'linkType must be one of the following values: Project, Episode, Asset, Sequence, Shot, Playlist, Version',
           ],
         },
         error: { type: 'string', example: 'Bad Request' },

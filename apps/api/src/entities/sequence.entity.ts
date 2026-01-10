@@ -3,14 +3,12 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
   Index,
   JoinColumn,
 } from 'typeorm';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
-import type { Shot } from './shot.entity';
 import type { Episode } from './episode.entity';
 import { Status } from './status.entity';
 
@@ -169,11 +167,4 @@ export class Sequence {
   })
   @JoinColumn({ name: 'episode_id' })
   episode: Episode;
-
-  /**
-   * Relationships - Using lazy loading to control query performance
-   */
-  @ApiHideProperty()
-  @OneToMany('Shot', (shot: Shot) => shot.sequence)
-  shots: Shot[];
 }

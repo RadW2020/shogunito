@@ -5,7 +5,6 @@ import { ProjectPermission } from '../../entities/project-permission.entity';
 import { Project } from '../../entities/project.entity';
 import { Episode } from '../../entities/episode.entity';
 import { Sequence } from '../../entities/sequence.entity';
-import { Shot } from '../../entities/shot.entity';
 
 /**
  * Module that provides the ProjectPermissionGuard
@@ -39,7 +38,6 @@ import { Shot } from '../../entities/shot.entity';
       Project,
       Episode,
       Sequence,
-      Shot,
     ]),
   ],
   providers: [ProjectPermissionGuard],

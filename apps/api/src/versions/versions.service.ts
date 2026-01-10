@@ -7,7 +7,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, Not } from 'typeorm';
 import type { File } from 'multer';
-import { Version, Shot, Asset, Playlist, Sequence, Status, ProjectRole } from '../entities';
 import { CreateVersionDto, VersionEntityType } from './dto/create-version.dto';
 import { UpdateVersionDto } from './dto/update-version.dto';
 import { CreateShotWithVersionDto } from './dto/create-shot-with-version.dto';
@@ -18,6 +17,7 @@ import { MinioService } from '../files/minio.service';
 import { ImageOptimizationService } from '../files/image-optimization.service';
 import { SlackService } from '../notifications/slack/slack.service';
 import { NotificationsService } from '../notifications/notifications.service';
+import { Version, Asset, Playlist, Sequence, Status, ProjectRole } from '../entities';
 import { ProjectAccessService, UserContext } from '../auth/services/project-access.service';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -29,8 +29,6 @@ export class VersionsService {
   constructor(
     @InjectRepository(Version)
     private versionsRepository: Repository<Version>,
-    @InjectRepository(Shot)
-    private shotRepository: Repository<Shot>,
     @InjectRepository(Asset)
     private assetRepository: Repository<Asset>,
     @InjectRepository(Playlist)
@@ -162,11 +160,6 @@ export class VersionsService {
     if (useEntityId && createVersionDto.entityId !== undefined) {
       let entityExists = false;
       switch (createVersionDto.entityType) {
-        case VersionEntityType.SHOT:
-          entityExists = await this.shotRepository.exist({
-            where: { id: createVersionDto.entityId },
-          });
-          break;
         case VersionEntityType.ASSET:
           entityExists = await this.assetRepository.exist({
             where: { id: createVersionDto.entityId },
@@ -851,82 +844,6 @@ export class VersionsService {
   }
 
   // Hybrid creation methods
-  async createShotWithVersion(dto: CreateShotWithVersionDto, userContext?: UserContext) {
-    return await this.dataSource.transaction(async (manager) => {
-      // 1. Find sequence (by ID if provided, otherwise by code)
-      let sequence: Sequence | null = null;
-      if (dto.sequenceId !== undefined) {
-        sequence = await this.sequenceRepository.findOne({
-          where: { id: dto.sequenceId },
-        });
-        if (!sequence) {
-          throw new NotFoundException(`Sequence with ID ${dto.sequenceId} not found`);
-        }
-      } else {
-        throw new BadRequestException('sequenceId is required');
-      }
-
-      // 2. Generate shot code if not provided
-      let shotCode = dto.code;
-      if (!shotCode) {
-        const existingShotsCount = await manager.count('Shot', {
-          where: { sequenceId: sequence.id },
-        });
-        const shotNumber = String(existingShotsCount + 1).padStart(3, '0');
-        shotCode = `SH${shotNumber}`;
-      }
-
-      // 3. Get statusId for shot
-      const shotStatusId = dto.statusId || null;
-
-      // 3. Create shot directly
-      const shot = manager.create('Shot', {
-        name: dto.name,
-        sequenceNumber: dto.sequenceNumber,
-        sequenceId: sequence.id,
-        code: shotCode,
-        description: dto.description,
-        statusId: shotStatusId,
-        shotType: dto.shotType,
-        duration: dto.duration,
-        cutOrder: dto.cutOrder,
-        createdBy: userContext?.userId || null,
-        assignedTo: dto.assignedTo,
-      });
-      const savedShot = (await manager.save(shot)) as Shot;
-
-      // 4. Create custom version
-      const version = manager.create('Version', {
-        code: dto.versionCode || `${savedShot.code}_001`,
-        name: dto.versionName || `Initial version of ${savedShot.name}`,
-        description: dto.versionDescription || 'Initial version created automatically',
-        versionNumber: 1,
-        statusId: dto.versionStatusId || (await this.getStatusIdByCode('wip')),
-        latest: dto.latest !== false,
-        entityId: savedShot.id,
-        entityCode: savedShot.code,
-        entityType: VersionEntityType.SHOT,
-        filePath: dto.filePath,
-        format: dto.format,
-        frameRange: dto.frameRange,
-        artist: dto.artist,
-        createdBy: userContext?.userId || null,
-        assignedTo: dto.versionAssignedTo || dto.assignedTo,
-        thumbnailPath: dto.thumbnailPath,
-        publishedAt: dto.publishedAt,
-        lineage: dto.lineage,
-      });
-      const savedVersion = (await manager.save(version)) as Version;
-
-      return {
-        shot: {
-          ...savedShot,
-          versionCode: savedVersion.code,
-        },
-        version: savedVersion,
-      };
-    });
-  }
 
   async createAssetWithVersion(dto: CreateAssetWithVersionDto, userContext?: UserContext) {
     return await this.dataSource.transaction(async (manager) => {
@@ -972,7 +889,7 @@ export class VersionsService {
         createdBy: userContext?.userId || null,
         assignedTo: dto.assignedTo,
       });
-      const savedAsset = (await manager.save(asset)) as Asset;
+      const savedAsset = (await manager.save(asset));
 
       // 4. Create custom version
       const version = manager.create('Version', {
@@ -995,7 +912,7 @@ export class VersionsService {
         publishedAt: dto.publishedAt,
         lineage: dto.lineage,
       });
-      const savedVersion = (await manager.save(version)) as Version;
+      const savedVersion = (await manager.save(version));
 
       return {
         asset: {
@@ -1050,7 +967,7 @@ export class VersionsService {
         createdBy: userContext?.userId || null,
         assignedTo: dto.assignedTo,
       });
-      const savedPlaylist = (await manager.save(playlist)) as Playlist;
+      const savedPlaylist = (await manager.save(playlist));
 
       // 4. Create custom version
       const version = manager.create('Version', {
@@ -1073,7 +990,7 @@ export class VersionsService {
         publishedAt: dto.publishedAt,
         lineage: dto.lineage,
       });
-      const savedVersion = (await manager.save(version)) as Version;
+      const savedVersion = (await manager.save(version));
 
       return {
         playlist: {
@@ -1130,7 +1047,7 @@ export class VersionsService {
         createdBy: userContext?.userId || null,
         assignedTo: dto.assignedTo,
       });
-      const savedSequence = (await manager.save(sequence)) as Sequence;
+      const savedSequence = (await manager.save(sequence));
 
       // 4. Create custom version
       const version = manager.create('Version', {
@@ -1153,7 +1070,7 @@ export class VersionsService {
         publishedAt: dto.publishedAt,
         lineage: dto.lineage,
       });
-      const savedVersion = (await manager.save(version)) as Version;
+      const savedVersion = (await manager.save(version));
 
       return {
         sequence: {

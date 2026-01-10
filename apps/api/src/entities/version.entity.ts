@@ -98,8 +98,8 @@ export class Version {
   @Column({ name: 'file_path', nullable: true })
   @ApiProperty({
     description:
-      'URL pública del archivo principal de la versión. Soporta múltiples tipos de contenido: videos (MP4, MOV, AVI, WEBM), imágenes (PNG, JPG, WEBP, EXR) y archivos de texto (TXT, MD, JSON). Puede ser una ruta relativa o URL completa. Se actualiza automáticamente al subir archivo con POST /versions/:id/file. El tipo de contenido se detecta por extensión del archivo.',
-    example: 'https://storage.example.com/media/2025/12/08/version_123.mp4',
+      'URL pública del archivo principal de la versión. Soporta imágenes (PNG, JPG, WEBP, EXR) y archivos de texto (TXT, MD, JSON). Puede ser una ruta relativa o URL completa. Se actualiza automáticamente al subir archivo con POST /versions/:id/file. El tipo de contenido se detecta por extensión del archivo.',
+    example: 'https://storage.example.com/media/2025/12/08/version_123.png',
     nullable: true,
     required: false,
   })
@@ -148,8 +148,8 @@ export class Version {
   @Column({ nullable: true })
   @ApiProperty({
     description:
-      'Formato del contenido de la versión. Para videos: aspect ratio (16:9, 9:16, 1:1) o codec (MP4, MOV). Para imágenes: formato de archivo (PNG, JPG, EXR) o dimensiones. Para texto: tipo de archivo (TXT, MD, JSON). Campo libre para flexibilidad según tipo de contenido.',
-    example: '16:9',
+      'Formato del contenido de la versión. Para imágenes: formato de archivo (PNG, JPG, EXR) o dimensiones. Para texto: tipo de archivo (TXT, MD, JSON). Campo libre para flexibilidad según tipo de contenido.',
+    example: '1920x1080',
     nullable: true,
     required: false,
   })
@@ -166,10 +166,11 @@ export class Version {
 
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   @ApiProperty({
-    description: 'Duración del video en segundos',
-    example: 120.5,
+    description: 'Duración en segundos (DEPRECATED - ya no se usa para imágenes)',
+    example: 0,
     nullable: true,
     required: false,
+    deprecated: true,
   })
   duration?: number;
 
@@ -236,7 +237,7 @@ export class Version {
   @Column({ name: 'entity_id', type: 'integer', nullable: true })
   @ApiProperty({
     description:
-      'ID de la entidad asociada (para entidades migradas: shot, asset, sequence, playlist)',
+      'ID de la entidad asociada (asset, sequence, playlist)',
     example: 123,
     nullable: true,
     required: false,
@@ -246,8 +247,8 @@ export class Version {
 
   @Column({ name: 'entity_type', nullable: true })
   @ApiProperty({
-    description: 'Tipo de entidad asociada',
-    example: 'shot',
+    description: 'Tipo de entidad asociada (asset, sequence, playlist)',
+    example: 'sequence',
     nullable: true,
     required: false,
   })

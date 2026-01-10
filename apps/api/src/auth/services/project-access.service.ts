@@ -1,7 +1,7 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ProjectPermission, ProjectRole, Project, Episode, Sequence, Shot } from '../../entities';
+import { ProjectPermission, ProjectRole, Project, Episode, Sequence } from '../../entities';
 
 /**
  * Context for permission-aware operations
@@ -26,8 +26,6 @@ export class ProjectAccessService {
     private episodeRepository: Repository<Episode>,
     @InjectRepository(Sequence)
     private sequenceRepository: Repository<Sequence>,
-    @InjectRepository(Shot)
-    private shotRepository: Repository<Shot>,
   ) {}
 
   /**

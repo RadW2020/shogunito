@@ -1,7 +1,6 @@
 import { IsString, IsOptional, IsEnum, IsNumber, Min, IsUUID } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { ShotType } from '../../entities/shot.entity';
 
 export class CreateShotWithVersionDto {
   // Shot fields
@@ -74,7 +73,6 @@ export class CreateShotWithVersionDto {
   @IsEnum(ShotType)
   @ApiPropertyOptional({
     description: 'Tipo de shot según el encuadre o composición',
-    enum: ShotType,
     example: ShotType.ESTABLISHING,
     enumName: 'ShotType',
   })

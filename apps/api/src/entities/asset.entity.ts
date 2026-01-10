@@ -63,7 +63,7 @@ export class Asset {
   })
   @ApiProperty({
     description:
-      'Tipo de asset. Valores: character (personajes), subtitles (subtítulos), imagen (imágenes), audio (archivos de audio), script (guiones), text (texto plano), video (videos)',
+      'Tipo de asset. Valores: character (personajes), subtitles (subtítulos), imagen (imágenes), audio (archivos de audio), script (guiones), text (texto plano)',
     enum: AssetType,
     default: AssetType.TEXT,
     example: AssetType.SCRIPT,

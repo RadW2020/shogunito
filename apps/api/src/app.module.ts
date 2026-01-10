@@ -10,7 +10,6 @@ import {
   Project,
   Episode,
   Sequence,
-  Shot,
   Version,
   Asset,
   User,
@@ -26,7 +25,7 @@ import { AuthModule } from './auth/auth.module';
 import { AuditModule } from './audit/audit.module';
 import { ProjectsModule } from './projects/projects.module';
 import { EpisodesModule } from './episodes/episodes.module';
-import { ShotsModule } from './shots/shots.module';
+
 import { SequencesModule } from './sequences/sequences.module';
 import { VersionsModule } from './versions/versions.module';
 import { UsersModule } from './users/users.module';
@@ -72,7 +71,7 @@ import { ProjectPermissionsModule } from './project-permissions/project-permissi
         Project,
         Episode,
         Sequence,
-        Shot,
+
         Version,
         Asset,
         User,
@@ -114,7 +113,7 @@ import { ProjectPermissionsModule } from './project-permissions/project-permissi
     ProjectsModule,
     EpisodesModule,
     SequencesModule,
-    ShotsModule,
+
     VersionsModule,
     UsersModule,
     StatusesModule,

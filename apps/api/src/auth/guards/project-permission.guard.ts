@@ -13,7 +13,6 @@ import { ProjectPermission, ProjectRole } from '../../entities/project-permissio
 import { Project } from '../../entities/project.entity';
 import { Episode } from '../../entities/episode.entity';
 import { Sequence } from '../../entities/sequence.entity';
-import { Shot } from '../../entities/shot.entity';
 import { User } from '../../entities/user.entity';
 import { PROJECT_ROLE_KEY, hasRequiredProjectRole } from '../decorators/project-role.decorator';
 
@@ -53,8 +52,6 @@ export class ProjectPermissionGuard implements CanActivate {
     private episodeRepository: Repository<Episode>,
     @InjectRepository(Sequence)
     private sequenceRepository: Repository<Sequence>,
-    @InjectRepository(Shot)
-    private shotRepository: Repository<Shot>,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
