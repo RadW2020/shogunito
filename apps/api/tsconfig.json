@@ -15,9 +15,6 @@
     "outDir": "./dist",
     "incremental": true,
     "baseUrl": ".",
-    "paths": {
-      "@shogun/shared": ["../../packages/shared/src/index"]
-    },
     "skipLibCheck": true,
     "strict": false,
     "strictNullChecks": false,

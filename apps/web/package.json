@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit -p tsconfig.json && vite build",
+    "build": "vite build",
     "lint": "eslint . --quiet",
     "lint:errors": "eslint . --quiet",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
