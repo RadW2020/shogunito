@@ -22,7 +22,6 @@ import {
   ApiResponse,
   ApiParam,
   ApiBody,
-  ApiQuery,
   ApiConsumes,
   ApiBearerAuth,
 } from '@nestjs/swagger';
@@ -150,7 +149,6 @@ Las versiones siguen un flujo de estados definido por \`statusId\`:
     return this.versionsService.create(createVersionDto, userContext);
   }
 
-
   @Post('asset')
   @UserRateLimit({ limit: 100, ttl: 60000 })
   @UseInterceptors(AnyFilesInterceptor(), MultipartFormDataInterceptor)
@@ -231,8 +229,6 @@ Las versiones siguen un flujo de estados definido por \`statusId\`:
       : undefined;
     return this.versionsService.createAssetWithVersion(createAssetWithVersionDto, userContext);
   }
-
-
 
   @Post('sequence')
   @UserRateLimit({ limit: 100, ttl: 60000 })
@@ -345,7 +341,10 @@ El tipo de contenido se determina automáticamente por la extensión del archivo
     const userContext: UserContext | undefined = currentUser
       ? { userId: currentUser.id, role: currentUser.role }
       : undefined;
-    return this.versionsService.createSequenceWithVersion(createSequenceWithVersionDto, userContext);
+    return this.versionsService.createSequenceWithVersion(
+      createSequenceWithVersionDto,
+      userContext,
+    );
   }
 
   @Get('test')
@@ -409,7 +408,13 @@ El tipo de contenido se determina automáticamente por la extensión del archivo
         ? { userId: currentUser.id, role: currentUser.role }
         : undefined;
       // Query directo a la base de datos sin TypeORM
-      const result = await this.versionsService.findAll(undefined, undefined, undefined, undefined, userContext);
+      const result = await this.versionsService.findAll(
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        userContext,
+      );
       return { count: result.length, data: result };
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
@@ -442,7 +447,6 @@ Recupera versiones del sistema con capacidad de filtrado avanzado por entidad as
 - Se recomienda usar \`entityCode\` + \`latest=true\` para obtener la versión actual de cada entidad
     `,
   })
-
   @ApiResponse({
     status: 200,
     description: 'Lista de versiones obtenida exitosamente',
@@ -461,7 +465,13 @@ Recupera versiones del sistema con capacidad de filtrado avanzado por entidad as
     // Support new entityCode/entityType/entityId filters
     const latestBool = latest !== undefined ? latest === 'true' || latest === '1' : undefined;
     const entityIdNum = entityId ? parseInt(entityId, 10) : undefined;
-    return this.versionsService.findAll(entityCode, entityType, latestBool, entityIdNum, userContext);
+    return this.versionsService.findAll(
+      entityCode,
+      entityType,
+      latestBool,
+      entityIdNum,
+      userContext,
+    );
   }
 
   @Get(':id')

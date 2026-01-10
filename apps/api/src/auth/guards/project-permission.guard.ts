@@ -220,25 +220,22 @@ export class ProjectPermissionGuard implements CanActivate {
   /**
    * Get projectId from asset (assets belong directly to projects)
    */
-  private async getProjectIdFromAsset(assetId: number): Promise<number | null> {
-    if (isNaN(assetId)) return null;
+  private getProjectIdFromAsset(assetId: number): Promise<number | null> {
+    if (isNaN(assetId)) return Promise.resolve(null);
 
     // Assets have projectId directly - we need to query the assets table
     // Since we don't have AssetRepository injected, we'll use a raw query approach
     // or assume the asset has projectId in the request
     // For now, return null and let the controller handle it
-    return null;
+    return Promise.resolve(null);
   }
 
   /**
    * Get projectId from version
    * Versions can belong to assets, sequences, etc.
    */
-  private async getProjectIdFromVersion(versionId: number): Promise<number | null> {
-    if (isNaN(versionId)) return null;
-
-    // Versions have complex relationships - for now return null
-    // The controller should ensure projectId is available
-    return null;
+  private getProjectIdFromVersion(versionId: number): Promise<number | null> {
+    if (isNaN(versionId)) return Promise.resolve(null);
+    return Promise.resolve(null);
   }
 }

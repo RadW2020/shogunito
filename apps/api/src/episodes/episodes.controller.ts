@@ -364,7 +364,10 @@ export class EpisodesController {
       },
     },
   })
-  findOneWithCalculatedDuration(@Param('id', ParseIntPipe) id: number, @CurrentUser() currentUser?: User) {
+  findOneWithCalculatedDuration(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() currentUser?: User,
+  ) {
     const userContext: UserContext | undefined = currentUser
       ? { userId: currentUser.id, role: currentUser.role }
       : undefined;

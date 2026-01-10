@@ -156,7 +156,8 @@ export class SequencesService {
 
     // Filter by user's accessible projects (unless admin)
     if (userContext && !this.projectAccessService.isAdmin(userContext)) {
-      const accessibleProjectIds = await this.projectAccessService.getAccessibleProjectIds(userContext);
+      const accessibleProjectIds =
+        await this.projectAccessService.getAccessibleProjectIds(userContext);
       if (accessibleProjectIds.length === 0) {
         return [];
       }
@@ -222,10 +223,7 @@ export class SequencesService {
     // Load notes for all sequences, and transform to include status code
     const transformedSequences = [];
     for (const sequence of sequences) {
-
-
       (sequence as any).notes = await this.loadNotesForEntity(sequence.id.toString(), 'Sequence');
-
 
       // Transform sequence to include status code
       transformedSequences.push(await this.transformSequence(sequence));
@@ -250,16 +248,10 @@ export class SequencesService {
 
     // Verify user has access via episode's project
     if (userContext && sequence.episode) {
-      await this.projectAccessService.verifyProjectAccess(
-        sequence.episode.projectId,
-        userContext,
-      );
+      await this.projectAccessService.verifyProjectAccess(sequence.episode.projectId, userContext);
     }
 
-
-
     (sequence as any).notes = await this.loadNotesForEntity(sequence.id.toString(), 'Sequence');
-
 
     // Transform sequence to include status code
     return await this.transformSequence(sequence);
@@ -276,22 +268,20 @@ export class SequencesService {
     }
 
     if (userContext && sequence.episode) {
-      await this.projectAccessService.verifyProjectAccess(
-        sequence.episode.projectId,
-        userContext,
-      );
+      await this.projectAccessService.verifyProjectAccess(sequence.episode.projectId, userContext);
     }
 
-
-
     (sequence as any).notes = await this.loadNotesForEntity(sequence.id.toString(), 'Sequence');
-
 
     // Transform sequence to include status code
     return await this.transformSequence(sequence);
   }
 
-  async update(id: number, updateSequenceDto: UpdateSequenceDto, userContext?: UserContext): Promise<Sequence> {
+  async update(
+    id: number,
+    updateSequenceDto: UpdateSequenceDto,
+    userContext?: UserContext,
+  ): Promise<Sequence> {
     const sequence = await this.sequenceRepository.findOne({
       where: { id },
       relations: ['episode'],

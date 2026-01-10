@@ -43,7 +43,7 @@ export class FilterAssetsDto extends PaginationDto {
   @ApiPropertyOptional({
     description: 'Filtrar assets por tipo (subtitles, imagen, audio, script, text, video)',
     enum: AssetType,
-    example: AssetType.SCRIPT,
+    example: AssetType.DIRECTOR_SCRIPT,
     enumName: 'AssetType',
   })
   assetType?: AssetType;

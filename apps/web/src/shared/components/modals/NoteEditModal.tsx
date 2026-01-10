@@ -21,7 +21,6 @@ export const NoteEditModal: React.FC<NoteEditModalProps> = ({ note, isOpen, onCl
       const updatedNote = await apiService.updateNote(editedNote.id, {
         subject: editedNote.subject,
         content: editedNote.content,
-        noteType: editedNote.noteType,
         isRead: editedNote.isRead,
         assignedTo: editedNote.assignedTo,
         attachments: editedNote.attachments,
@@ -74,7 +73,7 @@ export const NoteEditModal: React.FC<NoteEditModalProps> = ({ note, isOpen, onCl
 
         <div className="space-y-6">
           {/* Basic Information */}
-          <div className="grid grid-cols-2 gap-4">
+          <div>
             <div>
               <label
                 className="block text-sm font-medium mb-1"
@@ -94,34 +93,7 @@ export const NoteEditModal: React.FC<NoteEditModalProps> = ({ note, isOpen, onCl
                 }}
               />
             </div>
-            <div>
-              <label
-                className="block text-sm font-medium mb-1"
-                style={{ color: 'var(--text-secondary)' }}
-              >
-                Note Type
-              </label>
-              <select
-                value={editedNote.noteType}
-                onChange={(e) =>
-                  setEditedNote({
-                    ...editedNote,
-                    noteType: e.target.value as any,
-                  })
-                }
-                className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                style={{
-                  backgroundColor: 'var(--bg-tertiary)',
-                  color: 'var(--text-primary)',
-                  border: '1px solid var(--border-primary)',
-                }}
-              >
-                <option value="approval">Approval</option>
-                <option value="revision">Revision</option>
-                <option value="question">Question</option>
-                <option value="comment">Comment</option>
-              </select>
-            </div>
+
           </div>
 
           <div>

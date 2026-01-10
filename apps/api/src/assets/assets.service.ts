@@ -127,7 +127,8 @@ export class AssetsService {
 
     // Filter by user's accessible projects (unless admin)
     if (userContext && !this.projectAccessService.isAdmin(userContext)) {
-      const accessibleProjectIds = await this.projectAccessService.getAccessibleProjectIds(userContext);
+      const accessibleProjectIds =
+        await this.projectAccessService.getAccessibleProjectIds(userContext);
       if (accessibleProjectIds.length === 0) {
         return [];
       }
@@ -234,7 +235,11 @@ export class AssetsService {
     return await this.transformAsset(asset);
   }
 
-  async update(id: number, updateAssetDto: UpdateAssetDto, userContext?: UserContext): Promise<Asset> {
+  async update(
+    id: number,
+    updateAssetDto: UpdateAssetDto,
+    userContext?: UserContext,
+  ): Promise<Asset> {
     const asset = await this.assetRepository.findOne({ where: { id } });
 
     if (!asset) {

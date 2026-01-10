@@ -116,7 +116,7 @@ export class AppController {
     for (const bucketName of buckets) {
       try {
         results[bucketName] = await this.minioService.updateAllFilesCacheHeaders(bucketName);
-      } catch (error) {
+      } catch {
         results[bucketName] = {
           total: 0,
           updated: 0,

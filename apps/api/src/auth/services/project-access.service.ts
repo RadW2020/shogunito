@@ -41,7 +41,7 @@ export class ProjectAccessService {
   async getAccessibleProjectIds(userContext: UserContext): Promise<number[]> {
     if (this.isAdmin(userContext)) {
       const allProjects = await this.projectRepository.find({ select: ['id'] });
-      return allProjects.map(p => p.id);
+      return allProjects.map((p) => p.id);
     }
 
     const permissions = await this.projectPermissionRepository.find({
@@ -49,7 +49,7 @@ export class ProjectAccessService {
       select: ['projectId'],
     });
 
-    return permissions.map(p => p.projectId);
+    return permissions.map((p) => p.projectId);
   }
 
   /**
@@ -147,15 +147,19 @@ export class ProjectAccessService {
   /**
    * Get projectId from a version (via entityType and entityId)
    */
-  async getProjectIdFromVersion(version: { entityId?: number | null; entityType: string }): Promise<number | null> {
+  async getProjectIdFromVersion(version: {
+    entityId?: number | null;
+    entityType: string;
+  }): Promise<number | null> {
     if (!version.entityId) return null;
 
     switch (version.entityType.toLowerCase()) {
-      case 'asset':
+      case 'asset': {
         const asset = await this.projectRepository.manager
           .getRepository('Asset')
           .findOne({ where: { id: version.entityId }, select: ['projectId'] });
         return asset?.projectId || null;
+      }
       case 'sequence':
         return this.getProjectIdFromSequence(version.entityId);
       case 'episode':
@@ -182,6 +186,3 @@ export class ProjectAccessService {
     await this.verifyProjectAccess(projectId, userContext, minRole);
   }
 }
-
-
-

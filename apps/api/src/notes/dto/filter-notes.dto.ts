@@ -49,8 +49,6 @@ export class FilterNotesDto extends PaginationDto {
   })
   linkType?: LinkType;
 
-
-
   @IsOptional()
   @Transform(({ value }) => value === 'true')
   @IsBoolean()

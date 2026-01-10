@@ -138,7 +138,8 @@ export class SearchService {
 
     // Filter by user's accessible projects (unless admin)
     if (userContext && !this.projectAccessService.isAdmin(userContext)) {
-      const accessibleProjectIds = await this.projectAccessService.getAccessibleProjectIds(userContext);
+      const accessibleProjectIds =
+        await this.projectAccessService.getAccessibleProjectIds(userContext);
       if (accessibleProjectIds.length === 0) {
         return createPaginatedResponse([], 0, page, limit);
       }
@@ -161,7 +162,8 @@ export class SearchService {
 
     // Apply same project filter to count query
     if (userContext && !this.projectAccessService.isAdmin(userContext)) {
-      const accessibleProjectIds = await this.projectAccessService.getAccessibleProjectIds(userContext);
+      const accessibleProjectIds =
+        await this.projectAccessService.getAccessibleProjectIds(userContext);
       if (accessibleProjectIds.length === 0) {
         return createPaginatedResponse([], 0, page, limit);
       }
@@ -220,7 +222,8 @@ export class SearchService {
 
     // Filter by user's accessible projects (unless admin)
     if (userContext && !this.projectAccessService.isAdmin(userContext)) {
-      const accessibleProjectIds = await this.projectAccessService.getAccessibleProjectIds(userContext);
+      const accessibleProjectIds =
+        await this.projectAccessService.getAccessibleProjectIds(userContext);
       if (accessibleProjectIds.length === 0) {
         return createPaginatedResponse([], 0, page, limit);
       }
@@ -232,7 +235,7 @@ export class SearchService {
     queryBuilder.orderBy('rank', 'DESC').offset(offset).limit(limit);
 
     const results = (await queryBuilder.getRawMany()) as unknown as RawSearchResult[];
-    
+
     const countQuery = this.episodeRepository
       .createQueryBuilder('episode')
       .where(
@@ -242,7 +245,8 @@ export class SearchService {
 
     // Apply same project filter to count query
     if (userContext && !this.projectAccessService.isAdmin(userContext)) {
-      const accessibleProjectIds = await this.projectAccessService.getAccessibleProjectIds(userContext);
+      const accessibleProjectIds =
+        await this.projectAccessService.getAccessibleProjectIds(userContext);
       if (accessibleProjectIds.length === 0) {
         return createPaginatedResponse([], 0, page, limit);
       }
@@ -302,7 +306,8 @@ export class SearchService {
 
     // Filter by user's accessible projects (unless admin)
     if (userContext && !this.projectAccessService.isAdmin(userContext)) {
-      const accessibleProjectIds = await this.projectAccessService.getAccessibleProjectIds(userContext);
+      const accessibleProjectIds =
+        await this.projectAccessService.getAccessibleProjectIds(userContext);
       if (accessibleProjectIds.length === 0) {
         return createPaginatedResponse([], 0, page, limit);
       }
@@ -314,7 +319,7 @@ export class SearchService {
     queryBuilder.orderBy('rank', 'DESC').offset(offset).limit(limit);
 
     const results = (await queryBuilder.getRawMany()) as unknown as RawSearchResult[];
-    
+
     const countQuery = this.sequenceRepository
       .createQueryBuilder('sequence')
       .leftJoin('sequence.episode', 'episode')
@@ -325,7 +330,8 @@ export class SearchService {
 
     // Apply same project filter to count query
     if (userContext && !this.projectAccessService.isAdmin(userContext)) {
-      const accessibleProjectIds = await this.projectAccessService.getAccessibleProjectIds(userContext);
+      const accessibleProjectIds =
+        await this.projectAccessService.getAccessibleProjectIds(userContext);
       if (accessibleProjectIds.length === 0) {
         return createPaginatedResponse([], 0, page, limit);
       }
@@ -348,7 +354,6 @@ export class SearchService {
 
     return createPaginatedResponse(searchResults, total, page, limit);
   }
-
 
   /**
    * Search in Assets
@@ -385,7 +390,8 @@ export class SearchService {
 
     // Filter by user's accessible projects (unless admin)
     if (userContext && !this.projectAccessService.isAdmin(userContext)) {
-      const accessibleProjectIds = await this.projectAccessService.getAccessibleProjectIds(userContext);
+      const accessibleProjectIds =
+        await this.projectAccessService.getAccessibleProjectIds(userContext);
       if (accessibleProjectIds.length === 0) {
         return createPaginatedResponse([], 0, page, limit);
       }
@@ -397,7 +403,7 @@ export class SearchService {
     queryBuilder.orderBy('rank', 'DESC').offset(offset).limit(limit);
 
     const results = (await queryBuilder.getRawMany()) as unknown as RawSearchResult[];
-    
+
     const countQuery = this.assetRepository
       .createQueryBuilder('asset')
       .where(
@@ -407,7 +413,8 @@ export class SearchService {
 
     // Apply same project filter to count query
     if (userContext && !this.projectAccessService.isAdmin(userContext)) {
-      const accessibleProjectIds = await this.projectAccessService.getAccessibleProjectIds(userContext);
+      const accessibleProjectIds =
+        await this.projectAccessService.getAccessibleProjectIds(userContext);
       if (accessibleProjectIds.length === 0) {
         return createPaginatedResponse([], 0, page, limit);
       }
@@ -479,7 +486,8 @@ export class SearchService {
     // Filter notes by project access
     let filteredResults = allResults;
     if (userContext && !this.projectAccessService.isAdmin(userContext)) {
-      const accessibleProjectIds = await this.projectAccessService.getAccessibleProjectIds(userContext);
+      const accessibleProjectIds =
+        await this.projectAccessService.getAccessibleProjectIds(userContext);
       if (accessibleProjectIds.length === 0) {
         return createPaginatedResponse([], 0, page, limit);
       }
@@ -495,7 +503,7 @@ export class SearchService {
           if (projectId && accessibleProjectIds.includes(projectId)) {
             filteredResults.push(note);
           }
-        } catch (error) {
+        } catch {
           // Skip notes where we can't determine project access
           continue;
         }

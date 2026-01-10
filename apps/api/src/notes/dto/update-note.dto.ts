@@ -62,8 +62,6 @@ export class UpdateNoteDto extends PartialType(CreateNoteDto) {
   })
   content?: string;
 
-
-
   @IsOptional()
   @IsBoolean()
   @ApiPropertyOptional({

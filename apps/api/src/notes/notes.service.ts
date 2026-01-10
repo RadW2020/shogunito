@@ -40,7 +40,12 @@ export class NotesService {
 
     // Verify user has contributor access to the linked entity's project
     if (userContext) {
-      await this.verifyNoteEntityAccess(createNoteDto.linkId, createNoteDto.linkType, userContext, ProjectRole.CONTRIBUTOR);
+      await this.verifyNoteEntityAccess(
+        createNoteDto.linkId,
+        createNoteDto.linkType,
+        userContext,
+        ProjectRole.CONTRIBUTOR,
+      );
     }
 
     const note = this.noteRepository.create({
@@ -96,8 +101,6 @@ export class NotesService {
       });
     }
 
-
-
     if (filters?.isRead !== undefined) {
       queryBuilder.andWhere('note.isRead = :isRead', {
         isRead: filters.isRead,
@@ -145,7 +148,8 @@ export class NotesService {
     // Filter by user's accessible projects (unless admin)
     let filteredNotes = notes;
     if (userContext && !this.projectAccessService.isAdmin(userContext)) {
-      const accessibleProjectIds = await this.projectAccessService.getAccessibleProjectIds(userContext);
+      const accessibleProjectIds =
+        await this.projectAccessService.getAccessibleProjectIds(userContext);
       if (accessibleProjectIds.length === 0) {
         return [];
       }
@@ -158,7 +162,7 @@ export class NotesService {
           if (projectId && accessibleProjectIds.includes(projectId)) {
             filteredNotes.push(note);
           }
-        } catch (error) {
+        } catch {
           // Skip notes where we can't determine project access
           continue;
         }
@@ -198,7 +202,12 @@ export class NotesService {
 
     // Verify user has contributor access
     if (userContext) {
-      await this.verifyNoteEntityAccess(note.linkId, note.linkType, userContext, ProjectRole.CONTRIBUTOR);
+      await this.verifyNoteEntityAccess(
+        note.linkId,
+        note.linkType,
+        userContext,
+        ProjectRole.CONTRIBUTOR,
+      );
     }
 
     await this.noteRepository.update(id, updateNoteDto);
@@ -217,7 +226,12 @@ export class NotesService {
 
     // Verify user has contributor access
     if (userContext) {
-      await this.verifyNoteEntityAccess(note.linkId, note.linkType, userContext, ProjectRole.CONTRIBUTOR);
+      await this.verifyNoteEntityAccess(
+        note.linkId,
+        note.linkType,
+        userContext,
+        ProjectRole.CONTRIBUTOR,
+      );
     }
 
     const result = await this.noteRepository.delete(id);
@@ -289,7 +303,11 @@ export class NotesService {
     return await this.transformNote(updatedNote);
   }
 
-  async findByEntity(linkId: string, linkType: LinkType, userContext?: UserContext): Promise<Note[]> {
+  async findByEntity(
+    linkId: string,
+    linkType: LinkType,
+    userContext?: UserContext,
+  ): Promise<Note[]> {
     // Verify user has access to the linked entity's project
     if (userContext) {
       await this.verifyNoteEntityAccess(linkId, linkType, userContext);
@@ -364,26 +382,29 @@ export class NotesService {
     switch (note.linkType) {
       case LinkType.PROJECT:
         return entityId;
-      case LinkType.EPISODE:
+      case LinkType.EPISODE: {
         const episode = await this.episodeRepository.findOne({
           where: { id: entityId },
           select: ['projectId'],
         });
         return episode?.projectId || null;
-      case LinkType.SEQUENCE:
+      }
+      case LinkType.SEQUENCE: {
         const sequence = await this.sequenceRepository.findOne({
           where: { id: entityId },
           relations: ['episode'],
           select: ['id'],
         });
         return (sequence as any)?.episode?.projectId || null;
-      case LinkType.ASSET:
+      }
+      case LinkType.ASSET: {
         const asset = await this.assetRepository.findOne({
           where: { id: entityId },
           select: ['projectId'],
         });
         return asset?.projectId || null;
-      case LinkType.VERSION:
+      }
+      case LinkType.VERSION: {
         const version = await this.versionRepository.findOne({
           where: { id: entityId },
           select: ['entityId', 'entityType'],
@@ -395,6 +416,7 @@ export class NotesService {
           });
         }
         return null;
+      }
 
       default:
         return null;
@@ -425,7 +447,7 @@ export class NotesService {
       case LinkType.SEQUENCE:
         await this.projectAccessService.verifySequenceAccess(entityId, userContext, minRole);
         break;
-      case LinkType.ASSET:
+      case LinkType.ASSET: {
         const asset = await this.assetRepository.findOne({
           where: { id: entityId },
           select: ['projectId'],
@@ -435,7 +457,8 @@ export class NotesService {
         }
         await this.projectAccessService.verifyProjectAccess(asset.projectId, userContext, minRole);
         break;
-      case LinkType.VERSION:
+      }
+      case LinkType.VERSION: {
         const version = await this.versionRepository.findOne({
           where: { id: entityId },
           select: ['entityId', 'entityType'],
@@ -451,6 +474,7 @@ export class NotesService {
           );
         }
         break;
+      }
 
       default:
         throw new NotFoundException(`Invalid link type: ${linkType as string}`);

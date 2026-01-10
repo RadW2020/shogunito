@@ -26,7 +26,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
     }
 
     const refreshToken = req.get('authorization')?.replace('Bearer', '').trim();
-    
+
     if (!refreshToken) {
       throw new UnauthorizedException('Refresh token not provided');
     }

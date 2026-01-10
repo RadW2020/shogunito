@@ -28,9 +28,8 @@ export const NoteCreator: React.FC<NoteCreatorProps> = ({
 }) => {
   const [subject, setSubject] = useState('');
   const [content, setContent] = useState('');
-  const [noteType, setNoteType] = useState<'note' | 'approval' | 'revision' | 'client_note'>(
-    'note',
-  );
+  // noteType removed as it is not supported by the backend
+
 
   const createNoteMutation = useCreateNote();
 
@@ -51,14 +50,14 @@ export const NoteCreator: React.FC<NoteCreatorProps> = ({
         linkType,
         subject: subject.trim(),
         content: content.trim(),
-        noteType,
         isRead: false,
       });
 
       // Reset form
       setSubject('');
       setContent('');
-      setNoteType('note');
+      setSubject('');
+      setContent('');
 
       onNoteCreated?.(newNote);
     } catch (error) {
@@ -121,30 +120,7 @@ export const NoteCreator: React.FC<NoteCreatorProps> = ({
           />
         </div>
 
-        {/* Note Type */}
-        <div>
-          <label
-            className="block text-sm font-medium mb-1"
-            style={{ color: 'var(--text-secondary)' }}
-          >
-            Note Type
-          </label>
-          <select
-            value={noteType}
-            onChange={(e) => setNoteType(e.target.value as any)}
-            className="w-full px-3 py-2 rounded border transition-colors"
-            style={{
-              backgroundColor: 'var(--bg-primary)',
-              borderColor: 'var(--border-primary)',
-              color: 'var(--text-primary)',
-            }}
-          >
-            <option value="note">📝 Note</option>
-            <option value="approval">✅ Approval</option>
-            <option value="revision">🔄 Revision</option>
-            <option value="client_note">👤 Client Note</option>
-          </select>
-        </div>
+
 
         {/* Content */}
         <div>

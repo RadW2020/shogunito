@@ -104,7 +104,8 @@ export class EpisodesService {
 
     // Filter by user's accessible projects (unless admin)
     if (userContext && !this.projectAccessService.isAdmin(userContext)) {
-      const accessibleProjectIds = await this.projectAccessService.getAccessibleProjectIds(userContext);
+      const accessibleProjectIds =
+        await this.projectAccessService.getAccessibleProjectIds(userContext);
       if (accessibleProjectIds.length === 0) {
         return [];
       }
@@ -144,9 +145,7 @@ export class EpisodesService {
       const sequences = episode.sequences || [];
 
       for (const sequence of sequences) {
-
         (sequence as any).notes = await this.loadNotesForEntity(sequence.id.toString(), 'Sequence');
-
       }
     }
 
@@ -176,9 +175,7 @@ export class EpisodesService {
     const sequences = episode.sequences;
 
     for (const sequence of sequences || []) {
-
       (sequence as any).notes = await this.loadNotesForEntity(sequence.id.toString(), 'Sequence');
-
     }
 
     return episode;
@@ -202,17 +199,19 @@ export class EpisodesService {
     const sequences = episode.sequences;
 
     for (const sequence of sequences || []) {
-
       (sequence as any).notes = await this.loadNotesForEntity(sequence.id.toString(), 'Sequence');
-
     }
 
     return episode;
   }
 
-  async update(id: number, updateEpisodeDto: UpdateEpisodeDto, userContext?: UserContext): Promise<Episode> {
+  async update(
+    id: number,
+    updateEpisodeDto: UpdateEpisodeDto,
+    userContext?: UserContext,
+  ): Promise<Episode> {
     const episode = await this.episodeRepository.findOne({ where: { id } });
-    
+
     if (!episode) {
       throw new NotFoundException(`Episode with ID ${id} not found`);
     }
@@ -269,7 +268,7 @@ export class EpisodesService {
 
   async remove(id: number, userContext?: UserContext): Promise<void> {
     const episode = await this.episodeRepository.findOne({ where: { id } });
-    
+
     if (!episode) {
       throw new NotFoundException(`Episode with ID ${id} not found`);
     }

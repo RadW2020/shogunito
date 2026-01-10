@@ -53,7 +53,6 @@ export const NotesTab: React.FC<NotesTabProps> = ({
 
   const columns: TableColumn[] = [
     { label: 'Subject', field: 'subject' },
-    { label: 'Type', field: 'noteType' },
     {
       label: 'Entity',
       field: 'linkType',

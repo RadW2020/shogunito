@@ -90,25 +90,7 @@ export const NotesPanel: React.FC<NotesPanelProps> = ({
     return icons[type] || '📝';
   };
 
-  const getNoteTypeIcon = (type: string) => {
-    const icons = {
-      note: '📝',
-      approval: '✅',
-      revision: '🔄',
-      client_note: '👤',
-    };
-    return icons[type as keyof typeof icons] || '📝';
-  };
 
-  const getNoteTypeColor = (type: string) => {
-    const colors = {
-      note: 'var(--text-primary)',
-      approval: 'var(--status-success)',
-      revision: 'var(--status-warning)',
-      client_note: 'var(--accent-primary)',
-    };
-    return colors[type as keyof typeof colors] || 'var(--text-primary)';
-  };
 
   if (!isOpen) return null;
 
@@ -194,9 +176,7 @@ export const NotesPanel: React.FC<NotesPanelProps> = ({
                   {/* Note Header */}
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center space-x-2">
-                      <span style={{ color: getNoteTypeColor(note.noteType) }}>
-                        {getNoteTypeIcon(note.noteType)}
-                      </span>
+                      {/* noteType icons removed */}
                       <h3 className="font-medium" style={{ color: 'var(--text-primary)' }}>
                         {note.subject}
                       </h3>

@@ -14,10 +14,9 @@ import {
  *
  * <button onClick={() => createNote.mutate({
  *   linkId: shot.id,
- *   linkType: 'Shot',
+ *   linkType: 'Project',
  *   subject: 'Review',
  *   content: 'Looks great!',
- *   noteType: 'note'
  * })}>
  *   Add Note
  * </button>

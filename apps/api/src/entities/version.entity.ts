@@ -236,8 +236,7 @@ export class Version {
 
   @Column({ name: 'entity_id', type: 'integer', nullable: true })
   @ApiProperty({
-    description:
-      'ID de la entidad asociada (asset, sequence, episode, project)',
+    description: 'ID de la entidad asociada (asset, sequence, episode, project)',
     example: 123,
     nullable: true,
     required: false,

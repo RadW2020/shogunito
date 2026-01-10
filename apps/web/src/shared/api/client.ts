@@ -82,7 +82,6 @@ export interface Note {
   linkType: 'Project' | 'Episode' | 'Asset' | 'Sequence' | 'Version';
   subject: string;
   content: string;
-  noteType: 'note' | 'approval' | 'revision' | 'client_note';
   isRead: boolean;
   attachments?: string[];
   createdBy?: number;

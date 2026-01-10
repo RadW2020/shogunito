@@ -60,8 +60,6 @@ export class CreateNoteDto {
   })
   content: string;
 
-
-
   @IsOptional()
   @IsBoolean()
   @ApiPropertyOptional({

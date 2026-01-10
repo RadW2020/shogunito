@@ -18,7 +18,7 @@ export class CreateAssetWithVersionDto {
     description:
       'Tipo de asset según su función en el proyecto (subtitles, imagen, audio, script, text, video)',
     enum: AssetType,
-    example: AssetType.SCRIPT,
+    example: AssetType.DIRECTOR_SCRIPT,
     enumName: 'AssetType',
   })
   assetType: AssetType;

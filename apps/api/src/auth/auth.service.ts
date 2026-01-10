@@ -136,7 +136,7 @@ export class AuthService {
     }
 
     // Map legacy roles to current roles
-    let role: 'admin' | 'director' | 'artist' | 'member' = 'member';
+    let role: 'admin' | 'member' = 'member';
     if (registerDto.role) {
       switch (registerDto.role) {
         case 'admin':
@@ -144,12 +144,7 @@ export class AuthService {
           break;
         case 'producer':
         case 'reviewer':
-          // Legacy roles mapped to director
-          role = 'director';
-          break;
         case 'artist':
-          role = 'artist';
-          break;
         case 'member':
         default:
           role = 'member';

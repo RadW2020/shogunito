@@ -121,7 +121,6 @@ export class NotesController {
       enum: ['Project', 'Episode', 'Asset', 'Sequence', 'Version'],
     },
   })
-
   @ApiQuery({
     name: 'isRead',
     required: false,
@@ -209,8 +208,7 @@ export class NotesController {
         message: {
           type: 'array',
           items: { type: 'string' },
-          example: [
-          ],
+          example: [],
         },
         error: { type: 'string', example: 'Bad Request' },
       },

@@ -96,10 +96,7 @@ export class MinioService {
         return;
       } catch (error) {
         if (attempt === maxRetries) {
-          this.logger.error(
-            `Failed to initialize buckets after ${maxRetries} attempts:`,
-            error,
-          );
+          this.logger.error(`Failed to initialize buckets after ${maxRetries} attempts:`, error);
           return;
         }
         this.logger.warn(
@@ -198,7 +195,7 @@ export class MinioService {
         'Content-Type': file.mimetype,
         'Original-Name': file.originalname,
         'Cache-Control': cacheControl,
-        'Expires': new Date(Date.now() + cacheMaxAge * 1000).toUTCString(),
+        Expires: new Date(Date.now() + cacheMaxAge * 1000).toUTCString(),
       });
 
       this.logger.log(`File uploaded successfully: ${filePath} to bucket ${bucketName}`);
@@ -324,16 +321,13 @@ export class MinioService {
    * Update cache headers for an existing file
    * Uses copyObject to update metadata without re-uploading the file
    */
-  async updateFileCacheHeaders(
-    bucket: keyof typeof this.bucketNames,
-    path: string,
-  ): Promise<void> {
+  async updateFileCacheHeaders(bucket: keyof typeof this.bucketNames, path: string): Promise<void> {
     try {
       const bucketName = this.bucketNames[bucket];
-      
+
       // Get existing object metadata
       const stat = await this.minioClient.statObject(bucketName, path);
-      
+
       // Determine cache duration based on bucket type
       const isThumbnail = bucket === 'thumbnails';
       const cacheMaxAge = isThumbnail ? 31536000 : 604800; // 1 year for thumbnails, 1 week for media
@@ -344,7 +338,7 @@ export class MinioService {
       const newMetadata: Record<string, string> = {
         ...existingMetadata,
         'Cache-Control': cacheControl,
-        'Expires': new Date(Date.now() + cacheMaxAge * 1000).toUTCString(),
+        Expires: new Date(Date.now() + cacheMaxAge * 1000).toUTCString(),
       };
 
       // Ensure Content-Type is preserved
@@ -359,11 +353,11 @@ export class MinioService {
       // Note: The native minio types don't include setReplaceMetadataDirective or the 5th metadata parameter,
       // but these exist at runtime in minio@8.0.6
       const copyConditions = new Minio.CopyConditions();
-      
+
       // Set metadata directive to REPLACE to replace existing metadata with new metadata
       // Type assertion needed because method exists at runtime but not in type definitions
       (copyConditions as any).setReplaceMetadataDirective();
-      
+
       // Copy object to itself with new metadata
       // Type assertion needed because 5th parameter exists at runtime but not in type definitions
       await (this.minioClient.copyObject as any)(
@@ -404,13 +398,13 @@ export class MinioService {
       for (const file of files) {
         try {
           // MinIO listObjects returns objects with 'name' property
-          const fileName = (file as any).name || file;
+          const fileName = file.name || file;
           if (typeof fileName === 'string') {
             await this.updateFileCacheHeaders(bucket, fileName);
             updated++;
           }
         } catch (error) {
-          const fileName = (file as any).name || file;
+          const fileName = file.name || file;
           this.logger.warn(`Failed to update cache headers for ${fileName}: ${error.message}`);
           failed++;
         }
@@ -422,7 +416,9 @@ export class MinioService {
 
       return { total, updated, failed };
     } catch (error) {
-      this.logger.error(`Failed to update cache headers for bucket ${bucketName}: ${error.message}`);
+      this.logger.error(
+        `Failed to update cache headers for bucket ${bucketName}: ${error.message}`,
+      );
       throw new BadRequestException(`Failed to update cache headers: ${error.message}`);
     }
   }
@@ -560,13 +556,7 @@ export class MinioService {
         };
       case 'attachment':
         return {
-          allowedTypes: [
-            'image/jpeg',
-            'image/png',
-            'image/webp',
-            'application/pdf',
-            'text/plain',
-          ],
+          allowedTypes: ['image/jpeg', 'image/png', 'image/webp', 'application/pdf', 'text/plain'],
           maxSize: this.getMaxSizeInBytes('ATTACHMENT_MAX_SIZE_MB', 100),
         };
       default:

@@ -7,13 +7,7 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
-export type ApplicableEntity =
-  | 'project'
-  | 'episode'
-  | 'sequence'
-  | 'version'
-  | 'asset'
-  | 'note';
+export type ApplicableEntity = 'project' | 'episode' | 'sequence' | 'version' | 'asset' | 'note';
 
 @Entity('statuses')
 export class Status {

@@ -29,7 +29,7 @@ export class UpdateAssetDto extends PartialType(CreateAssetDto) {
   @ApiPropertyOptional({
     description: 'Tipo de asset (subtitles, imagen, audio, script, text, video)',
     enum: AssetType,
-    example: AssetType.SCRIPT,
+    example: AssetType.DIRECTOR_SCRIPT,
     enumName: 'AssetType',
   })
   assetType?: AssetType;

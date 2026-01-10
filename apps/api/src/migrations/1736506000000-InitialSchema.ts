@@ -2,7 +2,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 /**
  * Consolidated Initial Schema Migration for Shogunito
- * 
+ *
  * This migration creates all tables from scratch with the final schema:
  * - No shots table (removed in favor of image-centric sequences)
  * - Integer user IDs (not UUID)
@@ -112,9 +112,13 @@ export class InitialSchema1736506000000 implements MigrationInterface {
     `);
     await queryRunner.query(`CREATE INDEX "IDX_episodes_project_id" ON "episodes" ("project_id")`);
     await queryRunner.query(`CREATE INDEX "IDX_episodes_status_id" ON "episodes" ("status_id")`);
-    await queryRunner.query(`CREATE INDEX "IDX_episodes_project_cut_order" ON "episodes" ("project_id", "cut_order")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_episodes_project_cut_order" ON "episodes" ("project_id", "cut_order")`,
+    );
     await queryRunner.query(`CREATE INDEX "IDX_episodes_created_by" ON "episodes" ("created_by")`);
-    await queryRunner.query(`CREATE INDEX "IDX_episodes_assigned_to" ON "episodes" ("assigned_to")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_episodes_assigned_to" ON "episodes" ("assigned_to")`,
+    );
 
     // ============================================
     // SEQUENCES TABLE
@@ -140,11 +144,19 @@ export class InitialSchema1736506000000 implements MigrationInterface {
           REFERENCES "statuses"("id") ON DELETE SET NULL
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_sequences_episode_id" ON "sequences" ("episode_id")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_sequences_episode_id" ON "sequences" ("episode_id")`,
+    );
     await queryRunner.query(`CREATE INDEX "IDX_sequences_status_id" ON "sequences" ("status_id")`);
-    await queryRunner.query(`CREATE INDEX "IDX_sequences_episode_cut_order" ON "sequences" ("episode_id", "cut_order")`);
-    await queryRunner.query(`CREATE INDEX "IDX_sequences_created_by" ON "sequences" ("created_by")`);
-    await queryRunner.query(`CREATE INDEX "IDX_sequences_assigned_to" ON "sequences" ("assigned_to")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_sequences_episode_cut_order" ON "sequences" ("episode_id", "cut_order")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_sequences_created_by" ON "sequences" ("created_by")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_sequences_assigned_to" ON "sequences" ("assigned_to")`,
+    );
 
     // ============================================
     // ASSETS TABLE
@@ -212,15 +224,27 @@ export class InitialSchema1736506000000 implements MigrationInterface {
       )
     `);
     await queryRunner.query(`CREATE INDEX "IDX_versions_status_id" ON "versions" ("status_id")`);
-    await queryRunner.query(`CREATE INDEX "IDX_versions_entity_id_latest" ON "versions" ("entity_id", "latest")`);
-    await queryRunner.query(`CREATE INDEX "IDX_versions_entity_code_latest" ON "versions" ("entity_code", "latest")`);
-    await queryRunner.query(`CREATE INDEX "IDX_versions_entity_id_type" ON "versions" ("entity_id", "entity_type")`);
-    await queryRunner.query(`CREATE INDEX "IDX_versions_entity_code_type" ON "versions" ("entity_code", "entity_type")`);
-    await queryRunner.query(`CREATE INDEX "IDX_versions_entity_type" ON "versions" ("entity_type")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_versions_entity_id_latest" ON "versions" ("entity_id", "latest")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_versions_entity_code_latest" ON "versions" ("entity_code", "latest")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_versions_entity_id_type" ON "versions" ("entity_id", "entity_type")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_versions_entity_code_type" ON "versions" ("entity_code", "entity_type")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_versions_entity_type" ON "versions" ("entity_type")`,
+    );
     await queryRunner.query(`CREATE INDEX "IDX_versions_latest" ON "versions" ("latest")`);
     await queryRunner.query(`CREATE INDEX "IDX_versions_created_at" ON "versions" ("created_at")`);
     await queryRunner.query(`CREATE INDEX "IDX_versions_created_by" ON "versions" ("created_by")`);
-    await queryRunner.query(`CREATE INDEX "IDX_versions_assigned_to" ON "versions" ("assigned_to")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_versions_assigned_to" ON "versions" ("assigned_to")`,
+    );
 
     // ============================================
     // PLAYLISTS TABLE
@@ -245,11 +269,19 @@ export class InitialSchema1736506000000 implements MigrationInterface {
           REFERENCES "statuses"("id") ON DELETE SET NULL
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_playlists_project_id" ON "playlists" ("project_id")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_playlists_project_id" ON "playlists" ("project_id")`,
+    );
     await queryRunner.query(`CREATE INDEX "IDX_playlists_status_id" ON "playlists" ("status_id")`);
-    await queryRunner.query(`CREATE INDEX "IDX_playlists_created_by" ON "playlists" ("created_by")`);
-    await queryRunner.query(`CREATE INDEX "IDX_playlists_assigned_to" ON "playlists" ("assigned_to")`);
-    await queryRunner.query(`CREATE INDEX "IDX_playlists_created_at" ON "playlists" ("created_at")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_playlists_created_by" ON "playlists" ("created_by")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_playlists_assigned_to" ON "playlists" ("assigned_to")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_playlists_created_at" ON "playlists" ("created_at")`,
+    );
 
     // ============================================
     // NOTES TABLE (without Shot link type)
@@ -280,8 +312,12 @@ export class InitialSchema1736506000000 implements MigrationInterface {
         "updated_at" TIMESTAMP NOT NULL DEFAULT now()
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_notes_link_id_linkType" ON "notes" ("link_id", "linkType")`);
-    await queryRunner.query(`CREATE INDEX "IDX_notes_link_id_linkType_is_read" ON "notes" ("link_id", "linkType", "is_read")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_notes_link_id_linkType" ON "notes" ("link_id", "linkType")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_notes_link_id_linkType_is_read" ON "notes" ("link_id", "linkType", "is_read")`,
+    );
     await queryRunner.query(`CREATE INDEX "IDX_notes_noteType" ON "notes" ("noteType")`);
     await queryRunner.query(`CREATE INDEX "IDX_notes_is_read" ON "notes" ("is_read")`);
     await queryRunner.query(`CREATE INDEX "IDX_notes_created_by" ON "notes" ("created_by")`);
@@ -311,8 +347,12 @@ export class InitialSchema1736506000000 implements MigrationInterface {
       )
     `);
     await queryRunner.query(`CREATE INDEX "IDX_refresh_tokens_jti" ON "refresh_tokens" ("jti")`);
-    await queryRunner.query(`CREATE INDEX "IDX_refresh_tokens_token_family_is_revoked" ON "refresh_tokens" ("token_family", "is_revoked")`);
-    await queryRunner.query(`CREATE INDEX "IDX_refresh_tokens_user_id_is_revoked" ON "refresh_tokens" ("user_id", "is_revoked")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_refresh_tokens_token_family_is_revoked" ON "refresh_tokens" ("token_family", "is_revoked")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_refresh_tokens_user_id_is_revoked" ON "refresh_tokens" ("user_id", "is_revoked")`,
+    );
 
     // ============================================
     // NOTIFICATIONS TABLE
@@ -333,11 +373,21 @@ export class InitialSchema1736506000000 implements MigrationInterface {
         "updatedAt" TIMESTAMP NOT NULL DEFAULT now()
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_notifications_userId" ON "notifications" ("userId")`);
-    await queryRunner.query(`CREATE INDEX "IDX_notifications_isRead" ON "notifications" ("isRead")`);
-    await queryRunner.query(`CREATE INDEX "IDX_notifications_entityType_entityId" ON "notifications" ("entityType", "entityId")`);
-    await queryRunner.query(`CREATE INDEX "IDX_notifications_userId_createdAt" ON "notifications" ("userId", "createdAt")`);
-    await queryRunner.query(`CREATE INDEX "IDX_notifications_userId_isRead" ON "notifications" ("userId", "isRead")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_notifications_userId" ON "notifications" ("userId")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_notifications_isRead" ON "notifications" ("isRead")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_notifications_entityType_entityId" ON "notifications" ("entityType", "entityId")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_notifications_userId_createdAt" ON "notifications" ("userId", "createdAt")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_notifications_userId_isRead" ON "notifications" ("userId", "isRead")`,
+    );
 
     // ============================================
     // AUDIT LOGS TABLE
@@ -363,8 +413,12 @@ export class InitialSchema1736506000000 implements MigrationInterface {
     `);
     await queryRunner.query(`CREATE INDEX "IDX_audit_logs_userId" ON "audit_logs" ("userId")`);
     await queryRunner.query(`CREATE INDEX "IDX_audit_logs_action" ON "audit_logs" ("action")`);
-    await queryRunner.query(`CREATE INDEX "IDX_audit_logs_entityType" ON "audit_logs" ("entityType")`);
-    await queryRunner.query(`CREATE INDEX "IDX_audit_logs_createdAt" ON "audit_logs" ("createdAt")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_audit_logs_entityType" ON "audit_logs" ("entityType")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_audit_logs_createdAt" ON "audit_logs" ("createdAt")`,
+    );
 
     // ============================================
     // PROJECT PERMISSIONS TABLE
@@ -384,8 +438,12 @@ export class InitialSchema1736506000000 implements MigrationInterface {
         CONSTRAINT "CHK_project_permissions_role" CHECK (role IN ('owner', 'contributor', 'viewer'))
       )
     `);
-    await queryRunner.query(`CREATE INDEX "IDX_project_permissions_user" ON "project_permissions" ("user_id")`);
-    await queryRunner.query(`CREATE INDEX "IDX_project_permissions_project" ON "project_permissions" ("project_id")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_project_permissions_user" ON "project_permissions" ("user_id")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_project_permissions_project" ON "project_permissions" ("project_id")`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

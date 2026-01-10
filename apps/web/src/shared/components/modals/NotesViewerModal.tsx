@@ -86,15 +86,7 @@ export const NotesViewerModal: React.FC<NotesViewerModalProps> = ({
     return icons[type] || '📝';
   };
 
-  const getNoteTypeIcon = (noteType: string) => {
-    const icons = {
-      note: '📝',
-      approval: '✅',
-      revision: '🔄',
-      client_note: '👤',
-    };
-    return icons[noteType as keyof typeof icons] || '📝';
-  };
+
 
   if (!isOpen) return null;
 
@@ -210,7 +202,7 @@ export const NotesViewerModal: React.FC<NotesViewerModalProps> = ({
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center space-x-2 mb-2">
-                            <span className="text-sm">{getNoteTypeIcon(note.noteType)}</span>
+                            {/* noteType removed */}
                             <h3 className="font-medium" style={{ color: 'var(--text-primary)' }}>
                               {note.subject}
                             </h3>

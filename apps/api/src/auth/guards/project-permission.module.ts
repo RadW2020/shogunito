@@ -32,14 +32,7 @@ import { Sequence } from '../../entities/sequence.entity';
  * create() { ... }
  */
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      ProjectPermission,
-      Project,
-      Episode,
-      Sequence,
-    ]),
-  ],
+  imports: [TypeOrmModule.forFeature([ProjectPermission, Project, Episode, Sequence])],
   providers: [ProjectPermissionGuard],
   exports: [ProjectPermissionGuard, TypeOrmModule],
 })

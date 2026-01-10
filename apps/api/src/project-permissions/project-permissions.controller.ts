@@ -9,13 +9,7 @@ import {
   ParseIntPipe,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiParam,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { ProjectPermissionsService } from './project-permissions.service';
 import { CreateProjectPermissionDto } from './dto/create-project-permission.dto';
 import { UpdateProjectPermissionDto } from './dto/update-project-permission.dto';
@@ -38,7 +32,8 @@ export class ProjectPermissionsController {
   @RequireProjectRole(ProjectRole.OWNER)
   @ApiOperation({
     summary: 'List all permissions for a project',
-    description: 'Returns all users with access to this project and their roles. Only project owners can view this.',
+    description:
+      'Returns all users with access to this project and their roles. Only project owners can view this.',
   })
   @ApiParam({
     name: 'projectId',
@@ -67,7 +62,8 @@ export class ProjectPermissionsController {
   @RequireProjectRole(ProjectRole.OWNER)
   @ApiOperation({
     summary: 'Add a user to the project',
-    description: 'Grants a user access to the project with the specified role. Only project owners can add users.',
+    description:
+      'Grants a user access to the project with the specified role. Only project owners can add users.',
   })
   @ApiParam({
     name: 'projectId',
@@ -142,7 +138,8 @@ export class ProjectPermissionsController {
   @RequireProjectRole(ProjectRole.OWNER)
   @ApiOperation({
     summary: "Remove a user's access to the project",
-    description: 'Revokes a user\'s permission to access the project. Only project owners can remove users.',
+    description:
+      "Revokes a user's permission to access the project. Only project owners can remove users.",
   })
   @ApiParam({
     name: 'projectId',

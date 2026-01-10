@@ -99,9 +99,10 @@ export class VersionsService {
     // Only regenerate if it's a path or if it's a presigned URL that might expire
     if (version.thumbnailPath) {
       const isPublicUrl = version.thumbnailPath.startsWith('http');
-      const isPresignedUrl = version.thumbnailPath.includes('?X-Amz-Algorithm') || 
-                            version.thumbnailPath.includes('?AWSAccessKeyId');
-      
+      const isPresignedUrl =
+        version.thumbnailPath.includes('?X-Amz-Algorithm') ||
+        version.thumbnailPath.includes('?AWSAccessKeyId');
+
       // Only regenerate if it's a path or a presigned URL (which expires)
       if (!isPublicUrl || isPresignedUrl) {
         try {
@@ -342,7 +343,8 @@ export class VersionsService {
     // Filter by user's accessible projects (unless admin)
     let filteredVersions = versions;
     if (userContext && !this.projectAccessService.isAdmin(userContext)) {
-      const accessibleProjectIds = await this.projectAccessService.getAccessibleProjectIds(userContext);
+      const accessibleProjectIds =
+        await this.projectAccessService.getAccessibleProjectIds(userContext);
       if (accessibleProjectIds.length === 0) {
         return [];
       }
@@ -431,7 +433,11 @@ export class VersionsService {
     return await this.transformVersion(version);
   }
 
-  async update(id: number, updateVersionDto: UpdateVersionDto, userContext?: UserContext): Promise<Version> {
+  async update(
+    id: number,
+    updateVersionDto: UpdateVersionDto,
+    userContext?: UserContext,
+  ): Promise<Version> {
     // Get current version to check if status is changing
     const currentVersion = await this.versionsRepository.findOne({
       where: { id },
@@ -915,8 +921,6 @@ export class VersionsService {
       };
     });
   }
-
-
 
   async createSequenceWithVersion(dto: CreateSequenceWithVersionDto, userContext?: UserContext) {
     return await this.dataSource.transaction(async (manager) => {

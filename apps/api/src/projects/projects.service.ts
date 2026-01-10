@@ -6,11 +6,10 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Project } from '../entities/project.entity';
 import { Note } from '../entities/note.entity';
 import { Status } from '../entities/status.entity';
-import { User } from '../entities/user.entity';
 import { ProjectPermission, ProjectRole } from '../entities/project-permission.entity';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
@@ -71,11 +70,11 @@ export class ProjectsService {
    */
   async getAccessibleProjectIds(userContext?: UserContext): Promise<number[]> {
     if (!userContext) return [];
-    
+
     // Admins can access all projects
     if (this.isAdmin(userContext)) {
       const allProjects = await this.projectRepository.find({ select: ['id'] });
-      return allProjects.map(p => p.id);
+      return allProjects.map((p) => p.id);
     }
 
     // Get projects where user has permission
@@ -84,7 +83,7 @@ export class ProjectsService {
       select: ['projectId'],
     });
 
-    return permissions.map(p => p.projectId);
+    return permissions.map((p) => p.projectId);
   }
 
   /**

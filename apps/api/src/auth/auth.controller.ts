@@ -1,4 +1,14 @@
-import { Controller, Post, Body, UseGuards, Get, HttpCode, HttpStatus, Req, UnauthorizedException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Req,
+  UnauthorizedException,
+} from '@nestjs/common';
 import type { Request } from 'express';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
@@ -163,16 +173,16 @@ export class AuthController {
     const userId = req.user.sub;
     const refreshToken = req.user.refreshToken;
     const jti = req.user.jti;
-    
+
     // Validate required fields
     if (!userId) {
       throw new UnauthorizedException('Invalid token: missing user ID');
     }
-    
+
     if (!refreshToken) {
       throw new UnauthorizedException('Refresh token not provided');
     }
-    
+
     if (!jti) {
       throw new UnauthorizedException('Invalid token: missing token ID');
     }

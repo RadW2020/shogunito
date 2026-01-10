@@ -8,18 +8,8 @@ import { ProjectPermission, Project, Episode, Sequence } from '../../entities';
  * Import this module in any service that needs to filter by project permissions.
  */
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      ProjectPermission,
-      Project,
-      Episode,
-      Sequence,
-    ]),
-  ],
+  imports: [TypeOrmModule.forFeature([ProjectPermission, Project, Episode, Sequence])],
   providers: [ProjectAccessService],
   exports: [ProjectAccessService, TypeOrmModule],
 })
 export class ProjectAccessModule {}
-
-
-
