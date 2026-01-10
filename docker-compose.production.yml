@@ -1,0 +1,140 @@
+# ==============================================
+# SHOGUN - Docker Compose for Production
+# ==============================================
+# This file is optimized for production use
+# 
+# IMPORTANT: 
+# - Environment variables are loaded from apps/api/.env.production
+# - A symlink .env -> apps/api/.env.production is created automatically
+# - Docker Compose reads from .env file in project root for variable substitution
+# - All services use env_file to load variables into containers
+# - Usage: docker-compose -f docker-compose.production.yml -p shogun-prod up -d
+# - Or: COMPOSE_PROJECT_NAME=shogun-prod docker-compose -f docker-compose.production.yml up -d
+#
+# IMPORTANT: Use project name "shogun-prod" to avoid conflicts with development
+# This ensures containers from development (shogun-dev) are not affected
+#
+# PORTS (different from dev to avoid collisions):
+# - PostgreSQL: 5433 (dev uses 5432)
+# - MinIO: 9010/9011 (dev uses 9000/9001)
+# - API: 3002 (dev uses 3000)
+# - Web: 3003 (dev uses 5173)
+# NOTE: Using Cloudflare Tunnel for reverse proxy (not Caddy)
+
+services:
+  # ============================================
+  # Database
+  # ============================================
+  postgres:
+    image: postgres:16
+    container_name: shogun-postgres-prod
+    env_file:
+      - ./apps/api/.env.production
+    environment:
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_DB: ${DATABASE_NAME}
+    ports:
+      - "127.0.0.1:5433:5432"  # Port 5433 to avoid collision with dev (5432)
+    volumes:
+      - pgdata_prod:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USERNAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - shogun-network
+
+  # ============================================
+  # Object Storage
+  # ============================================
+  minio:
+    image: minio/minio:latest
+    container_name: shogun-minio-prod
+    command: server /data --console-address ":9001"
+    env_file:
+      - ./apps/api/.env.production
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
+      MINIO_BROWSER_REDIRECT_URL: ${MINIO_PUBLIC_ENDPOINT}
+      MINIO_SERVER_URL: ${MINIO_PUBLIC_ENDPOINT}
+    ports:
+      - "127.0.0.1:9010:9000"   # Port 9010 to avoid collision with dev (9000)
+      - "127.0.0.1:9011:9001"   # Port 9011 to avoid collision with dev (9001)
+    volumes:
+      - minio_prod:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - shogun-network
+
+  # ============================================
+  # API Service
+  # ============================================
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: shogun-api-prod
+    env_file:
+      - ./apps/api/.env.production
+    environment:
+      NODE_ENV: production
+      PORT: 3002
+      # Database - loaded from .env.production via env_file
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      # All other variables are loaded from .env.production via env_file above
+      # IMPORTANT: JWT_SECRET and JWT_REFRESH_SECRET MUST remain the same between deployments
+      # to preserve user sessions. If these change, all existing tokens will be invalidated.
+    ports:
+      - "127.0.0.1:3002:3002"  # Only bind to localhost
+    volumes:
+      # Mount .env.production if you want to override from file
+      # Otherwise, use environment variables above
+      - ./apps/api/.env.production:/app/apps/api/.env.production:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - shogun-network
+
+  # ============================================
+  # Web Frontend
+  # ============================================
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-https://shogunapi.uliber.com}
+        VITE_NODE_ENV: production
+    container_name: shogun-web-prod
+    ports:
+      - "127.0.0.1:3003:3003"  # Only bind to localhost (Cloudflare Tunnel will proxy)
+    restart: unless-stopped
+    networks:
+      - shogun-network
+
+volumes:
+  pgdata_prod:
+    external: true
+    name: shogun_pgdata_prod
+  minio_prod:
+    external: true
+    name: shogun_minio_prod
+
+networks:
+  shogun-network:
+    driver: bridge
+

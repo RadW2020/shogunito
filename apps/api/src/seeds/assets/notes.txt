@@ -1,0 +1,30 @@
+Project Notes for Ratoncito Valiente
+
+Production Timeline:
+- Pre-production: January 2024
+- Production: February - November 2024
+- Post-production: December 2024
+
+Key Milestones:
+- Character design approval: January 15
+- Environment design approval: January 30
+- First episode rough cut: March 15
+- Final delivery: December 31
+
+Team Assignments:
+- Character Design: Sofia Chen
+- Environment Design: David Kim
+- Animation: AI Generator + Character Animator
+- Lighting: Elena Volkov
+- Rigging: Ahmed Hassan
+
+Client Feedback:
+- Mouse should be more expressive
+- House environment needs more detail
+- Cheese props should be more varied
+
+Technical Requirements:
+- 3D models in FBX format
+- Textures in 4K resolution
+- Animation in Maya format
+- Final renders in MP4 format

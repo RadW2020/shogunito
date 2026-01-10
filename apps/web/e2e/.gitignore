@@ -1,0 +1,15 @@
+# Playwright artifacts
+test-results/
+playwright-report/
+playwright/.cache/
+screenshots/
+
+# Videos
+*.webm
+*.mp4
+
+# Traces
+trace.zip
+
+# Coverage
+coverage/

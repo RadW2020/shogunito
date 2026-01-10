@@ -1,0 +1,69 @@
+# ==============================================
+# SHOGUN API - Docker Ignore File
+# ==============================================
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+README.md
+
+# Environment files
+.env
+.env.*
+!.env.production
+
+# Node
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Build outputs
+dist
+build
+coverage
+*.tsbuildinfo
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# System
+.DS_Store
+.DS_Store?
+._*
+.Trashes
+
+# Logs
+logs
+*.log
+
+# Docker
+Dockerfile*
+.dockerignore
+
+# Temporary files
+tmp
+temp
+.tmp
+
+# Test files (include for CI/CD if needed)
+*.spec.ts
+*.test.ts
+test/
+
+# Development specific
+.cache
+.turbo
+
+# Media uploads
+uploads/
+media/

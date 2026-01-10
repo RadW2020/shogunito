@@ -1,0 +1,31 @@
+{
+  "name": "@shogun/shared",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint src/ --quiet",
+    "check-types": "tsc --noEmit",
+    "test": "echo 'No tests in shared package' && exit 0"
+  },
+  "dependencies": {
+    "typescript": "^5.0.0"
+  },
+  "devDependencies": {
+    "@shogun/typescript-config": "*",
+    "eslint": "^9.0.0",
+    "typescript": "^5.0.0"
+  }
+}

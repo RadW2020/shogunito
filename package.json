@@ -1,0 +1,51 @@
+{
+  "name": "shogun",
+  "version": "1.0.0",
+  "description": "Shogun - Flow tracking application",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
+    "check-types": "turbo run check-types",
+    "test": "turbo run test",
+    "test:e2e:api": "npm run test:e2e --workspace=shogun-api",
+    "test:e2e:web": "npm run test:e2e --workspace=shogun-web",
+    "test:e2e:web:ui": "npm run test:e2e:ui --workspace=shogun-web",
+    "test:e2e:web:debug": "npm run test:e2e:debug --workspace=shogun-web",
+    "test:e2e:web:headed": "npm run test:e2e:headed --workspace=shogun-web",
+    "clean": "turbo run clean",
+    "seed": "turbo run seed",
+    "migration:generate": "npm run migration:generate --workspace=shogun-api --",
+    "migration:create": "npm run migration:create --workspace=shogun-api --",
+    "migration:run": "npm run migration:run --workspace=shogun-api",
+    "migration:revert": "npm run migration:revert --workspace=shogun-api",
+    "migration:show": "npm run migration:show --workspace=shogun-api",
+    "checkly:test": "checkly test",
+    "checkly:deploy": "checkly deploy",
+    "checkly:list": "checkly list"
+  },
+  "devDependencies": {
+    "baseline-browser-mapping": "^2.9.6",
+    "checkly": "^6.9.7",
+    "prettier": "^3.6.2",
+    "turbo": "^2.5.6",
+    "typescript": "5.9.2"
+  },
+  "engines": {
+    "node": ">=20.19"
+  },
+  "packageManager": "npm@10.7.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "dependencies": {
+    "@types/react-window": "^1.8.8",
+    "react-window": "^1.8.11",
+    "react-window-infinite-loader": "^1.0.10",
+    "sharp": "^0.34.5"
+  }
+}

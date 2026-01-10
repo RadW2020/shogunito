@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none">
+  <!-- Background circle -->
+  <circle cx="8" cy="8" r="7" fill="#1a1a1a" stroke="#ffffff" stroke-width="1"/>
+  
+  <!-- Shogun helmet design - simplified -->
+  <path d="M4 6 L8 4 L12 6 L12 10 L8 12 L4 10 Z" fill="#2a2a2a" stroke="#ffffff" stroke-width="0.5"/>
+  
+  <!-- Helmet crest -->
+  <rect x="7.5" y="3" width="1" height="2" fill="#ffffff"/>
+  <rect x="7" y="3.5" width="2" height="1" fill="#ffffff"/>
+  
+  <!-- Eye slits -->
+  <rect x="5" y="7" width="1.5" height="0.5" fill="#ffffff"/>
+  <rect x="9.5" y="7" width="1.5" height="0.5" fill="#ffffff"/>
+  
+  <!-- Mouth guard -->
+  <rect x="6" y="9" width="4" height="0.5" fill="#ffffff"/>
+  
+  <!-- Samurai sword (katana) -->
+  <rect x="13" y="3" width="0.5" height="10" fill="#ffffff"/>
+  <rect x="12.5" y="2.5" width="1.5" height="1" fill="#ffffff"/>
+</svg>

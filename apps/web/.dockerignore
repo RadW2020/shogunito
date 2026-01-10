@@ -1,0 +1,72 @@
+# ==============================================
+# SHOGUN WEB - Docker Ignore File
+# ==============================================
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+README.md
+
+# Environment files
+.env
+.env.*
+
+# Node
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Build outputs
+dist
+build
+coverage
+*.tsbuildinfo
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# System
+.DS_Store
+.DS_Store?
+._*
+.Trashes
+
+# Logs
+logs
+*.log
+
+# Docker
+Dockerfile*
+.dockerignore
+nginx.conf
+
+# Temporary files
+tmp
+temp
+.tmp
+
+# Test files (include for CI/CD if needed)
+*.spec.ts
+*.test.ts
+*.spec.tsx
+*.test.tsx
+test/
+e2e/
+cypress/
+
+# Development specific
+.cache
+.turbo
+
+# Vite
+.vite

@@ -1,0 +1,26 @@
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ProjectAccessService } from './project-access.service';
+import { ProjectPermission, Project, Episode, Sequence, Shot } from '../../entities';
+
+/**
+ * Module providing centralized project access control.
+ * Import this module in any service that needs to filter by project permissions.
+ */
+@Module({
+  imports: [
+    TypeOrmModule.forFeature([
+      ProjectPermission,
+      Project,
+      Episode,
+      Sequence,
+      Shot,
+    ]),
+  ],
+  providers: [ProjectAccessService],
+  exports: [ProjectAccessService, TypeOrmModule],
+})
+export class ProjectAccessModule {}
+
+
+

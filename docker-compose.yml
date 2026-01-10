@@ -1,0 +1,244 @@
+# ==============================================
+# SHOGUN - Docker Compose for Development
+# ==============================================
+# This file is optimized for local development with hot reload
+# Usage: docker-compose -p shogun-dev up -d
+# Or: COMPOSE_PROJECT_NAME=shogun-dev docker-compose up -d
+#
+# IMPORTANT: Use project name "shogun-dev" to avoid conflicts with production
+# This ensures containers from production (shogun-prod) are not affected
+#
+# SERVICES:
+# - PostgreSQL: Database (port 5432)
+# - MinIO: Object storage (port 9000, console 9001)
+# - PgAdmin: Database management UI (port 8080)
+# - FFmpeg: Video processing utilities
+# - API: Backend service with hot reload (port 3000)
+# - Web: Frontend with hot reload (port 5173)
+
+services:
+  # ============================================
+  # Database
+  # ============================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: shogun-postgres-dev
+    environment:
+      POSTGRES_PASSWORD: dev
+      POSTGRES_USER: dev
+      POSTGRES_DB: shogun
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - shogun-dev-network
+
+  # ============================================
+  # Object Storage
+  # ============================================
+  minio:
+    image: minio/minio:latest
+    container_name: shogun-minio-dev
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - shogun-dev-network
+
+  # ============================================
+  # Database Management UI
+  # ============================================
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: shogun-pgadmin-dev
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@shogun.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost:80/misc/ping",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - shogun-dev-network
+
+  # ============================================
+  # Video Processing Utilities
+  # ============================================
+  ffmpeg:
+    image: alpine:latest
+    container_name: shogun-ffmpeg-dev
+    volumes:
+      - ./apps/api/src/seeds/temp-videos:/tmp/videos
+    command:
+      [
+        "sh",
+        "-c",
+        "apk add --no-cache ffmpeg fontconfig ttf-dejavu && mkdir -p /tmp/videos && while true; do sleep 30; done",
+      ]
+    restart: unless-stopped
+    networks:
+      - shogun-dev-network
+
+  # ============================================
+  # API Service (Development with Hot Reload)
+  # ============================================
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+      target: deps # Use deps stage for development
+    container_name: shogun-api-dev
+    command: npm run dev --workspace=shogun-api
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      # Database
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: dev
+      DATABASE_PASSWORD: dev
+      DATABASE_NAME: shogun
+      # JWT
+      JWT_SECRET: dev-secret-change-in-production
+      JWT_EXPIRES_IN: 24h
+      JWT_REFRESH_SECRET: dev-refresh-secret-change-in-production
+      JWT_REFRESH_EXPIRES_IN: 7d
+      # CORS
+      FRONTEND_URL: http://localhost:5173
+      # MinIO
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+      MINIO_USE_SSL: "false"
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+      # Registration
+      REQUIRE_INVITATION_CODE: "false"
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mount source code for hot reload
+      - ./apps/api/src:/app/apps/api/src:cached
+      - ./packages:/app/packages:cached
+      # Persist node_modules
+      - /app/node_modules
+      - /app/apps/api/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - shogun-dev-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost:3000/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # ============================================
+  # Web Frontend (Development with Hot Reload)
+  # ============================================
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      target: deps # Use deps stage for development
+    container_name: shogun-web-dev
+    command: npm run dev --workspace=shogun-web
+    environment:
+      VITE_API_URL: http://localhost:3000
+      VITE_NODE_ENV: development
+    ports:
+      - "5173:5173"
+    volumes:
+      # Mount source code for hot reload
+      - ./apps/web/src:/app/apps/web/src:cached
+      - ./apps/web/public:/app/apps/web/public:cached
+      - ./apps/web/index.html:/app/apps/web/index.html:cached
+      - ./apps/web/vite.config.ts:/app/apps/web/vite.config.ts:cached
+      - ./packages:/app/packages:cached
+      # Persist node_modules
+      - /app/node_modules
+      - /app/apps/web/node_modules
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - shogun-dev-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost:5173",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  pgdata:
+    driver: local
+  minio:
+    driver: local
+  pgadmin:
+    driver: local
+
+networks:
+  shogun-dev-network:
+    driver: bridge
+    name: shogun-dev

@@ -1,0 +1,85 @@
+# ==============================================
+# SHOGUN - Docker Ignore File
+# ==============================================
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+README.md
+CLOUDFLARE_TUNNEL_SETUP.md
+PRODUCTION_SETUP.md
+
+# Environment files (will be mounted or passed as env vars)
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.*.local
+
+# Node
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Build outputs (will be built in Docker)
+dist
+build
+out
+coverage
+*.tsbuildinfo
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# System
+.DS_Store
+.DS_Store?
+._*
+.Trashes
+
+# Logs
+logs
+*.log
+
+# Docker
+docker-compose.yml
+docker-compose.*.yml
+Dockerfile*
+
+# Temporary files
+tmp
+temp
+.tmp
+
+# Test files
+test
+*.spec.ts
+*.test.ts
+
+# Development specific
+.cache
+.turbo
+
+# Media uploads (if stored locally)
+uploads
+media
+assets/uploads
+
+# Cloudflare config (not needed in container)
+.cloudflared
+cloudflared.config.yml.example
+
+# Backups (not needed in container)
+backups
+

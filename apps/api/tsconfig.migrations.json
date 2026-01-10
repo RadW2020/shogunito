@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "resolvePackageJsonExports": false,
+    "strict": false,
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  }
+}
