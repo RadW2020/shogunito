@@ -119,7 +119,7 @@ docker-compose -f docker-compose.production.yml logs -f
 | API | 3000 | 3002 | 3002 |
 | Web | 5173 | 3003 | 3003 |
 
-All services bind to 127.0.0.1 (localhost only). Use Cloudflare Tunnel to expose externally.
+All services bind to 127.0.0.1 (localhost only). Use Coolify Proxy to expose externally.
 
 ### 4. Update Workflow
 

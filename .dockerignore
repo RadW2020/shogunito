@@ -10,7 +10,6 @@
 # Documentation
 *.md
 README.md
-CLOUDFLARE_TUNNEL_SETUP.md
 PRODUCTION_SETUP.md
 
 # Environment files (will be mounted or passed as env vars)
@@ -76,9 +75,6 @@ uploads
 media
 assets/uploads
 
-# Cloudflare config (not needed in container)
-.cloudflared
-cloudflared.config.yml.example
 
 # Backups (not needed in container)
 backups

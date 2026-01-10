@@ -112,9 +112,8 @@ The project includes a backup system for PostgreSQL and MinIO volumes in product
 
 All deployment documentation and scripts are located in `docs/deployment/`:
 
-- **Docker Production**: See `docs/deployment/DOCKER_PRODUCTION.md` for dockerized production setup (services isolated from local code)
-- **Cloudflare Tunnel**: See `docs/deployment/CLOUDFLARE_TUNNEL.md` for complete setup and troubleshooting
-- **Production Configuration**: See `docs/deployment/PRODUCTION.md` for production deployment, branch protection, and workflow
+- **Docker Production**: See `docs/deployment/DOCKER.md` for dockerized production setup (services isolated from local code)
+- **Production Configuration**: See `docs/deployment/PRODUCTION.md` for production deployment via Coolify, branch protection, and workflow
 
 - **Branch Strategy**: `dev` → `main` (main is protected, only accepts merges from dev)
 

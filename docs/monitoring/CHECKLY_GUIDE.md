@@ -7,9 +7,8 @@
 3. [Setup con CLI](#setup-con-cli)
 4. [Monitores (10 máximo)](#monitores-10-máximo)
 5. [Código de los Checks](#código-de-los-checks)
-6. [Cloudflare Tunnel](#cloudflare-tunnel)
-7. [Troubleshooting](#troubleshooting)
-8. [Checklist](#checklist)
+6. [Troubleshooting](#troubleshooting)
+7. [Checklist](#checklist)
 
 ---
 
@@ -27,8 +26,7 @@
 
 - **API**: `https://shogunapi.uliber.com` (NestJS)
 - **Frontend**: `https://shogunweb.uliber.com` (React + Vite)
-- **MinIO**: `https://shogunminio.uliber.com`
-- **Infraestructura**: Cloudflare Tunnel (crítico)
+- **MinIO**: `https://shogunminio.yourdomain.com`
 
 ---
 
@@ -49,15 +47,10 @@
 |---------|------------|-----------------|
 | API Health Básico | 10 min | 4,320 |
 | API Health Completo | 20 min | 2,160 |
-| CF Tunnel API | 20 min | 2,160 |
-| CF Tunnel Frontend | 20 min | 2,160 |
 | Authentication | 60 min | 720 |
 | Get Projects | 60 min | 720 |
 | MinIO Health | 60 min | 720 |
 | Swagger Docs | 120 min | 360 |
-| **Total API** | - | **~9,560** ✅ |
-| Frontend Homepage | 90 min | 480 |
-| Login Flow | 180 min | 240 |
 | **Total Browser** | - | **~720** ✅ |
 
 ---
@@ -137,7 +130,6 @@ checkly/
 ├── api-checks/
 │   ├── health.check.ts
 │   ├── auth.check.ts
-│   ├── cloudflare.check.ts
 │   └── services.check.ts
 └── browser-checks/
     ├── homepage.spec.ts
@@ -184,9 +176,7 @@ npx checkly destroy
 |---|---------|------|------------|-----------|
 | 1 | API Health Básico | API | 10 min | Verifica `/health` |
 | 2 | API Health Completo | API | 20 min | Verifica `/api/v1/health` (DB, MinIO) |
-| 3 | CF Tunnel API | API | 20 min | Conectividad túnel API |
-| 4 | Frontend Homepage | Browser | 90 min | Carga y conectividad |
-| 5 | CF Tunnel Frontend | API | 20 min | Conectividad túnel Web |
+| 3 | Frontend Homepage | Browser | 90 min | Carga y conectividad |
 
 ### Importantes (3)
 
@@ -250,62 +240,6 @@ new ApiCheck('api-health-complete', {
 });
 ```
 
-### `checkly/api-checks/cloudflare.check.ts`
-
-```typescript
-import { ApiCheck, AssertionBuilder } from 'checkly/constructs';
-
-// Monitor #3: Cloudflare Tunnel - API (20 min)
-new ApiCheck('cf-tunnel-api', {
-  name: 'Cloudflare Tunnel - API',
-  activated: true,
-  frequency: 20,
-  locations: ['us-east-1'],
-  request: {
-    method: 'GET',
-    url: 'https://shogunapi.uliber.com/health',
-    assertions: [
-      AssertionBuilder.statusCode().equals(200),
-      AssertionBuilder.responseTime().lessThan(2000),
-    ],
-  },
-  tags: ['cloudflare', 'tunnel', 'critical'],
-});
-
-// Monitor #5: Cloudflare Tunnel - Frontend (20 min)
-new ApiCheck('cf-tunnel-frontend', {
-  name: 'Cloudflare Tunnel - Frontend',
-  activated: true,
-  frequency: 20,
-  locations: ['us-east-1'],
-  request: {
-    method: 'HEAD',
-    url: 'https://shogunweb.uliber.com',
-    assertions: [
-      AssertionBuilder.statusCode().equals(200),
-      AssertionBuilder.responseTime().lessThan(3000),
-    ],
-  },
-  tags: ['cloudflare', 'tunnel', 'frontend', 'critical'],
-});
-
-// Monitor #10: MinIO Health (60 min)
-new ApiCheck('minio-health', {
-  name: 'MinIO Health (Cloudflare Tunnel)',
-  activated: true,
-  frequency: 60,
-  locations: ['us-east-1'],
-  request: {
-    method: 'HEAD',
-    url: 'https://shogunminio.uliber.com/minio/health/live',
-    assertions: [
-      AssertionBuilder.statusCode().equals(200),
-      AssertionBuilder.responseTime().lessThan(2000),
-    ],
-  },
-  tags: ['minio', 'storage', 'cloudflare'],
-});
-```
 
 ### `checkly/api-checks/auth.check.ts`
 
@@ -458,27 +392,6 @@ test('Login flow works correctly', async ({ page }) => {
 
 ---
 
-## Cloudflare Tunnel
-
-### ¿Por qué es Crítico?
-
-Si Cloudflare Tunnel falla, **toda la aplicación es inaccesible** desde internet.
-
-### Problemas Detectables
-
-| Problema | Síntoma en Checkly |
-|----------|-------------------|
-| Túnel desconectado | Timeout/Connection refused |
-| DNS incorrecto | DNS error |
-| SSL/TLS mal configurado | SSL error |
-| Servicio local caído | 502 Bad Gateway |
-| Performance degradada | Response time alto |
-
-### Monitores Dedicados (3 de 10)
-
-- **#3** CF Tunnel API - cada 20 min
-- **#5** CF Tunnel Frontend - cada 20 min
-- **#10** MinIO Health - cada 60 min
 
 ---
 
@@ -487,9 +400,8 @@ Si Cloudflare Tunnel falla, **toda la aplicación es inaccesible** desde interne
 ### Diagnóstico Rápido
 
 ```bash
-# Verificar túnel
-cloudflared tunnel info shogun-tunnel
-ps aux | grep "[c]loudflared"
+# Verificar procesos
+ps aux | grep "node"
 
 # Verificar servicios locales
 curl http://localhost:3002/health   # API
@@ -499,24 +411,6 @@ curl http://localhost:9010/minio/health/live
 # Verificar desde internet
 curl -I https://shogunapi.uliber.com/health
 curl -I https://shogunweb.uliber.com
-```
-
-### Acciones Correctivas
-
-**Túnel desconectado:**
-```bash
-launchctl stop com.cloudflare.cloudflared
-launchctl start com.cloudflare.cloudflared
-sleep 30
-cloudflared tunnel info shogun-tunnel
-```
-
-**Conectores zombie:**
-```bash
-cloudflared tunnel cleanup shogun-tunnel
-pkill -9 cloudflared
-sleep 10
-launchctl start com.cloudflare.cloudflared
 ```
 
 **Servicio local no responde:**
@@ -551,7 +445,6 @@ docker-compose -f docker-compose.production.yml restart web
 ### Día 2: Checks Críticos
 
 - [ ] Crear `health.check.ts` (Monitores #1, #2)
-- [ ] Crear `cloudflare.check.ts` (Monitores #3, #5, #10)
 - [ ] Probar: `npx checkly test`
 - [ ] Desplegar: `npx checkly deploy`
 - [ ] Verificar alertas funcionan

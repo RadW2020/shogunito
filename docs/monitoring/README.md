@@ -53,7 +53,6 @@ npm run checkly:list
 
 - `api-checks/` - API monitoring checks
   - `health.check.ts` - Health check monitors (#1, #2)
-  - `cloudflare.check.ts` - Cloudflare Tunnel monitors (#3, #5, #10)
   - `auth.check.ts` - Authentication login monitor (#6)
   - `services.check.ts` - Service monitors (#7, #9)
 - `browser-checks/` - Browser monitoring checks
@@ -65,9 +64,7 @@ npm run checkly:list
 ### Critical (5)
 1. API Health Basic - 10 min
 2. API Health Complete - 20 min
-3. CF Tunnel API - 20 min
-4. Frontend Homepage - 90 min
-5. CF Tunnel Frontend - 20 min
+3. Frontend Homepage - 90 min
 
 ### Important (3)
 6. Authentication Login - 60 min

@@ -19,7 +19,7 @@
 # - MinIO: 9010/9011 (dev uses 9000/9001)
 # - API: 3002 (dev uses 3000)
 # - Web: 3003 (dev uses 5173)
-# NOTE: Using Cloudflare Tunnel for reverse proxy (not Caddy)
+# NOTE: Using Coolify Proxy for reverse proxy and SSL
 
 services:
   # ============================================
@@ -117,11 +117,11 @@ services:
       context: .
       dockerfile: apps/web/Dockerfile
       args:
-        VITE_API_URL: ${VITE_API_URL:-https://shogunapi.uliber.com}
+        VITE_API_URL: ${VITE_API_URL:-https://shogunapi.yourdomain.com}
         VITE_NODE_ENV: production
     container_name: shogun-web-prod
     ports:
-      - "127.0.0.1:3003:3003"  # Only bind to localhost (Cloudflare Tunnel will proxy)
+      - "127.0.0.1:3003:3003"  # Only bind to localhost (Coolify Proxy will proxy)
     restart: unless-stopped
     networks:
       - shogun-network

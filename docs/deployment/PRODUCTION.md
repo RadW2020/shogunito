@@ -18,9 +18,8 @@ Complete guide for deploying Shogun to production, including Docker and Git work
 ### Prerequisites
 
 - Docker and Docker Compose installed
-- Cloudflare Tunnel configured (see CLOUDFLARE_TUNNEL.md)
+- [Coolify](https://coolify.io) instance on Oracle Free Tier
 - Access to Git repository
-- Domain configured in Cloudflare
 
 ### Deploy in 5 Minutes
 
@@ -285,14 +284,14 @@ Since the project has been migrated to Oracle Free Tier, it runs on Linux (Oracl
 
 ### Recommended Setup
 
-1. **Docker Compose**: Use `docker-compose.production.yml` for all services.
-2. **Systemd**: Configure a systemd service to ensure Docker starts on boot.
-3. **Cloudflare Tunnel**: Use the Linux version of `cloudflared` installed as a systemd service.
+1. **Coolify**: Use Coolify to manage your Docker Compose deployment.
+2. **Postgres & MinIO**: Can be managed as separate Coolify resources or within the stack.
+3. **SSL/TLS**: Automatically handled by Coolify's built-in proxy.
 
 ### Security on Oracle Cloud
 
-- Ensure the VCN (Virtual Cloud Network) Security List or Network Security Group allows inbound traffic on port 443 (if not using Tunnel) or just allow the Tunnel connection.
-- Use the provided backup scripts to store backups in a different region or object storage.
+- Ensure the VCN (Virtual Cloud Network) Security List or Network Security Group allows inbound traffic on port 80/443 (managed by Coolify).
+- Coolify handles the firewall rules for your containers internally.
 
 
 ---
@@ -312,8 +311,8 @@ curl http://localhost:3002/health
 curl http://localhost:3003
 
 # Public endpoints
-curl https://shogunapi.uliber.com/health
-curl https://shogunweb.uliber.com
+curl https://shogunapi.yourdomain.com/health
+curl https://shogunweb.yourdomain.com
 
 # View logs
 docker-compose -f docker-compose.production.yml logs -f
@@ -432,10 +431,9 @@ docker-compose -f docker-compose.production.yml logs postgres
 
 ### SSL/HTTPS Issues
 
-1. Verify Cloudflare Tunnel is running
-2. Check SSL/TLS mode is "Flexible" in Cloudflare
-3. Wait 2-3 minutes for DNS/SSL propagation
-4. Clear browser cache
+1. Verify Coolify Proxy is running
+2. Check your domain's A/CNAME records point to your Oracle IP
+3. Ensure SSL certificate generation in Coolify is successful
 
 ---
 

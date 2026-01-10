@@ -19,11 +19,6 @@
 - **[Testing Unitario - Análisis de Calidad](./testing/unit/TEST_QUALITY_ANALYSIS.md)** - Análisis de cobertura y calidad (910 tests, 75%+ cobertura)
 - **[Guía de Testing E2E](./TESTING_E2E_GUIDE.md)** - Configuración y ejecución de tests E2E
 
-#### ☁️ Cloudflare
-
-- **[Cloudflare Tunnel - Guía Consolidada](./cloudflare/README.md)** - Guía completa de Cloudflare Tunnel
-- **[Cloudflare Tunnel - Deployment](./deployment/CLOUDFLARE_TUNNEL.md)** - Configuración de despliegue
-
 #### 🚀 Deployment
 
 - **[Production Deployment](./deployment/PRODUCTION.md)** - Guía de producción
@@ -73,9 +68,6 @@
 **🧪 Ejecutar tests?**
 → [Testing E2E Guide](./testing/e2e/README.md) | [Testing Unitario](./testing/unit/TEST_QUALITY_ANALYSIS.md)
 
-**☁️ Configurar Cloudflare?**
-→ [Cloudflare Tunnel Guide](./cloudflare/README.md)
-
 **🚀 Desplegar a producción?**
 → [Production Deployment](./deployment/PRODUCTION.md)
 
@@ -100,7 +92,7 @@
 
 ### Deployment
 
-- ✅ **Cloudflare Tunnel:** Funcionando correctamente
+
 - ✅ **Production:** Configurado y operativo
 - ✅ **Backups:** Sistema de backups activo
 
@@ -121,7 +113,6 @@ docs/
 ├── testing/
 │   ├── e2e/               # Tests E2E (API y Web)
 │   └── unit/              # Tests unitarios
-├── cloudflare/            # Documentación de Cloudflare
 ├── deployment/            # Guías de despliegue
 ├── migrations/            # Guías de migración
 ├── ci/                    # CI/CD
@@ -135,7 +126,7 @@ docs/
 
 - ✅ **Consolidación:** Todos los archivos markdown movidos a `docs/`
 - ✅ **Organización:** Estructura clara por categorías
-- ✅ **Guías consolidadas:** Cloudflare y E2E testing unificados
+- ✅ **Guías consolidadas:** Documentación de despliegue y testing unificada
 - ✅ **Navegación mejorada:** Índices y enlaces actualizados
 
 ---
@@ -146,14 +137,12 @@ docs/
 
 - **[TODO Master List](./TODO_MASTER_LIST.md)** - Lista maestra de tareas y progreso (44% completo, v6.0.0)
 - **[Project Access Control](./PROJECT_ACCESS_CONTROL.md)** - Control de acceso al proyecto
-- **[Verification Report](./VERIFICATION_REPORT.md)** - Reporte de verificación
 
 ---
 
 ## 🔗 Enlaces Útiles
 
 - [GitHub Repository](https://github.com/oinotna/shogun)
-- [Cloudflare Dashboard](https://dash.cloudflare.com)
 - [Checkly Dashboard](https://app.checklyhq.com)
 
 ---
