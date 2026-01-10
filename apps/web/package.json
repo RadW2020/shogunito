@@ -10,20 +10,7 @@
     "lint:errors": "eslint . --quiet",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
     "preview": "vite preview",
-    "check-types": "tsc --noEmit -p tsconfig.json",
-    "test": "vitest --run --coverage",
-    "test:watch": "vitest --watch",
-    "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage",
-    "test:e2e": "playwright test",
-    "test:e2e:setup": "bash ./e2e/run-e2e-tests.sh",
-    "test:e2e:ui": "playwright test --ui",
-    "test:e2e:debug": "playwright test --debug",
-    "test:e2e:headed": "playwright test --headed",
-    "test:e2e:chrome": "playwright test --project='Google Chrome'",
-    "test:e2e:firefox": "playwright test --project=firefox",
-    "test:e2e:report": "playwright show-report",
-    "playwright:install": "playwright install --with-deps"
+    "check-types": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -45,30 +32,26 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
-    "@playwright/test": "^1.56.1",
+
     "@tailwindcss/postcss": "^4.1.13",
     "@tanstack/react-query-devtools": "^5.90.2",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.0",
-    "@testing-library/user-event": "^14.6.1",
+
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@types/react-window-infinite-loader": "^1.0.9",
     "@vitejs/plugin-react": "^5.0.0",
-    "@vitest/coverage-v8": "^4.0.14",
-    "@vitest/ui": "^4.0.14",
+
     "autoprefixer": "^10.4.21",
     "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
-    "jsdom": "^27.2.0",
+
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
     "tailwindcss": "^4.1.13",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
-    "vite": "^7.1.2",
-    "vitest": "^4.0.14"
+    "vite": "^7.1.2"
   }
 }

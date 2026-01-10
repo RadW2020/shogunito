@@ -644,10 +644,13 @@ class ApiService {
   // Versions API methods
   async getVersions(entityId?: number, entityType?: string): Promise<ApiVersion[]> {
     try {
-      let url = '/versions';
-      if (entityId && entityType) {
-        url = `/versions?entityId=${entityId}&entityType=${entityType}`;
-      }
+      const params = new URLSearchParams();
+      if (entityId) params.append('entityId', entityId.toString());
+      if (entityType) params.append('entityType', entityType);
+      
+      const queryString = params.toString();
+      const url = queryString ? `/versions?${queryString}` : '/versions';
+      
       return await this.request<ApiVersion[]>(url);
     } catch (error) {
       console.warn('Versions endpoint failed, returning empty array:', error);

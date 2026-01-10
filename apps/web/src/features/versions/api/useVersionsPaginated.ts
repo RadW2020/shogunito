@@ -11,26 +11,29 @@ import { apiService } from '@shared/api/client';
  *
  * @example
  * const { flatData, hasMore, loadMore, isLoading } = useVersionsPaginated({
- *   shotId: 'SH_001',
+ *   entityId: 123,
+ *   entityType: 'sequence',
  *   limit: 100,
  * });
  */
 export function useVersionsPaginated(options?: {
-  shotId?: number;
+  entityId?: number;
+  entityType?: string;
   limit?: number;
   enabled?: boolean;
 }): UsePaginatedQueryResult<ApiVersion> {
-  const { shotId, ...queryOptions } = options || {};
+  const { entityId, entityType, ...queryOptions } = options || {};
 
   return usePaginatedQuery<ApiVersion>({
-    queryKey: shotId ? ['versions', 'paginated', { shotId }] : ['versions', 'paginated'],
+    queryKey: entityId
+      ? ['versions', 'paginated', { entityId, entityType }]
+      : ['versions', 'paginated'],
     queryFn: async ({ pageParam = 1, limit = 100 }: InfiniteScrollParams) => {
-      // Fetch versions from API (filtered by shotId if provided)
-      const allVersions = await apiService.getVersions(shotId);
+      // Fetch versions from API (filtered by entity if provided)
+      const allVersions = await apiService.getVersions(entityId, entityType);
 
       // Apply client-side pagination
       // TODO: Replace with API pagination when backend supports it
-      // return apiService.getVersionsPaginated(pageParam, limit, shotId);
       return paginateArray(allVersions, pageParam as number, limit as number);
     },
     limit: queryOptions.limit,

@@ -1,10 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiService, type ApiVersion } from '@shared/api/client';
 
-export function useVersions(shotId?: number) {
+export function useVersions(entityId?: number, entityType?: string) {
   return useQuery<ApiVersion[], Error>({
-    queryKey: shotId ? ['versions', { shotId }] : ['versions'],
-    queryFn: () => apiService.getVersions(shotId),
+    queryKey: entityId ? ['versions', { entityId, entityType }] : ['versions'],
+    queryFn: () => apiService.getVersions(entityId, entityType),
     staleTime: 5 * 60 * 1000,
   });
 }
