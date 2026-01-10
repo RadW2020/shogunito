@@ -16,11 +16,11 @@
     "jsx": "react-jsx",
 
     /* Path mapping */
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@app/*": ["app/*"],
-      "@features/*": ["features/*"],
-      "@shared/*": ["shared/*"],
+      "@app/*": ["src/app/*"],
+      "@features/*": ["src/features/*"],
+      "@shared/*": ["src/shared/*"],
       "@shogun/shared": ["../../packages/shared/src/index"]
     },
 
@@ -32,5 +32,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src", "../../packages/shared/src"]
 }

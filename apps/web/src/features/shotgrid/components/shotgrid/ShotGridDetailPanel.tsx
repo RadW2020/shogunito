@@ -52,7 +52,7 @@ const DetailPanelContent: React.FC<{
 
     // Add fromEntity field for versions using new entityType/entityId
     if (selectedDetail.type === 'versions') {
-      const version = selectedDetail.item as ApiVersion;
+      const version = selectedDetail.item as unknown as ApiVersion;
       let hierarchyItem: any = null;
 
       if (version.entityType === 'episode') {

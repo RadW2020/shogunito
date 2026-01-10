@@ -41,7 +41,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   onSearchChange,
 }) => {
   const getAddButtonLabel = () => {
-    const tab = TAB_CONFIG.find((t) => t.id === activeTab);
+    const tab = TAB_CONFIG.find((t: any) => t.id === activeTab);
     if (!tab) return '';
     if (tab.label === 'Status') return 'Status';
     return tab.label.slice(0, -1);

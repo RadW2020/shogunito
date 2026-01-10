@@ -14,7 +14,7 @@ interface VersionsTabWrapperProps {
   searchTerm?: string;
   onItemSelect: (itemId: string, checked: boolean) => void;
   onSelectAll: (items: Array<{ id?: string | number; code?: string }>, checked: boolean) => void;
-  onItemClick: (type: TabType, item: { id: string | number; name?: string; code?: string }) => void;
+  onItemClick: (type: TabType, item: ApiVersion) => void;
   onEditVersion?: (version: ApiVersion) => void;
   onAddNoteToVersion?: (version: ApiVersion) => void;
   onViewNotes?: (linkId: string, linkType: string, linkName: string) => void;

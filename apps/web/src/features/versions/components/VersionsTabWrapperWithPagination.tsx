@@ -15,7 +15,7 @@ interface VersionsTabWrapperWithPaginationProps {
   searchTerm?: string;
   onItemSelect: (itemId: string, checked: boolean) => void;
   onSelectAll: (items: Array<{ id?: string | number; code?: string }>, checked: boolean) => void;
-  onItemClick: (type: TabType, item: { id: string | number; name?: string; code?: string }) => void;
+  onItemClick: (type: TabType, item: ApiVersion) => void;
   onEditVersion?: (version: ApiVersion) => void;
   onAddNoteToVersion?: (version: ApiVersion) => void;
   onViewNotes?: (linkId: string, linkType: string, linkName: string) => void;
@@ -241,11 +241,7 @@ export const VersionsTabWrapperWithPagination: React.FC<VersionsTabWrapperWithPa
           rowHeight={60}
           height={700}
           onRowClick={(version) =>
-            props.onItemClick('versions', {
-              id: version.id,
-              name: version.name,
-              code: version.code,
-            })
+            props.onItemClick('versions', version)
           }
         />
       </div>

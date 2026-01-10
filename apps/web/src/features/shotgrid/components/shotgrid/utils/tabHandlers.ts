@@ -14,7 +14,7 @@ interface ModalActions {
 /**
  * Factory function to create edit handlers for different entity types
  */
-export function createEditHandler<T extends { id?: string | number }>(
+export function createEditHandler<T extends { id?: any }>(
   type: 'project' | 'episode' | 'asset' | 'sequence' | 'version' | 'status',
   modalActions: ModalActions,
 ) {
@@ -26,7 +26,7 @@ export function createEditHandler<T extends { id?: string | number }>(
 /**
  * Factory function to create "add note" handlers for different entity types
  */
-export function createAddNoteHandler<T extends { id?: string | number; name?: string }>(
+export function createAddNoteHandler<T extends { id?: any; name?: any }>(
   type: 'Project' | 'Episode' | 'Asset' | 'Sequence' | 'Version',
   modalActions: ModalActions,
 ) {
