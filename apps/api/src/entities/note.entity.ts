@@ -8,19 +8,11 @@ import {
 } from 'typeorm';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 
-export enum NoteType {
-  NOTE = 'note',
-  APPROVAL = 'approval',
-  REVISION = 'revision',
-  CLIENT_NOTE = 'client_note',
-}
-
 export enum LinkType {
   PROJECT = 'Project',
   EPISODE = 'Episode',
   ASSET = 'Asset',
   SEQUENCE = 'Sequence',
-  PLAYLIST = 'Playlist',
   VERSION = 'Version',
 }
 
@@ -29,13 +21,12 @@ export enum LinkType {
  *
  * Database Optimization:
  * - Composite index on link_id + link_type for polymorphic relationship queries
- * - Indexes on frequently filtered columns (is_read, note_type, assigned_to, created_by)
+ * - Indexes on frequently filtered columns (is_read, assigned_to, created_by)
  * - Index on created_at for date sorting and filtering
  */
 @Entity('notes')
 @Index(['linkId', 'linkType']) // Polymorphic relationship queries
 @Index(['isRead']) // Filter unread notes
-@Index(['noteType']) // Filter by note type
 @Index(['createdBy']) // User-created queries
 @Index(['assignedTo']) // User assignments
 @Index(['createdAt']) // Date sorting
@@ -75,14 +66,6 @@ export class Note {
     example: 'La animación del personaje principal necesita ajustes en los frames 120-150',
   })
   content: string;
-
-  @Column({
-    type: 'enum',
-    enum: NoteType,
-    default: NoteType.NOTE,
-  })
-  @ApiHideProperty()
-  noteType: NoteType;
 
   @Column({ name: 'is_read', default: false })
   @ApiProperty({

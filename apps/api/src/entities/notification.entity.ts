@@ -10,7 +10,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export enum NotificationType {
   PROJECT_ASSIGNED = 'project_assigned',
-  SHOT_ASSIGNED = 'shot_assigned',
+  EPISODE_ASSIGNED = 'episode_assigned',
+  SEQUENCE_ASSIGNED = 'sequence_assigned',
   ASSET_ASSIGNED = 'asset_assigned',
   VERSION_APPROVED = 'version_approved',
   VERSION_REJECTED = 'version_rejected',

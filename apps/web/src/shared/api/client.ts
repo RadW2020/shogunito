@@ -62,7 +62,7 @@ export interface ApiVersion extends Omit<Version, 'publishedAt' | 'lineage' | 's
   statusUpdatedAt?: string;
   // Entity relationship fields
   entityCode?: string;
-  entityType: 'asset' | 'sequence' | 'playlist' | 'episode';
+  entityType: 'asset' | 'sequence' | 'episode';
   // Legacy fields for compatibility
   lineage: {
     prompt: string;
@@ -79,7 +79,7 @@ export interface ApiVersion extends Omit<Version, 'publishedAt' | 'lineage' | 's
 export interface Note {
   id: string;
   linkId: string;
-  linkType: 'Project' | 'Episode' | 'Asset' | 'Sequence' | 'Playlist' | 'Version';
+  linkType: 'Project' | 'Episode' | 'Asset' | 'Sequence' | 'Version';
   subject: string;
   content: string;
   noteType: 'note' | 'approval' | 'revision' | 'client_note';
@@ -92,24 +92,6 @@ export interface Note {
   project?: Project;
 }
 
-export interface Playlist {
-  id: number;
-  code: string;
-  name: string;
-  description?: string;
-  statusId?: string; // Status entity relation
-  versionCodes: string[];
-  versions?: ApiVersion[];
-  versionId?: string;
-  versionCode?: string;
-  versionName?: string;
-  createdBy?: number;
-  assignedTo?: number;
-  createdAt: Date;
-  updatedAt: Date;
-  statusUpdatedAt?: Date;
-  project?: Project;
-}
 
 // API service class
 class ApiService {
@@ -875,59 +857,6 @@ class ApiService {
     });
   }
 
-  // Playlists API methods
-  async getPlaylists(): Promise<Playlist[]> {
-    try {
-      return await this.request<Playlist[]>('/playlists');
-    } catch (error) {
-      console.warn('Playlists endpoint not available, returning empty array:', error);
-      return [];
-    }
-  }
-
-  // Playlists API methods (continued)
-  async createPlaylist(playlist: Partial<Playlist>): Promise<Playlist> {
-    return this.request<Playlist>('/playlists', {
-      method: 'POST',
-      body: JSON.stringify(playlist),
-    });
-  }
-
-  async updatePlaylist(id: number, playlist: Partial<Playlist>): Promise<Playlist> {
-    return this.request<Playlist>(`/playlists/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(playlist),
-    });
-  }
-
-  async deletePlaylist(id: number): Promise<void> {
-    return this.requestNoContent(`/playlists/${id}`, {
-      method: 'DELETE',
-    });
-  }
-
-  async createPlaylistFromVersions(data: {
-    code: string;
-    name: string;
-    description?: string;
-    projectId: number;
-    versionCodes: string[];
-    status?: string;
-    createdBy?: number;
-    assignedTo?: number;
-  }): Promise<Playlist> {
-    return this.request<Playlist>('/playlists/from-versions', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  }
-
-  async reorderPlaylistVersions(playlistId: number, versionCodes: string[]): Promise<Playlist> {
-    return this.request<Playlist>(`/playlists/${playlistId}/versions/reorder`, {
-      method: 'PUT',
-      body: JSON.stringify({ versionCodes }),
-    });
-  }
 }
 
 export const apiService = new ApiService();

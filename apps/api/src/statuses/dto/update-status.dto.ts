@@ -74,14 +74,14 @@ export class UpdateStatusDto extends PartialType(CreateStatusDto) {
 
   @IsOptional()
   @IsArray()
-  @IsIn(['project', 'episode', 'sequence', 'shot', 'version', 'asset', 'note', 'all'], {
+  @IsIn(['project', 'episode', 'sequence', 'version', 'asset', 'note', 'all'], {
     each: true,
   })
   @ApiPropertyOptional({
     description: 'Lista de entidades a las que se puede aplicar este estado',
     type: [String],
-    example: ['shot', 'asset'],
-    enum: ['project', 'episode', 'sequence', 'shot', 'version', 'asset', 'note', 'all'],
+    example: ['episode', 'asset'],
+    enum: ['project', 'episode', 'sequence', 'version', 'asset', 'note', 'all'],
   })
   applicableEntities?: (ApplicableEntity | 'all')[];
 

@@ -11,7 +11,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { NoteType, LinkType } from '../../entities/note.entity';
+import { LinkType } from '../../entities/note.entity';
 import { IsNotSQLInjection, IsNotXSS } from '../../common/validators/custom-validators';
 
 export class CreateNoteDto {
@@ -60,16 +60,7 @@ export class CreateNoteDto {
   })
   content: string;
 
-  @IsOptional()
-  @IsEnum(NoteType)
-  @ApiPropertyOptional({
-    description: 'Tipo de nota',
-    enum: NoteType,
-    example: NoteType.REVISION,
-    default: NoteType.NOTE,
-    enumName: 'NoteType',
-  })
-  noteType?: NoteType;
+
 
   @IsOptional()
   @IsBoolean()

@@ -158,11 +158,10 @@ export class ProjectAccessService {
         return asset?.projectId || null;
       case 'sequence':
         return this.getProjectIdFromSequence(version.entityId);
-      case 'playlist':
-        const playlist = await this.projectRepository.manager
-          .getRepository('Playlist')
-          .findOne({ where: { id: version.entityId }, select: ['projectId'] });
-        return playlist?.projectId || null;
+      case 'episode':
+        return version.entityId;
+      case 'project':
+        return version.entityId;
       default:
         return null;
     }

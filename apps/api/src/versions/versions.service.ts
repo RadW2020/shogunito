@@ -10,13 +10,12 @@ import type { File } from 'multer';
 import { CreateVersionDto, VersionEntityType } from './dto/create-version.dto';
 import { UpdateVersionDto } from './dto/update-version.dto';
 import { CreateAssetWithVersionDto } from './dto/create-asset-with-version.dto';
-import { CreatePlaylistWithVersionDto } from './dto/create-playlist-with-version.dto';
 import { CreateSequenceWithVersionDto } from './dto/create-sequence-with-version.dto';
 import { MinioService } from '../files/minio.service';
 import { ImageOptimizationService } from '../files/image-optimization.service';
 import { SlackService } from '../notifications/slack/slack.service';
 import { NotificationsService } from '../notifications/notifications.service';
-import { Version, Asset, Playlist, Sequence, Status, ProjectRole } from '../entities';
+import { Version, Asset, Sequence, Status, ProjectRole } from '../entities';
 import { ProjectAccessService, UserContext } from '../auth/services/project-access.service';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -30,8 +29,7 @@ export class VersionsService {
     private versionsRepository: Repository<Version>,
     @InjectRepository(Asset)
     private assetRepository: Repository<Asset>,
-    @InjectRepository(Playlist)
-    private playlistRepository: Repository<Playlist>,
+
     @InjectRepository(Sequence)
     private sequenceRepository: Repository<Sequence>,
     @InjectRepository(Status)
@@ -166,11 +164,6 @@ export class VersionsService {
           break;
         case VersionEntityType.SEQUENCE:
           entityExists = await this.sequenceRepository.exist({
-            where: { id: createVersionDto.entityId },
-          });
-          break;
-        case VersionEntityType.PLAYLIST:
-          entityExists = await this.playlistRepository.exist({
             where: { id: createVersionDto.entityId },
           });
           break;
@@ -923,83 +916,7 @@ export class VersionsService {
     });
   }
 
-  async createPlaylistWithVersion(dto: CreatePlaylistWithVersionDto, userContext?: UserContext) {
-    return await this.dataSource.transaction(async (manager) => {
-      // 1. Find project (by ID if provided, otherwise by code)
-      const projectRepository = this.playlistRepository.manager.getRepository('Project');
-      interface Project {
-        id: number;
-      }
-      let project: Project | null = null;
-      if (dto.projectId !== undefined) {
-        project = (await projectRepository.findOne({
-          where: { id: dto.projectId },
-        })) as Project | null;
-        if (!project) {
-          throw new NotFoundException(`Project with ID ${dto.projectId} not found`);
-        }
-      } else {
-        throw new BadRequestException('projectId is required');
-      }
 
-      // 2. Generate playlist code if not provided
-      let playlistCode = dto.code;
-      if (!playlistCode) {
-        const existingPlaylistsCount = await manager.count('Playlist', {
-          where: { projectId: project.id },
-        });
-        const playlistNumber = String(existingPlaylistsCount + 1).padStart(3, '0');
-        playlistCode = `PL${playlistNumber}`;
-      }
-
-      // 3. Get statusId for playlist
-      const playlistStatusId = dto.statusId || null;
-
-      // 3. Create playlist directly
-      const playlist = manager.create(Playlist, {
-        name: dto.name,
-        projectId: project.id,
-        code: playlistCode,
-        description: dto.description,
-        statusId: playlistStatusId,
-        versionCodes: [],
-        createdBy: userContext?.userId || null,
-        assignedTo: dto.assignedTo,
-      });
-      const savedPlaylist = await manager.save(playlist);
-
-      // 4. Create custom version
-      const version = manager.create(Version, {
-        code: dto.versionCode || `${savedPlaylist.code}_001`,
-        name: dto.versionName || `Initial version of ${savedPlaylist.name}`,
-        description: dto.versionDescription || 'Initial version created automatically',
-        versionNumber: 1,
-        statusId: dto.versionStatusId || (await this.getStatusIdByCode('wip')),
-        latest: dto.latest !== false,
-        entityId: savedPlaylist.id,
-        entityCode: savedPlaylist.code,
-        entityType: VersionEntityType.PLAYLIST,
-        filePath: dto.filePath,
-        format: dto.format,
-        frameRange: dto.frameRange,
-        artist: dto.artist,
-        createdBy: userContext?.userId || null,
-        assignedTo: dto.versionAssignedTo ? Number(dto.versionAssignedTo) : dto.assignedTo,
-        thumbnailPath: dto.versionThumbnailPath,
-        publishedAt: dto.publishedAt,
-        lineage: dto.lineage,
-      });
-      const savedVersion = await manager.save(version);
-
-      return {
-        playlist: {
-          ...savedPlaylist,
-          versionCode: savedVersion.code,
-        },
-        version: savedVersion,
-      };
-    });
-  }
 
   async createSequenceWithVersion(dto: CreateSequenceWithVersionDto, userContext?: UserContext) {
     return await this.dataSource.transaction(async (manager) => {

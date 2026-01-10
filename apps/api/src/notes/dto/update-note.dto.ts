@@ -14,7 +14,7 @@ import { Type } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateNoteDto } from './create-note.dto';
-import { NoteType, LinkType } from '../../entities/note.entity';
+import { LinkType } from '../../entities/note.entity';
 
 export class UpdateNoteDto extends PartialType(CreateNoteDto) {
   @IsOptional()
@@ -62,15 +62,7 @@ export class UpdateNoteDto extends PartialType(CreateNoteDto) {
   })
   content?: string;
 
-  @IsOptional()
-  @IsEnum(NoteType)
-  @ApiPropertyOptional({
-    description: 'Tipo de nota',
-    enum: NoteType,
-    example: NoteType.APPROVAL,
-    enumName: 'NoteType',
-  })
-  noteType?: NoteType;
+
 
   @IsOptional()
   @IsBoolean()

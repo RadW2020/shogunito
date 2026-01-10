@@ -43,7 +43,7 @@ interface RawNoteSearchResult {
  * built-in text search capabilities (tsvector, tsquery).
  *
  * Features:
- * - Search across: projects, episodes, sequences, shots, assets, notes
+ * - Search across: projects, episodes, sequences, assets, notes
  * - Relevance ranking (ts_rank)
  * - Highlighted snippets (ts_headline)
  * - Case-insensitive
@@ -349,9 +349,6 @@ export class SearchService {
     return createPaginatedResponse(searchResults, total, page, limit);
   }
 
-  /**
-   * Search in Shots
-   */
 
   /**
    * Search in Assets

@@ -55,11 +55,11 @@ export class User {
   @Column({ default: 'member' })
   @ApiProperty({
     description: 'Rol del usuario en el sistema',
-    enum: ['admin', 'director', 'artist', 'member'],
+    enum: ['admin', 'member'],
     example: 'member',
     default: 'member',
   })
-  role: 'admin' | 'director' | 'artist' | 'member';
+  role: 'admin' | 'member';
 
   @Column({ nullable: true })
   @ApiHideProperty()

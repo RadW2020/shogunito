@@ -50,7 +50,6 @@ export class StatusesController {
     - \`project\`: Estados para proyectos (bidding, active, onhold, completed)
     - \`episode\`: Estados para episodios (active, completed)
     - \`sequence\`: Estados para secuencias (ip, rev, fin)
-    - \`shot\`: Estados para shots (wtg, ip, rev, rdy, fin)
     - \`version\`: Estados para versiones (rev, app, fin, rdy)
     - \`asset\`: Estados para assets (wtg, ip, rev, app, fin)
     - \`note\`: Estados para notas (activo, resuelto, archivado)
@@ -80,11 +79,11 @@ export class StatusesController {
         value: {
           code: 'ANIMATION',
           name: 'En Animación',
-          description: 'El shot está en proceso de animación',
+          description: 'La secuencia está en proceso de animación',
           color: '#8B5CF6',
           isActive: true,
           sortOrder: 15,
-          applicableEntities: ['shot', 'sequence'],
+          applicableEntities: ['sequence'],
           createdBy: 'supervisor@studio.com',
           assignedTo: 'lead-animator@studio.com',
         },
@@ -129,11 +128,11 @@ export class StatusesController {
         id: '123e4567-e89b-12d3-a456-426614174000',
         code: 'ANIMATION',
         name: 'En Animación',
-        description: 'El shot está en proceso de animación',
+        description: 'La secuencia está en proceso de animación',
         color: '#8B5CF6',
         isActive: true,
         sortOrder: 15,
-        applicableEntities: ['shot', 'sequence'],
+        applicableEntities: ['sequence'],
         createdBy: 'supervisor@studio.com',
         assignedTo: 'lead-animator@studio.com',
         createdAt: '2024-01-15T10:30:00Z',
@@ -218,7 +217,7 @@ export class StatusesController {
     **Ejemplos de uso:**
     - \`GET /statuses\` - Todos los estados
     - \`GET /statuses?isActive=true\` - Solo estados activos
-    - \`GET /statuses?applicableEntities=shot,asset\` - Estados aplicables a shots o assets
+    - \`GET /statuses?applicableEntities=episode,asset\` - Estados aplicables a episodios o assets
     - \`GET /statuses?color=%23FF0000&isActive=true\` - Estados rojos y activos
     `,
   })
@@ -238,12 +237,12 @@ export class StatusesController {
     type: [String],
     description:
       'Filtrar estados que sean aplicables a cualquiera de las entidades especificadas. Acepta múltiples valores separados por coma',
-    example: 'shot,asset',
+    example: 'episode,asset',
     schema: {
       type: 'array',
       items: {
         type: 'string',
-        enum: ['project', 'episode', 'sequence', 'shot', 'version', 'asset', 'note', 'all'],
+        enum: ['project', 'episode', 'sequence', 'version', 'asset', 'note', 'all'],
       },
     },
   })
@@ -420,7 +419,7 @@ export class StatusesController {
         summary: 'Expandir entidades aplicables',
         description: 'Ejemplo de cómo expandir las entidades donde aplica un estado',
         value: {
-          applicableEntities: ['shot', 'asset', 'version'],
+          applicableEntities: ['sequence', 'asset', 'version'],
           assignedTo: 'new-supervisor@studio.com',
           description: 'Estado expandido para aplicar a más tipos de entidades',
         },
@@ -436,7 +435,7 @@ export class StatusesController {
           color: '#9333EA',
           isActive: true,
           sortOrder: 30,
-          applicableEntities: ['shot', 'version'],
+          applicableEntities: ['sequence', 'version'],
           assignedTo: 'comp-supervisor@studio.com',
         },
       },
@@ -456,7 +455,7 @@ export class StatusesController {
         color: '#9333EA',
         isActive: true,
         sortOrder: 30,
-        applicableEntities: ['shot', 'version'],
+        applicableEntities: ['sequence', 'version'],
         createdBy: 'admin@studio.com',
         assignedTo: 'comp-supervisor@studio.com',
         createdAt: '2024-01-15T10:30:00Z',

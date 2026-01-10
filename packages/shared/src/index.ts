@@ -8,12 +8,15 @@ export interface BaseEntity {
 }
 
 export const AssetType = {
-  CHARACTER: 'character',
-  SUBTITLES: 'subtitles',
-  IMAGEN: 'imagen',
-  AUDIO: 'audio',
-  SCRIPT: 'script',
-  TEXT: 'text',
+  PROMPT: 'prompt',
+  TXT: 'txt',
+  JSON: 'json',
+  SUBTITULOS_INGLES: 'subtitulos_ingles',
+  SUBTITULOS_ESPANOL: 'subtitulos_espanol',
+  DIRECTOR_SCRIPT: 'director_script',
+  AUDIO_ORIGINAL: 'audio_original',
+  AUDIO_CARICATURIZADO_INGLES: 'audio_caricaturizado_ingles',
+  AUDIO_CARICATURIZADO_ESPANOL: 'audio_caricaturizado_espanol',
 } as const;
 
 export type AssetType = (typeof AssetType)[keyof typeof AssetType];
@@ -68,7 +71,6 @@ export interface Sequence extends BaseEntity {
   versionName?: string;
 }
 
-
 export interface Status extends BaseEntity {
   code: string;
   name: string;
@@ -81,33 +83,19 @@ export interface Status extends BaseEntity {
     | 'version'
     | 'asset'
     | 'note'
-    | 'playlist'
     | 'all'
   )[];
   isActive: boolean;
   sortOrder: number;
 }
 
-export interface Playlist extends BaseEntity {
-  id: number; // Integer primary key
-  projectId: number; // Integer foreign key to Project
-  code: string; // Unique code for backward compatibility
-  name: string;
-  description?: string;
-  status?: string;
-  versionCodes: string[];
-  versionId?: number;
-  versionCode?: string;
-  versionName?: string;
-}
-
 export interface Version extends BaseEntity {
   id: number; // Integer primary key
   code: string; // Unique code for backward compatibility
   name: string;
-  entityId?: number; // ID for migrated entities (shot, asset, sequence, playlist)
+  entityId?: number; // ID for migrated entities (asset, sequence)
   entityCode?: string; // Code for non-migrated entities (backward compatibility)
-  entityType: 'asset' | 'sequence' | 'playlist' | 'episode' | 'project';
+  entityType: 'asset' | 'sequence' | 'episode' | 'project';
   versionNumber: number;
   format?: '16:9' | '9:16' | '1:1' | 'custom';
   status?: string;
@@ -131,10 +119,9 @@ export interface Version extends BaseEntity {
 export interface Note extends BaseEntity {
   projectId: number;
   linkId: string | number;
-  linkType: 'Project' | 'Episode' | 'Asset' | 'Sequence' | 'Playlist' | 'Version';
+  linkType: 'Project' | 'Episode' | 'Asset' | 'Sequence' | 'Version';
   subject: string;
   content: string;
-  noteType: 'note' | 'approval' | 'revision' | 'client_note';
   isRead: boolean;
   attachments?: string[];
 }
@@ -143,7 +130,7 @@ export interface User {
   id: string;
   name: string;
   email?: string;
-  role: string;
+  role: 'admin' | 'member';
 }
 
 // UI-specific types
@@ -152,7 +139,6 @@ export type TabType =
   | 'episodes'
   | 'assets'
   | 'sequences'
-  | 'playlists'
   | 'versions'
   | 'notes'
   | 'users'
@@ -164,7 +150,6 @@ export const TAB_CONFIG = [
   { id: 'assets', label: 'Assets' },
   { id: 'sequences', label: 'Sequences' },
   { id: 'versions', label: 'Versions' },
-  { id: 'playlists', label: 'Playlists' },
   { id: 'notes', label: 'Notes' },
   { id: 'users', label: 'Users' },
   { id: 'status', label: 'Status' },
@@ -179,7 +164,6 @@ export type EntityTypeForStatus =
   | 'version'
   | 'asset'
   | 'note'
-  | 'playlist'
   | 'all';
 
 // API Response types

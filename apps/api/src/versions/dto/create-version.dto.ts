@@ -9,12 +9,10 @@ import {
 } from '../../common/validators/custom-validators';
 
 export enum VersionEntityType {
-  SHOT = 'shot',
   ASSET = 'asset',
   SEQUENCE = 'sequence',
   EPISODE = 'episode',
   PROJECT = 'project',
-  PLAYLIST = 'playlist',
 }
 
 export class CreateVersionDto {
@@ -25,7 +23,7 @@ export class CreateVersionDto {
   @ApiPropertyOptional({
     description:
       'Código de la entidad asociada (backward compatibility - usar entityId para entidades migradas)',
-    example: 'SH',
+    example: 'ASSET_001',
   })
   entityCode?: string;
 
@@ -33,7 +31,7 @@ export class CreateVersionDto {
   @IsNumber()
   @ApiPropertyOptional({
     description:
-      'ID de la entidad asociada (para entidades migradas: shot, asset, sequence, playlist)',
+      'ID de la entidad asociada (para entidades migradas: asset, sequence, episode, project)',
     example: 123,
     type: 'number',
   })
@@ -41,11 +39,11 @@ export class CreateVersionDto {
 
   @IsDefined({ message: 'entityType es requerido' })
   @IsEnum(VersionEntityType, {
-    message: 'entityType debe ser uno de: shot, asset, sequence, episode, project, playlist',
+    message: 'entityType debe ser uno de: asset, sequence, episode, project',
   })
   @ApiProperty({
     description: 'Tipo de entidad asociada',
-    example: 'shot',
+    example: 'asset',
     enum: VersionEntityType,
     enumName: 'VersionEntityType',
   })

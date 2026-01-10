@@ -194,7 +194,7 @@ export class Version {
 
   @ApiProperty({
     description:
-      'Indica si esta es la versión más reciente de la entidad asociada (shot, asset, playlist, sequence). Solo una versión por entidad puede tener latest=true. Se actualiza automáticamente al crear nuevas versiones: la nueva se marca como latest=true y las anteriores como latest=false. Útil para filtrar versiones actuales con GET /versions?latest=true.',
+      'Indica si esta es la versión más reciente de la entidad asociada (asset, sequence, episode, project). Solo una versión por entidad puede tener latest=true. Se actualiza automáticamente al crear nuevas versiones: la nueva se marca como latest=true y las anteriores como latest=false. Útil para filtrar versiones actuales con GET /versions?latest=true.',
     example: true,
     default: false,
   })
@@ -237,7 +237,7 @@ export class Version {
   @Column({ name: 'entity_id', type: 'integer', nullable: true })
   @ApiProperty({
     description:
-      'ID de la entidad asociada (asset, sequence, playlist)',
+      'ID de la entidad asociada (asset, sequence, episode, project)',
     example: 123,
     nullable: true,
     required: false,
@@ -247,7 +247,7 @@ export class Version {
 
   @Column({ name: 'entity_type', nullable: true })
   @ApiProperty({
-    description: 'Tipo de entidad asociada (asset, sequence, playlist)',
+    description: 'Tipo de entidad asociada (asset, sequence, episode, project)',
     example: 'sequence',
     nullable: true,
     required: false,

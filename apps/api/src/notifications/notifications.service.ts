@@ -13,7 +13,8 @@ import { PaginatedResponse, createPaginatedResponse } from '../common/dto/pagina
  *
  * Notification Types:
  * - PROJECT_ASSIGNED: User assigned to a project
- * - SHOT_ASSIGNED: User assigned to a shot
+ * - EPISODE_ASSIGNED: User assigned to an episode
+ * - SEQUENCE_ASSIGNED: User assigned to a sequence
  * - ASSET_ASSIGNED: User assigned to an asset
  * - VERSION_APPROVED: Version approved by reviewer
  * - VERSION_REJECTED: Version rejected by reviewer
@@ -171,23 +172,44 @@ export class NotificationsService {
   }
 
   /**
-   * Helper: Notify user when assigned to a shot
+   * Helper: Notify user when assigned to an episode
    */
-  async notifyShotAssignment(
+  async notifyEpisodeAssignment(
     userId: number,
-    shotId: string,
-    shotCode: string,
+    episodeId: string,
+    episodeCode: string,
     assignedBy: number,
   ): Promise<Notification> {
     return this.create({
       userId,
-      type: NotificationType.SHOT_ASSIGNED,
-      title: 'Assigned to Shot',
-      message: `You have been assigned to shot "${shotCode}"`,
-      entityType: 'Shot',
-      entityId: shotId,
+      type: NotificationType.EPISODE_ASSIGNED,
+      title: 'Assigned to Episode',
+      message: `You have been assigned to episode "${episodeCode}"`,
+      entityType: 'Episode',
+      entityId: episodeId,
       triggeredBy: assignedBy,
-      metadata: { shotCode },
+      metadata: { episodeCode },
+    });
+  }
+
+  /**
+   * Helper: Notify user when assigned to a sequence
+   */
+  async notifySequenceAssignment(
+    userId: number,
+    sequenceId: string,
+    sequenceCode: string,
+    assignedBy: number,
+  ): Promise<Notification> {
+    return this.create({
+      userId,
+      type: NotificationType.SEQUENCE_ASSIGNED,
+      title: 'Assigned to Sequence',
+      message: `You have been assigned to sequence "${sequenceCode}"`,
+      entityType: 'Sequence',
+      entityId: sequenceId,
+      triggeredBy: assignedBy,
+      metadata: { sequenceCode },
     });
   }
 

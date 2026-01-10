@@ -30,7 +30,6 @@ import { VersionsService } from './versions.service';
 import { CreateVersionDto } from './dto/create-version.dto';
 import { UpdateVersionDto } from './dto/update-version.dto';
 import { CreateAssetWithVersionDto } from './dto/create-asset-with-version.dto';
-import { CreatePlaylistWithVersionDto } from './dto/create-playlist-with-version.dto';
 import { CreateSequenceWithVersionDto } from './dto/create-sequence-with-version.dto';
 import { Version } from '../entities/version.entity';
 
@@ -59,9 +58,8 @@ Crea una nueva versión asociada a cualquier tipo de entidad del sistema. Las ve
 
 **Sistema Multientidad:**
 Las versiones utilizan \`entityCode\` (código único de la entidad) y \`entityType\` (tipo de entidad) para asociarse polimórficamente a cualquier entidad:
-- \`shot\`: Planos individuales de una secuencia
 - \`asset\`: Recursos reutilizables (personajes, imágenes, audio, subtítulos, scripts, texto, videos)
-- \`playlist\`: Compilaciones de versiones para revisión
+- \`project\`: Versiones asociadas directamente al proyecto (ej: guiones, notas generales)
 - \`sequence\`: Secuencias de planos relacionados
 - \`episode\`: Episodios completos de una serie
 
@@ -85,9 +83,7 @@ Las versiones siguen un flujo de estados definido por \`statusId\`:
 - El campo \`assignedTo\` indica quién debe revisar la versión
 
 **Casos de Uso Específicos:**
-- **Shots**: Versiones de videos generados con IA (Runway, Pika), renders de animación 3D
 - **Assets**: Versiones de concept art (Midjourney, DALL-E), videos de personajes, texturas
-- **Playlists**: Versiones de cortes editados, compilaciones para cliente
 - **Sequences**: Versiones de previz generado con IA, animatics, storyboards animados
 
 **Notas para IA:**
@@ -103,29 +99,6 @@ Las versiones siguen un flujo de estados definido por \`statusId\`:
     description:
       'Datos necesarios para crear una nueva versión. Usa `entityCode` y `entityType` para asociar a cualquier entidad.',
     examples: {
-      shot_version: {
-        summary: 'Versión de Shot Generado con IA',
-        description: 'Ejemplo de creación de versión para un shot generado con IA',
-        value: {
-          entityCode: 'SH001',
-          entityType: 'shot',
-          code: 'SH001_003',
-          name: 'Plano del Bosque - Iteración 3',
-          description:
-            'Video generado con IA usando Runway Gen-3. Ajustes en el movimiento de cámara y timing de la acción',
-          status: 'review',
-          filePath: '/uploads/versions/SH001_003.mp4',
-          format: 'MP4',
-          frameRange: '1-240',
-          artist: 'IA Generator',
-          createdBy: 'ai-operator@studio.com',
-          assignedTo: 'director@studio.com',
-          thumbnailPath: '/uploads/thumbnails/version_123.jpg',
-          latest: true,
-          publishedAt: '2024-01-15T16:30:00Z',
-          lineage: 'prompt: "cinematic shot of enchanted forest, camera dolly forward"',
-        },
-      },
       asset_version: {
         summary: 'Versión de Asset (Personaje IA)',
         description: 'Ejemplo de creación de versión para un asset generado con IA',
@@ -140,21 +113,6 @@ Las versiones siguen un flujo de estados definido por \`statusId\`:
           format: 'PNG',
           artist: 'AI Art Director',
           createdBy: 'concept-artist@studio.com',
-          assignedTo: 'director@studio.com',
-          latest: true,
-        },
-      },
-      playlist_version: {
-        summary: 'Versión de Playlist',
-        description: 'Ejemplo de creación de versión para una playlist',
-        value: {
-          entityCode: 'PL_EP001',
-          entityType: 'playlist',
-          code: 'PL_EP001_001',
-          name: 'Episode 1 - Final Cut',
-          description: 'Playlist con el corte final del episodio 1',
-          status: 'approved',
-          createdBy: 'editor@studio.com',
           assignedTo: 'director@studio.com',
           latest: true,
         },
@@ -274,84 +232,7 @@ Las versiones siguen un flujo de estados definido por \`statusId\`:
     return this.versionsService.createAssetWithVersion(createAssetWithVersionDto, userContext);
   }
 
-  @Post('playlist')
-  @UserRateLimit({ limit: 100, ttl: 60000 })
-  @ApiOperation({
-    summary: 'Crear playlist con versión personalizada',
-    description:
-      'Crea una nueva playlist y su versión asociada en una sola transacción. Permite especificar datos personalizados para ambos.',
-  })
-  @ApiBody({
-    type: CreatePlaylistWithVersionDto,
-    description: 'Datos de la playlist y versión a crear',
-    examples: {
-      basic: {
-        summary: 'Creación básica',
-        description: 'Crear playlist con versión básica',
-        value: {
-          name: 'Nueva Playlist',
-          projectId: '550e8400-e29b-41d4-a716-446655440000',
-          versionCode: 'CUSTOM_PLAYLIST_001',
-          versionName: 'Versión personalizada',
-          versionDescription: 'Versión con datos específicos',
-          versionStatus: 'review',
-          createdBy: 'editor@studio.com',
-        },
-      },
-      complete: {
-        summary: 'Creación completa',
-        description: 'Crear playlist con todos los campos',
-        value: {
-          name: 'Episode 2 - Rough Cut Review',
-          projectId: 'aac81fe1-5ef7-466b-9c49-6537b477c0fe',
-          code: 'PL_EP002_ROUGH',
-          description: 'Playlist con el rough cut del episodio 2 para revisión interna',
-          status: 'waiting',
-          versionIds: [
-            '123e4567-e89b-12d3-a456-426614174000',
-            '456e7890-e12b-34d5-a678-426614174001',
-          ],
-          createdBy: 'editor@studio.com',
-          assignedTo: 'director@studio.com',
-          versionCode: 'PL_EP002_ROUGH_001',
-          versionName: 'Episode 2 - Rough Cut Review v001',
-          versionDescription:
-            'Playlist con el rough cut del episodio 2 para revisión interna del equipo de dirección',
-          versionStatus: 'review',
-          filePath: '/uploads/versions/PL_EP002_ROUGH_001.mov',
-          format: 'MOV',
-          frameRange: '1-1000',
-          artist: 'Editor Principal',
-          versionCreatedBy: 'editor@studio.com',
-          versionAssignedTo: 'director@studio.com',
-          versionThumbnailPath: '/uploads/thumbnails/version_123.jpg',
-          latest: true,
-          publishedAt: '2024-01-15T16:30:00Z',
-          lineage: 'v001 -> v002 -> v003',
-        },
-      },
-    },
-  })
-  @ApiResponse({
-    status: 201,
-    description: 'Playlist y versión creados exitosamente',
-    schema: {
-      type: 'object',
-      properties: {
-        playlist: { $ref: '#/components/schemas/Playlist' },
-        version: { $ref: '#/components/schemas/Version' },
-      },
-    },
-  })
-  createPlaylistWithVersion(
-    @Body() createPlaylistWithVersionDto: CreatePlaylistWithVersionDto,
-    @CurrentUser() currentUser?: User,
-  ) {
-    const userContext: UserContext | undefined = currentUser
-      ? { userId: currentUser.id, role: currentUser.role }
-      : undefined;
-    return this.versionsService.createPlaylistWithVersion(createPlaylistWithVersionDto, userContext);
-  }
+
 
   @Post('sequence')
   @UserRateLimit({ limit: 100, ttl: 60000 })
@@ -546,82 +427,28 @@ Recupera versiones del sistema con capacidad de filtrado avanzado por entidad as
 **Sistema de Filtrado:**
 
 **Filtros Legacy (por compatibilidad):**
-- \`shotId\`: Código del shot (ej: "SH001") - filtra versiones de ese shot
 - \`assetId\`: Código del asset (ej: "CHAR_HERO") - filtra versiones de ese asset
-- \`playlistId\`: Código de la playlist (ej: "PL_REVIEW") - filtra versiones de esa playlist
 - \`sequenceId\`: Código de la sequence (ej: "SEQ_FOREST") - filtra versiones de esa sequence
 
 **Filtros Nuevos (recomendados):**
-- \`entityCode\`: Código de cualquier entidad (shot, asset, playlist, sequence, episode)
-- \`entityType\`: Tipo de entidad ("shot", "asset", "playlist", "sequence", "episode")
+- \`entityCode\`: Código de cualquier entidad (asset, sequence, episode)
+- \`entityType\`: Tipo de entidad ("asset", "sequence", "episode")
 - \`entityId\`: ID numérico de la entidad (para entidades migradas)
 - \`latest\`: Boolean ("true"/"false") - filtra solo versiones marcadas como latest
 
 **Comportamiento:**
 - Sin filtros: Retorna TODAS las versiones del sistema (puede ser lento en sistemas grandes)
-- Con filtro legacy: Usa \`entityCode\` y \`entityType\` internamente para filtrar
-- Con filtros nuevos: Filtrado más eficiente usando índices de base de datos
-- Los filtros legacy son mutuamente excluyentes (solo uno a la vez)
-- Los filtros nuevos pueden combinarse (ej: \`entityCode\` + \`latest=true\`)
-
-**Respuesta:**
-Array de objetos Version, cada uno incluye:
-- \`entityCode\` y \`entityType\`: Identificación de la entidad asociada
-- \`filePath\`: URL del archivo principal (video, imagen o texto)
-- \`thumbnailPath\`: URL del thumbnail para preview
-- \`latest\`: Indica si es la versión más reciente de esa entidad
-- Todos los metadatos: nombre, descripción, status, artista, timestamps
-
-**Uso en UI:**
-- Tab de versiones: Muestra todas las versiones o filtradas por entidad
-- Grid de versiones: Permite ver todas las versiones de un shot/asset/playlist
-- Filtrado por latest: Muestra solo la versión más reciente de cada entidad
-
-**Notas para IA:**
-- Usar filtros nuevos (\`entityCode\`/\`entityType\`) para mejor rendimiento
-- \`latest=true\` es útil para obtener solo la versión actual de cada entidad
-- El campo \`filePath\` puede ser null si la versión no tiene archivo subido aún
-- El tipo de archivo (video/imagen/texto) se detecta por extensión del \`filePath\`
+- Con filtros: Filtrado eficiente usando índices de base de datos
+- Se recomienda usar \`entityCode\` + \`latest=true\` para obtener la versión actual de cada entidad
     `,
   })
-  @ApiQuery({
-    name: 'shotId',
-    required: false,
-    description: 'Código del shot para filtrar sus versiones',
-    example: 'SH_001',
-    type: 'string',
-  })
-  @ApiQuery({
-    name: 'assetId',
-    required: false,
-    description: 'Código del asset para filtrar sus versiones',
-    example: 'CHAR_HERO',
-    type: 'string',
-  })
-  @ApiQuery({
-    name: 'playlistId',
-    required: false,
-    description: 'Código de la playlist para filtrar sus versiones',
-    example: 'PL_REVIEW',
-    type: 'string',
-  })
-  @ApiQuery({
-    name: 'sequenceId',
-    required: false,
-    description: 'Código de la sequence para filtrar sus versiones',
-    example: 'SEQ_FOREST',
-    type: 'string',
-  })
+
   @ApiResponse({
     status: 200,
     description: 'Lista de versiones obtenida exitosamente',
     type: [Version],
   })
   findAll(
-    @Query('shotId') shotId?: string,
-    @Query('assetId') assetId?: string,
-    @Query('playlistId') playlistId?: string,
-    @Query('sequenceId') sequenceId?: string,
     @Query('entityCode') entityCode?: string,
     @Query('entityType') entityType?: string,
     @Query('entityId') entityId?: string,
@@ -631,19 +458,6 @@ Array de objetos Version, cada uno incluye:
     const userContext: UserContext | undefined = currentUser
       ? { userId: currentUser.id, role: currentUser.role }
       : undefined;
-    // Support legacy filters
-    if (shotId) {
-      return this.versionsService.findByEntity(shotId, 'shot');
-    }
-    if (assetId) {
-      return this.versionsService.findByEntity(assetId, 'asset');
-    }
-    if (playlistId) {
-      return this.versionsService.findByEntity(playlistId, 'playlist');
-    }
-    if (sequenceId) {
-      return this.versionsService.findByEntity(sequenceId, 'sequence');
-    }
     // Support new entityCode/entityType/entityId filters
     const latestBool = latest !== undefined ? latest === 'true' || latest === '1' : undefined;
     const entityIdNum = entityId ? parseInt(entityId, 10) : undefined;
@@ -661,14 +475,14 @@ Recupera los detalles completos de una versión específica mediante su ID únic
 
 **Identificación:**
 - \`id\`: ID único numérico de la versión
-- \`code\`: Código único de la versión (ej: "SH001_003")
+- \`code\`: Código único de la versión (ej: "ASSET_001_003")
 - \`name\`: Nombre descriptivo de la versión
 - \`versionNumber\`: Número de versión dentro de la entidad
 
 **Relación con Entidad:**
 - \`entityId\`: ID numérico de la entidad asociada (si está migrada)
-- \`entityCode\`: Código de la entidad (ej: "SH001", "CHAR_HERO")
-- \`entityType\`: Tipo de entidad ("shot", "asset", "playlist", "sequence", "episode")
+- \`entityCode\`: Código de la entidad (ej: "ASSET_001", "SEQ_001")
+- \`entityType\`: Tipo de entidad ("asset", "sequence", "episode", "project")
 
 **Archivos y Contenido:**
 - \`filePath\`: URL pública del archivo principal (video, imagen o texto)
@@ -843,7 +657,7 @@ Elimina una versión del sistema de forma permanente.
 - Esta operación es irreversible
 - Se elimina la versión y todos sus metadatos de la base de datos
 - Se eliminan automáticamente los archivos asociados del storage (thumbnail y video/imagen)
-- La entidad asociada (shot, asset, etc.) NO se ve afectada
+- La entidad asociada (asset, sequence, etc.) NO se ve afectada
 - Si la versión eliminada tenía \`latest: true\`, se asigna automáticamente a la versión más reciente
 
 **Proceso de Eliminación:**
@@ -854,7 +668,7 @@ Elimina una versión del sistema de forma permanente.
 5. Si era la versión latest, actualiza la siguiente versión más reciente
 
 **Consideraciones:**
-- Verificar que no está en uso en playlists antes de eliminar
+- Verificar que no está en uso antes de eliminar
 - La eliminación de archivos es definitiva (no hay papelera de reciclaje)
 - Solo usuarios con permisos adecuados deberían poder ejecutar esto
 
@@ -1028,10 +842,9 @@ Sube el archivo principal de trabajo de una versión. Soporta múltiples tipos d
 
 **Tipos de Archivo Según Entidad:**
 
-**Shots (Planos):**
-- Videos: MOV, MP4, WEBM (videos generados con IA, renders finales)
-- Imágenes: PNG, JPG (frames individuales, storyboards)
-- Texto: TXT (prompts de generación IA)
+**Episodes (Episodios):**
+- Videos: MOV, MP4, WEBM (cortes finales, episodios completos)
+- Texto: TXT (guiones, notas de dirección)
 
 **Assets (Recursos):**
 - Imágenes (\`assetType=imagen\`): PNG, JPG, WEBP, EXR (concept art, texturas, referencias visuales)
@@ -1042,9 +855,7 @@ Sube el archivo principal de trabajo de una versión. Soporta múltiples tipos d
 - Texto (\`assetType=text\`): TXT, MD, JSON (notas, prompts, metadatos)
 - Personajes (\`assetType=character\`): Pueden tener versiones con imágenes, videos o modelos 3D
 
-**Playlists (Compilaciones):**
-- Videos: MOV, MP4, WEBM (cortes finales, compilaciones)
-- Texto: TXT (notas de edición, listas de cambios)
+
 
 **Sequences (Secuencias):**
 - Videos: MOV, MP4 (previz generado con IA, animatics)

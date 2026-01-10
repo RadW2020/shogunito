@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Project, Episode, Asset, Sequence, Status } from '@shogun/shared';
-import type { ApiVersion, Playlist } from '@shared/api/client';
+import type { ApiVersion } from '@shared/api/client';
 
 interface NoteCreatorEntity {
   linkId: string;
@@ -14,7 +14,6 @@ interface UseShotGridModalsReturn {
   showAddEpisode: boolean;
   showAddAsset: boolean;
   showAddSequence: boolean;
-  showAddPlaylist: boolean;
   showAddVersion: boolean;
   showAddNote: boolean;
   showAddStatus: boolean;
@@ -25,7 +24,6 @@ interface UseShotGridModalsReturn {
   showEditAsset: boolean;
   showEditSequence: boolean;
   showEditVersion: boolean;
-  showEditPlaylist: boolean;
   showEditStatus: boolean;
 
   // Other modals
@@ -37,7 +35,6 @@ interface UseShotGridModalsReturn {
   editingAsset: Asset | null;
   editingSequence: Sequence | null;
   editingVersion: ApiVersion | null;
-  editingPlaylist: Playlist | null;
   editingStatus: Status | null;
 
   // Note creator
@@ -56,7 +53,6 @@ interface UseShotGridModalsReturn {
       | 'asset'
       | 'sequence'
       | 'version'
-      | 'playlist'
       | 'note'
       | 'status',
   ) => void;
@@ -67,16 +63,15 @@ interface UseShotGridModalsReturn {
       | 'asset'
       | 'sequence'
       | 'version'
-      | 'playlist'
       | 'note'
       | 'status',
   ) => void;
   openEditModal: (
-    type: 'project' | 'episode' | 'asset' | 'sequence' | 'version' | 'playlist' | 'status',
+    type: 'project' | 'episode' | 'asset' | 'sequence' | 'version' | 'status',
     entity: any,
   ) => void;
   closeEditModal: (
-    type: 'project' | 'episode' | 'asset' | 'sequence' | 'version' | 'playlist' | 'status',
+    type: 'project' | 'episode' | 'asset' | 'sequence' | 'version' | 'status',
   ) => void;
   setNoteCreatorEntity: (entity: NoteCreatorEntity | null) => void;
   setViewingNotesFor: (
@@ -94,7 +89,6 @@ export function useShotGridModals(): UseShotGridModalsReturn {
   const [showAddEpisode, setShowAddEpisode] = useState(false);
   const [showAddAsset, setShowAddAsset] = useState(false);
   const [showAddSequence, setShowAddSequence] = useState(false);
-  const [showAddPlaylist, setShowAddPlaylist] = useState(false);
   const [showAddVersion, setShowAddVersion] = useState(false);
   const [showAddNote, setShowAddNote] = useState(false);
   const [showAddStatus, setShowAddStatus] = useState(false);
@@ -105,7 +99,6 @@ export function useShotGridModals(): UseShotGridModalsReturn {
   const [showEditAsset, setShowEditAsset] = useState(false);
   const [showEditSequence, setShowEditSequence] = useState(false);
   const [showEditVersion, setShowEditVersion] = useState(false);
-  const [showEditPlaylist, setShowEditPlaylist] = useState(false);
   const [showEditStatus, setShowEditStatus] = useState(false);
 
   // Other modals
@@ -117,7 +110,6 @@ export function useShotGridModals(): UseShotGridModalsReturn {
   const [editingAsset, setEditingAsset] = useState<Asset | null>(null);
   const [editingSequence, setEditingSequence] = useState<Sequence | null>(null);
   const [editingVersion, setEditingVersion] = useState<ApiVersion | null>(null);
-  const [editingPlaylist, setEditingPlaylist] = useState<Playlist | null>(null);
   const [editingStatus, setEditingStatus] = useState<Status | null>(null);
 
   // Note creator
@@ -135,7 +127,6 @@ export function useShotGridModals(): UseShotGridModalsReturn {
       | 'asset'
       | 'sequence'
       | 'version'
-      | 'playlist'
       | 'note'
       | 'status',
   ) => {
@@ -155,9 +146,6 @@ export function useShotGridModals(): UseShotGridModalsReturn {
       case 'version':
         setShowAddVersion(true);
         break;
-      case 'playlist':
-        setShowAddPlaylist(true);
-        break;
       case 'note':
         setShowAddNote(true);
         break;
@@ -174,7 +162,6 @@ export function useShotGridModals(): UseShotGridModalsReturn {
       | 'asset'
       | 'sequence'
       | 'version'
-      | 'playlist'
       | 'note'
       | 'status',
   ) => {
@@ -194,9 +181,6 @@ export function useShotGridModals(): UseShotGridModalsReturn {
       case 'version':
         setShowAddVersion(false);
         break;
-      case 'playlist':
-        setShowAddPlaylist(false);
-        break;
       case 'note':
         setShowAddNote(false);
         break;
@@ -207,7 +191,7 @@ export function useShotGridModals(): UseShotGridModalsReturn {
   };
 
   const openEditModal = (
-    type: 'project' | 'episode' | 'asset' | 'sequence' | 'version' | 'playlist' | 'status',
+    type: 'project' | 'episode' | 'asset' | 'sequence' | 'version' | 'status',
     entity: any,
   ) => {
     switch (type) {
@@ -231,10 +215,6 @@ export function useShotGridModals(): UseShotGridModalsReturn {
         setEditingVersion(entity);
         setShowEditVersion(true);
         break;
-      case 'playlist':
-        setEditingPlaylist(entity);
-        setShowEditPlaylist(true);
-        break;
       case 'status':
         setEditingStatus(entity);
         setShowEditStatus(true);
@@ -243,7 +223,7 @@ export function useShotGridModals(): UseShotGridModalsReturn {
   };
 
   const closeEditModal = (
-    type: 'project' | 'episode' | 'asset' | 'sequence' | 'version' | 'playlist' | 'status',
+    type: 'project' | 'episode' | 'asset' | 'sequence' | 'version' | 'status',
   ) => {
     switch (type) {
       case 'project':
@@ -266,10 +246,6 @@ export function useShotGridModals(): UseShotGridModalsReturn {
         setShowEditVersion(false);
         setEditingVersion(null);
         break;
-      case 'playlist':
-        setShowEditPlaylist(false);
-        setEditingPlaylist(null);
-        break;
       case 'status':
         setShowEditStatus(false);
         setEditingStatus(null);
@@ -283,7 +259,6 @@ export function useShotGridModals(): UseShotGridModalsReturn {
     showAddEpisode,
     showAddAsset,
     showAddSequence,
-    showAddPlaylist,
     showAddVersion,
     showAddNote,
     showAddStatus,
@@ -294,7 +269,6 @@ export function useShotGridModals(): UseShotGridModalsReturn {
     showEditAsset,
     showEditSequence,
     showEditVersion,
-    showEditPlaylist,
     showEditStatus,
 
     // Other modals
@@ -306,7 +280,6 @@ export function useShotGridModals(): UseShotGridModalsReturn {
     editingAsset,
     editingSequence,
     editingVersion,
-    editingPlaylist,
     editingStatus,
 
     // Note creator

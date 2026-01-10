@@ -55,7 +55,7 @@ export class AssetsController {
 Crea un nuevo asset de producción (recursos reutilizables) asociado a un proyecto específico. Los assets representan elementos de producción que se reutilizan a lo largo del proyecto.
 
 **Concepto de Asset:**
-Un asset es un recurso de producción reutilizable que puede aparecer en múltiples shots, sequences o episodios. Ejemplos: personajes, imágenes, archivos de audio, subtítulos, scripts, videos, documentos de texto.
+Un asset es un recurso de producción reutilizable que puede aparecer en múltiples sequences o episodios. Ejemplos: personajes, imágenes, archivos de audio, subtítulos, scripts, videos, documentos de texto.
 
 **Tipos de Assets Soportados:**
 - \`character\`: Personajes principales y secundarios (modelos 3D, concept art, rigs, avatares)

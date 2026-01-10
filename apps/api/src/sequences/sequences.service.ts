@@ -219,7 +219,7 @@ export class SequencesService {
 
     const sequences = await queryBuilder.getMany();
 
-    // Load shots and notes for all sequences, and transform to include status code
+    // Load notes for all sequences, and transform to include status code
     const transformedSequences = [];
     for (const sequence of sequences) {
 

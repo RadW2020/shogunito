@@ -29,7 +29,6 @@ export class SearchController {
     - Projects (name, description, code)
     - Episodes (name, description, code)
     - Sequences (name, description, code)
-    - Shots (name, description, code)
     - Assets (name, description, code)
     - Notes (subject, content)
 
@@ -44,7 +43,6 @@ export class SearchController {
     **Examples:**
     - \`GET /search?q=animation\` - Search all entities
     - \`GET /search?q=character&entity=project\` - Search only projects
-    - \`GET /search?q=final+render&entity=shot&page=2&limit=10\` - Paginated shot search
     `,
   })
   @ApiQuery({
@@ -55,7 +53,7 @@ export class SearchController {
   })
   @ApiQuery({
     name: 'entity',
-    description: 'Entity type to search in (all, project, episode, sequence, shot, asset, note)',
+    description: 'Entity type to search in (all, project, episode, sequence, asset, note)',
     enum: SearchEntity,
     required: false,
     example: SearchEntity.ALL,
@@ -87,7 +85,7 @@ export class SearchController {
             properties: {
               entity: {
                 type: 'string',
-                enum: ['project', 'episode', 'sequence', 'shot', 'asset', 'note'],
+                enum: ['project', 'episode', 'sequence', 'asset', 'note'],
                 example: 'project',
               },
               id: {

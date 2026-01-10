@@ -23,7 +23,7 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
  * GET /statuses?isActive=true
  *
  * // Filtrar por entidades aplicables
- * GET /statuses?applicableEntities=shot,asset
+ * GET /statuses?applicableEntities=episode,asset
  *
  * // Filtros combinados
  * GET /statuses?isActive=true&applicableEntities=project&color=%23FF0000
@@ -50,15 +50,15 @@ export class FilterStatusesDto extends PaginationDto {
     Array.isArray(value) ? value : value?.split(',') || [],
   )
   @IsArray()
-  @IsIn(['project', 'episode', 'sequence', 'shot', 'version', 'asset', 'note', 'all'], {
+  @IsIn(['project', 'episode', 'sequence', 'version', 'asset', 'note', 'all'], {
     each: true,
   })
   @ApiPropertyOptional({
     description:
       'Filtrar statuses que sean aplicables a cualquiera de las entidades especificadas. Acepta múltiples valores separados por coma',
     type: [String],
-    example: ['shot', 'asset'],
-    enum: ['project', 'episode', 'sequence', 'shot', 'version', 'asset', 'note', 'all'],
+    example: ['episode', 'asset'],
+    enum: ['project', 'episode', 'sequence', 'version', 'asset', 'note', 'all'],
   })
   applicableEntities?: (ApplicableEntity | 'all')[];
 

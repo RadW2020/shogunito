@@ -22,12 +22,6 @@ export enum Permission {
   SEQUENCE_UPDATE = 'sequence:update',
   SEQUENCE_DELETE = 'sequence:delete',
 
-  // Shot permissions
-  SHOT_CREATE = 'shot:create',
-  SHOT_READ = 'shot:read',
-  SHOT_UPDATE = 'shot:update',
-  SHOT_DELETE = 'shot:delete',
-
   // Asset permissions
   ASSET_CREATE = 'asset:create',
   ASSET_READ = 'asset:read',
@@ -54,12 +48,6 @@ export enum Permission {
   STATUS_READ = 'status:read',
   STATUS_UPDATE = 'status:update',
   STATUS_DELETE = 'status:delete',
-
-  // Playlist permissions
-  PLAYLIST_CREATE = 'playlist:create',
-  PLAYLIST_READ = 'playlist:read',
-  PLAYLIST_UPDATE = 'playlist:update',
-  PLAYLIST_DELETE = 'playlist:delete',
 
   // Note permissions
   NOTE_CREATE = 'note:create',
@@ -92,112 +80,34 @@ export const RequirePermissions = (...permissions: Permission[]) =>
  *
  * Available roles:
  * - admin: Full system access
- * - director: Full production management + approve/reject versions
- * - artist: Create content (assets, versions, shots, sequences)
- * - member: Default role, read-only + create notes
+ * - member: Default role, can create and edit content within projects they have access to
  */
 export const ROLE_PERMISSIONS: Record<string, Permission[]> = {
   // Admins have all permissions
   admin: Object.values(Permission),
 
-  // Directors can manage everything except users and system settings
-  director: [
-    // Project management
-    Permission.PROJECT_CREATE,
-    Permission.PROJECT_READ,
-    Permission.PROJECT_UPDATE,
-    Permission.PROJECT_DELETE,
-    // Episode management
-    Permission.EPISODE_CREATE,
-    Permission.EPISODE_READ,
-    Permission.EPISODE_UPDATE,
-    Permission.EPISODE_DELETE,
-    // Sequence management
-    Permission.SEQUENCE_CREATE,
-    Permission.SEQUENCE_READ,
-    Permission.SEQUENCE_UPDATE,
-    Permission.SEQUENCE_DELETE,
-    // Shot management
-    Permission.SHOT_CREATE,
-    Permission.SHOT_READ,
-    Permission.SHOT_UPDATE,
-    Permission.SHOT_DELETE,
-    // Asset management
-    Permission.ASSET_CREATE,
-    Permission.ASSET_READ,
-    Permission.ASSET_UPDATE,
-    Permission.ASSET_DELETE,
-    // Version management + approval
-    Permission.VERSION_CREATE,
-    Permission.VERSION_READ,
-    Permission.VERSION_UPDATE,
-    Permission.VERSION_DELETE,
-    Permission.VERSION_APPROVE,
-    Permission.VERSION_REJECT,
-    // Status management
-    Permission.STATUS_CREATE,
-    Permission.STATUS_READ,
-    Permission.STATUS_UPDATE,
-    Permission.STATUS_DELETE,
-    // Playlist management
-    Permission.PLAYLIST_CREATE,
-    Permission.PLAYLIST_READ,
-    Permission.PLAYLIST_UPDATE,
-    Permission.PLAYLIST_DELETE,
-    // Note management
-    Permission.NOTE_CREATE,
-    Permission.NOTE_READ,
-    Permission.NOTE_UPDATE,
-    Permission.NOTE_DELETE,
-    // File management
-    Permission.FILE_UPLOAD,
-    Permission.FILE_DELETE,
-  ],
-
-  // Artists can create and edit content
-  artist: [
-    // Read access to projects and episodes
-    Permission.PROJECT_READ,
-    Permission.EPISODE_READ,
-    // Sequence: create and edit
-    Permission.SEQUENCE_CREATE,
-    Permission.SEQUENCE_READ,
-    Permission.SEQUENCE_UPDATE,
-    // Shot: create and edit
-    Permission.SHOT_CREATE,
-    Permission.SHOT_READ,
-    Permission.SHOT_UPDATE,
-    // Asset: create and edit
-    Permission.ASSET_CREATE,
-    Permission.ASSET_READ,
-    Permission.ASSET_UPDATE,
-    // Version: create and edit
-    Permission.VERSION_CREATE,
-    Permission.VERSION_READ,
-    Permission.VERSION_UPDATE,
-    // Read statuses
-    Permission.STATUS_READ,
-    // Read playlists
-    Permission.PLAYLIST_READ,
-    // Notes: create and read
-    Permission.NOTE_CREATE,
-    Permission.NOTE_READ,
-    // File upload
-    Permission.FILE_UPLOAD,
-  ],
-
-  // Member is the default role for new registrations (read-only + notes)
+  // Member is the default role (can create content and read everything)
   member: [
     Permission.PROJECT_READ,
     Permission.EPISODE_READ,
+    Permission.EPISODE_CREATE,
+    Permission.EPISODE_UPDATE,
     Permission.SEQUENCE_READ,
-    Permission.SHOT_READ,
+    Permission.SEQUENCE_CREATE,
+    Permission.SEQUENCE_UPDATE,
     Permission.ASSET_READ,
+    Permission.ASSET_CREATE,
+    Permission.ASSET_UPDATE,
     Permission.VERSION_READ,
+    Permission.VERSION_CREATE,
+    Permission.VERSION_UPDATE,
+    Permission.VERSION_APPROVE,
+    Permission.VERSION_REJECT,
     Permission.STATUS_READ,
-    Permission.PLAYLIST_READ,
     Permission.NOTE_CREATE,
     Permission.NOTE_READ,
+    Permission.NOTE_UPDATE,
+    Permission.FILE_UPLOAD,
   ],
 };
 

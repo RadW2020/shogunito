@@ -30,7 +30,6 @@ import { PROJECT_ROLE_KEY, hasRequiredProjectRole } from '../decorators/project-
  *    c. Compares the user's role against the required role
  *
  * Hierarchy Navigation:
- * - For shots: Shot -> Sequence -> Episode -> Project
  * - For sequences: Sequence -> Episode -> Project
  * - For episodes: Episode -> Project
  * - For projects: Direct access
@@ -38,7 +37,7 @@ import { PROJECT_ROLE_KEY, hasRequiredProjectRole } from '../decorators/project-
  * @example
  * @UseGuards(JwtAuthGuard, ProjectPermissionGuard)
  * @RequireProjectRole(ProjectRole.CONTRIBUTOR)
- * createShot() { ... }
+ * createSequence() { ... }
  */
 @Injectable()
 export class ProjectPermissionGuard implements CanActivate {
@@ -120,7 +119,6 @@ export class ProjectPermissionGuard implements CanActivate {
    * - /projects/:id -> id is projectId
    * - /episodes/:id -> navigate to project via episode
    * - /sequences/:id -> navigate to project via sequence -> episode
-   * - /shots/:id -> navigate to project via shot -> sequence -> episode
    */
   private async extractProjectId(request: Request): Promise<number | null> {
     const params = request.params;
@@ -175,7 +173,7 @@ export class ProjectPermissionGuard implements CanActivate {
       return parseInt(request.body.projectId, 10);
     }
 
-    // Versions routes - versions belong to shots, assets, etc.
+    // Versions routes - versions belong to assets, sequences, etc.
     if (path.includes('/versions/') && params.id) {
       return this.getProjectIdFromVersion(parseInt(params.id, 10));
     }
@@ -234,7 +232,7 @@ export class ProjectPermissionGuard implements CanActivate {
 
   /**
    * Get projectId from version
-   * Versions can belong to shots, assets, sequences, etc.
+   * Versions can belong to assets, sequences, etc.
    */
   private async getProjectIdFromVersion(versionId: number): Promise<number | null> {
     if (isNaN(versionId)) return null;

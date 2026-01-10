@@ -11,7 +11,6 @@ import { Episode } from '../entities/episode.entity';
 import { Sequence } from '../entities/sequence.entity';
 import { Version } from '../entities/version.entity';
 import { Asset } from '../entities/asset.entity';
-import { Playlist } from '../entities/playlist.entity';
 import { ProjectRole } from '../entities/project-permission.entity';
 import { ProjectAccessService, UserContext } from '../auth/services/project-access.service';
 
@@ -30,8 +29,7 @@ export class NotesService {
     private versionRepository: Repository<Version>,
     @InjectRepository(Asset)
     private assetRepository: Repository<Asset>,
-    @InjectRepository(Playlist)
-    private playlistRepository: Repository<Playlist>,
+
     private minioService: MinioService,
     private projectAccessService: ProjectAccessService,
   ) {}
@@ -98,11 +96,7 @@ export class NotesService {
       });
     }
 
-    if (filters?.noteType) {
-      queryBuilder.andWhere('note.noteType = :noteType', {
-        noteType: filters.noteType,
-      });
-    }
+
 
     if (filters?.isRead !== undefined) {
       queryBuilder.andWhere('note.isRead = :isRead', {
@@ -350,11 +344,7 @@ export class NotesService {
           where: { id: entityId },
         }));
         break;
-      case LinkType.PLAYLIST:
-        entityExists = !!(await this.playlistRepository.findOne({
-          where: { id: entityId },
-        }));
-        break;
+
       default:
         throw new BadRequestException(`Invalid link type: ${linkType as string}`);
     }
@@ -405,12 +395,7 @@ export class NotesService {
           });
         }
         return null;
-      case LinkType.PLAYLIST:
-        const playlist = await this.playlistRepository.findOne({
-          where: { id: entityId },
-          select: ['projectId'],
-        });
-        return playlist?.projectId || null;
+
       default:
         return null;
     }
@@ -466,16 +451,7 @@ export class NotesService {
           );
         }
         break;
-      case LinkType.PLAYLIST:
-        const playlist = await this.playlistRepository.findOne({
-          where: { id: entityId },
-          select: ['projectId'],
-        });
-        if (!playlist?.projectId) {
-          throw new NotFoundException(`Playlist with ID ${entityId} not found`);
-        }
-        await this.projectAccessService.verifyProjectAccess(playlist.projectId, userContext, minRole);
-        break;
+
       default:
         throw new NotFoundException(`Invalid link type: ${linkType as string}`);
     }

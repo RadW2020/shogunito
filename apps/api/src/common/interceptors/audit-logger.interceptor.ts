@@ -140,7 +140,7 @@ export class AuditLoggerInterceptor implements NestInterceptor {
     // Examples:
     // /projects -> Project
     // /episodes/EP_001 -> Episode
-    // /shots/SH_001/versions -> Version
+    // /sequences/SEQ_001/versions -> Version
 
     const segments = url.split('/').filter((s) => s);
     if (segments.length === 0) return 'Unknown';

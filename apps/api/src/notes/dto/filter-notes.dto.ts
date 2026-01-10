@@ -1,7 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsOptional, IsEnum, IsBoolean, IsNumber } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
-import { NoteType, LinkType } from '../../entities/note.entity';
+import { LinkType } from '../../entities/note.entity';
 import { PaginationDto } from '../../common/dto/pagination.dto';
 
 /**
@@ -10,7 +10,6 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
  * Permite filtrar la lista de notas por múltiples criterios:
  * - ID de la entidad vinculada (exacto)
  * - Tipo de entidad vinculada (exacto)
- * - Tipo de nota (exacto)
  * - Estado de lectura (exacto)
  * - Usuario creador (búsqueda parcial, case-insensitive)
  * - Usuario asignado (búsqueda parcial, case-insensitive)
@@ -24,11 +23,8 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
  * // Filtrar notas de un proyecto específico
  * GET /notes?linkId=uuid&linkType=Project
  *
- * // Filtrar notas no leídas
- * GET /notes?isRead=false
- *
- * // Filtrar notas de revisión asignadas a un usuario
- * GET /notes?noteType=revision&assignedTo=animator
+ * // Filtrar notas no leídas asignadas a un usuario
+ * GET /notes?isRead=false&assignedTo=animator
  *
  * // Búsqueda de texto en asunto y contenido con paginación
  * GET /notes?subject=animación&content=frames&page=1&limit=20
@@ -53,15 +49,7 @@ export class FilterNotesDto extends PaginationDto {
   })
   linkType?: LinkType;
 
-  @IsOptional()
-  @IsEnum(NoteType)
-  @ApiPropertyOptional({
-    description: 'Filtrar notas por tipo de nota',
-    enum: NoteType,
-    example: NoteType.REVISION,
-    enumName: 'NoteType',
-  })
-  noteType?: NoteType;
+
 
   @IsOptional()
   @Transform(({ value }) => value === 'true')

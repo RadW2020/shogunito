@@ -5,7 +5,6 @@ export { Version, VersionStatus } from './version.entity';
 export { Asset } from './asset.entity';
 export { User } from './user.entity';
 export { Status } from './status.entity';
-export { Playlist } from './playlist.entity';
-export { Note, NoteType, LinkType } from './note.entity';
+export { Note, LinkType } from './note.entity';
 export { Notification, NotificationType } from './notification.entity';
 export { ProjectPermission, ProjectRole } from './project-permission.entity';

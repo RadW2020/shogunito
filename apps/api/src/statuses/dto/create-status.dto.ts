@@ -80,15 +80,15 @@ export class CreateStatusDto {
 
   @IsArray()
   @ArrayNotEmpty()
-  @IsIn(['project', 'episode', 'sequence', 'shot', 'version', 'asset', 'note', 'all'], {
+  @IsIn(['project', 'episode', 'sequence', 'version', 'asset', 'note', 'all'], {
     each: true,
   })
   @ApiProperty({
     description:
       'Lista de entidades a las que se puede aplicar este estado. Si incluye "all", aplica a todas las entidades',
     type: [String],
-    example: ['project', 'shot', 'asset'],
-    enum: ['project', 'episode', 'sequence', 'shot', 'version', 'asset', 'note', 'all'],
+    example: ['project', 'asset'],
+    enum: ['project', 'episode', 'sequence', 'version', 'asset', 'note', 'all'],
   })
   applicableEntities: (ApplicableEntity | 'all')[];
 

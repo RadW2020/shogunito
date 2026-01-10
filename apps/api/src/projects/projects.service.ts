@@ -136,7 +136,6 @@ export class ProjectsService {
       .createQueryBuilder('project')
       .leftJoinAndSelect('project.episodes', 'episodes')
       .leftJoinAndSelect('episodes.sequences', 'sequences')
-      .leftJoinAndSelect('sequences.shots', 'shots')
       .leftJoinAndSelect('project.assets', 'assets')
       .leftJoinAndSelect('project.status', 'status');
 
@@ -191,7 +190,6 @@ export class ProjectsService {
     queryBuilder.orderBy(`project.${sortBy}`, order);
     queryBuilder.addOrderBy('episodes.cutOrder', 'ASC', 'NULLS LAST');
     queryBuilder.addOrderBy('sequences.cutOrder', 'ASC', 'NULLS LAST');
-    queryBuilder.addOrderBy('shots.sequenceNumber', 'ASC', 'NULLS LAST');
 
     // Get total count before pagination
     const total = await queryBuilder.getCount();
@@ -218,11 +216,6 @@ export class ProjectsService {
 
         for (const sequence of sequences) {
           sequence.notes = await this.loadNotesForEntity(sequence.code, 'Sequence');
-          const shots = sequence.shots || [];
-
-          for (const shot of shots) {
-            shot.notes = await this.loadNotesForEntity(shot.id.toString(), 'Shot');
-          }
         }
       }
 
@@ -259,7 +252,7 @@ export class ProjectsService {
 
     const project = await this.projectRepository.findOne({
       where: { id },
-      relations: ['episodes', 'episodes.sequences', 'episodes.sequences.shots', 'assets', 'status'],
+      relations: ['episodes', 'episodes.sequences', 'assets', 'status'],
     });
 
     if (!project) {
@@ -278,7 +271,7 @@ export class ProjectsService {
   async findOne(code: string, userContext?: UserContext): Promise<any> {
     const project = await this.projectRepository.findOne({
       where: { code },
-      relations: ['episodes', 'episodes.sequences', 'episodes.sequences.shots', 'assets', 'status'],
+      relations: ['episodes', 'episodes.sequences', 'assets', 'status'],
     });
 
     if (!project) {

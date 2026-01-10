@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { apiService } from '@shared/api/client';
 import type { Project, Episode, Asset, Sequence, Status } from '@shogun/shared';
-import type { ApiVersion, Playlist } from '@shared/api/client';
+import type { ApiVersion } from '@shared/api/client';
 
 // Simplified user type for UI display
 interface DisplayUser {
@@ -19,7 +19,6 @@ interface UseShotGridDataReturn {
   assets: Asset[];
   sequences: Sequence[];
   versions: ApiVersion[];
-  playlists: Playlist[];
   statuses: Status[];
   users: DisplayUser[];
 
@@ -48,7 +47,6 @@ export function useShotGridData(): UseShotGridDataReturn {
   const [assets, setAssets] = useState<Asset[]>([]);
   const [sequences, setSequences] = useState<Sequence[]>([]);
   const [versions, setVersions] = useState<ApiVersion[]>([]);
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [statuses, setStatuses] = useState<Status[]>([]);
   const [users, setUsers] = useState<DisplayUser[]>([]);
 
@@ -64,7 +62,6 @@ export function useShotGridData(): UseShotGridDataReturn {
         queryClient.invalidateQueries({ queryKey: ['assets'] }),
         queryClient.invalidateQueries({ queryKey: ['sequences'] }),
         queryClient.invalidateQueries({ queryKey: ['versions'] }),
-        queryClient.invalidateQueries({ queryKey: ['playlists'] }),
         queryClient.invalidateQueries({ queryKey: ['statuses'] }),
       ]);
 
@@ -76,7 +73,6 @@ export function useShotGridData(): UseShotGridDataReturn {
         apiService.getAssets(),
         apiService.getSequences(),
         apiService.getVersions(),
-        apiService.getPlaylists(),
         apiService.getStatuses(),
         apiService.getUsers(),
       ]);
@@ -87,9 +83,8 @@ export function useShotGridData(): UseShotGridDataReturn {
       const assetsData = results[2].status === 'fulfilled' ? results[2].value : (console.error('Failed to load assets:', results[2].reason), []);
       const sequencesData = results[3].status === 'fulfilled' ? results[3].value : (console.error('Failed to load sequences:', results[3].reason), []);
       const versionsData = results[4].status === 'fulfilled' ? results[4].value : (console.error('Failed to load versions:', results[4].reason), []);
-      const playlistsData = results[5].status === 'fulfilled' ? results[5].value : (console.error('Failed to load playlists:', results[5].reason), []);
-      const statusesData = results[6].status === 'fulfilled' ? results[6].value : (console.error('Failed to load statuses:', results[6].reason), []);
-      const usersData = results[7].status === 'fulfilled' ? results[7].value : (console.error('Failed to load users:', results[7].reason), []);
+      const statusesData = results[5].status === 'fulfilled' ? results[5].value : (console.error('Failed to load statuses:', results[5].reason), []);
+      const usersData = results[6].status === 'fulfilled' ? results[6].value : (console.error('Failed to load users:', results[6].reason), []);
 
       console.log('Refreshed data. Projects:', projectsData.length, 'Statuses:', statusesData.length, statusesData);
 
@@ -99,7 +94,6 @@ export function useShotGridData(): UseShotGridDataReturn {
       setAssets(assetsData);
       setSequences(sequencesData);
       setVersions(versionsData);
-      setPlaylists(playlistsData);
       setStatuses(statusesData);
       setUsers(
         usersData.map((u) => ({
@@ -118,7 +112,6 @@ export function useShotGridData(): UseShotGridDataReturn {
         queryClient.refetchQueries({ queryKey: ['assets'], type: 'active' }),
         queryClient.refetchQueries({ queryKey: ['sequences'], type: 'active' }),
         queryClient.refetchQueries({ queryKey: ['versions'], type: 'active' }),
-        queryClient.refetchQueries({ queryKey: ['playlists'], type: 'active' }),
         queryClient.refetchQueries({ queryKey: ['statuses'], type: 'active' }),
       ]);
 
@@ -144,7 +137,6 @@ export function useShotGridData(): UseShotGridDataReturn {
     assets,
     sequences,
     versions,
-    playlists,
     statuses,
     users,
     isRefreshing,

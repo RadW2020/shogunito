@@ -14,7 +14,6 @@ import {
   Asset,
   User,
   Status,
-  Playlist,
   Note,
   Notification,
   ProjectPermission,
@@ -31,7 +30,7 @@ import { VersionsModule } from './versions/versions.module';
 import { UsersModule } from './users/users.module';
 import { StatusesModule } from './statuses/statuses.module';
 import { AssetsModule } from './assets/assets.module';
-import { PlaylistsModule } from './playlists/playlists.module';
+
 import { NotesModule } from './notes/notes.module';
 import { FilesModule } from './files/files.module';
 import { SearchModule } from './search/search.module';
@@ -76,7 +75,7 @@ import { ProjectPermissionsModule } from './project-permissions/project-permissi
         Asset,
         User,
         Status,
-        Playlist,
+
         Note,
         AuditLog,
         RefreshToken,
@@ -118,7 +117,7 @@ import { ProjectPermissionsModule } from './project-permissions/project-permissi
     UsersModule,
     StatusesModule,
     AssetsModule,
-    PlaylistsModule,
+
     NotesModule,
     FilesModule,
     SearchModule,

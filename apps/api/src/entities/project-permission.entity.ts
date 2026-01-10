@@ -29,7 +29,7 @@ export enum ProjectRole {
  *
  * Permission inheritance:
  * - Permissions granted at project level apply to all child entities
- * - Project -> Episode -> Sequence -> Shot
+ * - Project -> Episode -> Sequence
  */
 @Entity('project_permissions')
 @Index(['userId', 'projectId'], { unique: true }) // One permission per user per project

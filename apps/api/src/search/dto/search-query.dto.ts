@@ -7,7 +7,6 @@ export enum SearchEntity {
   PROJECT = 'project',
   EPISODE = 'episode',
   SEQUENCE = 'sequence',
-  SHOT = 'shot',
   ASSET = 'asset',
   NOTE = 'note',
 }

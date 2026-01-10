@@ -8,12 +8,11 @@ import { Episode } from '../entities/episode.entity';
 import { Sequence } from '../entities/sequence.entity';
 import { Version } from '../entities/version.entity';
 import { Asset } from '../entities/asset.entity';
-import { Playlist } from '../entities/playlist.entity';
 import { FilesModule } from '../files/files.module';
 import { ProjectAccessModule } from '../auth/services/project-access.module';
-
 @Module({
   imports: [
+    TypeOrmModule.forFeature([Note, Project, Episode, Sequence, Version, Asset]),
     FilesModule,
     ProjectAccessModule,
   ],

@@ -79,7 +79,6 @@ export class NotesController {
     **Filtros disponibles:**
     - **linkId**: Filtro exacto por ID de la entidad vinculada
     - **linkType**: Filtro exacto por tipo de entidad vinculada
-    - **noteType**: Filtro exacto por tipo de nota
     - **isRead**: Filtro exacto por estado de lectura
     - **createdBy**: Búsqueda parcial en usuario creador (no sensible a mayúsculas)
     - **assignedTo**: Búsqueda parcial en usuario asignado (no sensible a mayúsculas)
@@ -96,7 +95,7 @@ export class NotesController {
     **Ejemplos de uso:**
     - \`GET /notes\` - Todas las notas
     - \`GET /notes?linkId=uuid&linkType=Project\` - Notas de un proyecto específico
-    - \`GET /notes?isRead=false&noteType=revision\` - Notas de revisión no leídas
+    - \`GET /notes?isRead=false\` - Notas no leídas
     - \`GET /notes?subject=animación&hasAttachments=true\` - Notas sobre animación con archivos adjuntos
     `,
   })
@@ -114,25 +113,15 @@ export class NotesController {
   @ApiQuery({
     name: 'linkType',
     required: false,
-    enum: ['Project', 'Episode', 'Asset', 'Sequence', 'Shot', 'Playlist', 'Version'],
+    enum: ['Project', 'Episode', 'Asset', 'Sequence', 'Version'],
     description: 'Filtrar notas por tipo de entidad vinculada usando filtro exacto',
     example: 'Project',
     schema: {
       type: 'string',
-      enum: ['Project', 'Episode', 'Asset', 'Sequence', 'Shot', 'Playlist', 'Version'],
+      enum: ['Project', 'Episode', 'Asset', 'Sequence', 'Version'],
     },
   })
-  @ApiQuery({
-    name: 'noteType',
-    required: false,
-    enum: ['note', 'approval', 'revision', 'client_note'],
-    description: 'Filtrar notas por tipo de nota. Valores: note, approval, revision, client_note',
-    example: 'revision',
-    schema: {
-      type: 'string',
-      enum: ['note', 'approval', 'revision', 'client_note'],
-    },
-  })
+
   @ApiQuery({
     name: 'isRead',
     required: false,

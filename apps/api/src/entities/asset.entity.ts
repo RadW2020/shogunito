@@ -59,14 +59,14 @@ export class Asset {
   @Column({
     type: 'enum',
     enum: AssetType,
-    default: AssetType.TEXT,
+    default: AssetType.TXT,
   })
   @ApiProperty({
     description:
-      'Tipo de asset. Valores: character (personajes), subtitles (subtítulos), imagen (imágenes), audio (archivos de audio), script (guiones), text (texto plano)',
+      'Tipo de asset. Valores: prompt, txt, json, subtitulos_ingles, subtitulos_espanol, director_script, audio_original, audio_caricaturizado_ingles, audio_caricaturizado_espanol',
     enum: AssetType,
-    default: AssetType.TEXT,
-    example: AssetType.SCRIPT,
+    default: AssetType.TXT,
+    example: AssetType.PROMPT,
     enumName: 'AssetType',
   })
   assetType: AssetType;
