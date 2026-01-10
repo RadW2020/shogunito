@@ -20,7 +20,8 @@
     "paths": {
       "@app/*": ["app/*"],
       "@features/*": ["features/*"],
-      "@shared/*": ["shared/*"]
+      "@shared/*": ["shared/*"],
+      "@shogun/shared": ["../../packages/shared/src/index"]
     },
 
     /* Linting */
