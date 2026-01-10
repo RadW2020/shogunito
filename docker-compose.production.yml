@@ -1,41 +1,29 @@
 # ==============================================
-# SHOGUN - Docker Compose for Production
+# SHOGUN - Docker Compose for Coolify Deployment
 # ==============================================
-# This file is optimized for production use
+# Optimized for Coolify with Traefik proxy
 # 
-# IMPORTANT: 
-# - Environment variables are loaded from apps/api/.env.production
-# - A symlink .env -> apps/api/.env.production is created automatically
-# - Docker Compose reads from .env file in project root for variable substitution
-# - All services use env_file to load variables into containers
-# - Usage: docker-compose -f docker-compose.production.yml -p shogun-prod up -d
-# - Or: COMPOSE_PROJECT_NAME=shogun-prod docker-compose -f docker-compose.production.yml up -d
+# DEPLOYMENT WITH COOLIFY:
+# 1. Create a new Docker Compose resource in Coolify
+# 2. Point to this file: docker-compose.production.yml
+# 3. Configure domains for api/web/minio in Coolify UI
+# 4. Coolify handles SSL certificates automatically
 #
-# IMPORTANT: Use project name "shogun-prod" to avoid conflicts with development
-# This ensures containers from development (shogun-dev) are not affected
-#
-# PORTS (different from dev to avoid collisions):
-# - PostgreSQL: 5433 (dev uses 5432)
-# - MinIO: 9010/9011 (dev uses 9000/9001)
-# - API: 3002 (dev uses 3000)
-# - Web: 3003 (dev uses 5173)
-# NOTE: Using Coolify Proxy for reverse proxy and SSL
+# BEFORE FIRST DEPLOY, create volumes on the server:
+#   docker volume create shogun_pgdata_prod
+#   docker volume create shogun_minio_prod
 
 services:
   # ============================================
-  # Database
+  # Database (internal only, no external access)
   # ============================================
   postgres:
     image: postgres:16
     container_name: shogun-postgres-prod
-    env_file:
-      - ./apps/api/.env.production
     environment:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_USER: ${DATABASE_USERNAME}
       POSTGRES_DB: ${DATABASE_NAME}
-    ports:
-      - "127.0.0.1:5433:5432"  # Port 5433 to avoid collision with dev (5432)
     volumes:
       - pgdata_prod:/var/lib/postgresql/data
     restart: unless-stopped
@@ -48,22 +36,20 @@ services:
       - shogun-network
 
   # ============================================
-  # Object Storage
+  # Object Storage (Coolify will proxy this)
   # ============================================
   minio:
     image: minio/minio:latest
     container_name: shogun-minio-prod
     command: server /data --console-address ":9001"
-    env_file:
-      - ./apps/api/.env.production
     environment:
       MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
       MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
       MINIO_BROWSER_REDIRECT_URL: ${MINIO_PUBLIC_ENDPOINT}
       MINIO_SERVER_URL: ${MINIO_PUBLIC_ENDPOINT}
-    ports:
-      - "127.0.0.1:9010:9000"   # Port 9010 to avoid collision with dev (9000)
-      - "127.0.0.1:9011:9001"   # Port 9011 to avoid collision with dev (9001)
+    expose:
+      - "9000"  # S3 API
+      - "9001"  # Console
     volumes:
       - minio_prod:/data
     restart: unless-stopped
@@ -76,53 +62,74 @@ services:
       - shogun-network
 
   # ============================================
-  # API Service
+  # API Service (Coolify will proxy this)
   # ============================================
   api:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
     container_name: shogun-api-prod
-    env_file:
-      - ./apps/api/.env.production
     environment:
       NODE_ENV: production
       PORT: 3002
-      # Database - loaded from .env.production via env_file
+      # Database connection
       DATABASE_HOST: postgres
       DATABASE_PORT: 5432
-      # All other variables are loaded from .env.production via env_file above
-      # IMPORTANT: JWT_SECRET and JWT_REFRESH_SECRET MUST remain the same between deployments
-      # to preserve user sessions. If these change, all existing tokens will be invalidated.
-    ports:
-      - "127.0.0.1:3002:3002"  # Only bind to localhost
-    volumes:
-      # Mount .env.production if you want to override from file
-      # Otherwise, use environment variables above
-      - ./apps/api/.env.production:/app/apps/api/.env.production:ro
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_NAME: ${DATABASE_NAME}
+      # JWT - CRITICAL: Keep these consistent between deployments
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
+      JWT_REFRESH_EXPIRES_IN: ${JWT_REFRESH_EXPIRES_IN:-7d}
+      # MinIO
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+      MINIO_USE_SSL: "false"
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_PUBLIC_ENDPOINT: ${MINIO_PUBLIC_ENDPOINT}
+      # CORS - set your actual domains
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-https://shogun.yourdomain.com}
+      FRONTEND_URL: ${FRONTEND_URL:-https://shogun.yourdomain.com}
+    expose:
+      - "3002"
     depends_on:
       postgres:
         condition: service_healthy
       minio:
         condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "-O", "/dev/null", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 3
     networks:
       - shogun-network
 
   # ============================================
-  # Web Frontend
+  # Web Frontend (Coolify will proxy this)
   # ============================================
   web:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
       args:
-        VITE_API_URL: ${VITE_API_URL:-https://shogunapi.yourdomain.com}
+        VITE_API_URL: ${VITE_API_URL:-https://api.yourdomain.com}
         VITE_NODE_ENV: production
     container_name: shogun-web-prod
-    ports:
-      - "127.0.0.1:3003:3003"  # Only bind to localhost (Coolify Proxy will proxy)
+    expose:
+      - "3003"
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3003/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 10s
+      retries: 3
     networks:
       - shogun-network
 
