@@ -877,7 +877,7 @@ export class VersionsService {
       const assetStatusId = dto.statusId || null;
 
       // 3. Create asset directly
-      const asset = manager.create('Asset', {
+      const asset = manager.create(Asset, {
         name: dto.name,
         assetType: dto.assetType,
         projectId: project.id,
@@ -888,10 +888,10 @@ export class VersionsService {
         createdBy: userContext?.userId || null,
         assignedTo: dto.assignedTo,
       });
-      const savedAsset = (await manager.save(asset)) as any;
+      const savedAsset = await manager.save(asset);
 
       // 4. Create custom version
-      const version = manager.create('Version', {
+      const version = manager.create(Version, {
         code: dto.versionCode || `${savedAsset.code}_001`,
         name: dto.versionName || `Initial version of ${savedAsset.name}`,
         description: dto.versionDescription || 'Initial version created automatically',
@@ -906,12 +906,12 @@ export class VersionsService {
         frameRange: dto.frameRange,
         artist: dto.artist,
         createdBy: userContext?.userId || null,
-        assignedTo: dto.versionAssignedTo || dto.assignedTo,
+        assignedTo: dto.versionAssignedTo ? Number(dto.versionAssignedTo) : dto.assignedTo,
         thumbnailPath: dto.versionThumbnailPath,
         publishedAt: dto.publishedAt,
         lineage: dto.lineage,
       });
-      const savedVersion = (await manager.save(version)) as any;
+      const savedVersion = await manager.save(version);
 
       return {
         asset: {
@@ -956,7 +956,7 @@ export class VersionsService {
       const playlistStatusId = dto.statusId || null;
 
       // 3. Create playlist directly
-      const playlist = manager.create('Playlist', {
+      const playlist = manager.create(Playlist, {
         name: dto.name,
         projectId: project.id,
         code: playlistCode,
@@ -966,10 +966,10 @@ export class VersionsService {
         createdBy: userContext?.userId || null,
         assignedTo: dto.assignedTo,
       });
-      const savedPlaylist = (await manager.save(playlist)) as any;
+      const savedPlaylist = await manager.save(playlist);
 
       // 4. Create custom version
-      const version = manager.create('Version', {
+      const version = manager.create(Version, {
         code: dto.versionCode || `${savedPlaylist.code}_001`,
         name: dto.versionName || `Initial version of ${savedPlaylist.name}`,
         description: dto.versionDescription || 'Initial version created automatically',
@@ -984,12 +984,12 @@ export class VersionsService {
         frameRange: dto.frameRange,
         artist: dto.artist,
         createdBy: userContext?.userId || null,
-        assignedTo: dto.versionAssignedTo || dto.assignedTo,
+        assignedTo: dto.versionAssignedTo ? Number(dto.versionAssignedTo) : dto.assignedTo,
         thumbnailPath: dto.versionThumbnailPath,
         publishedAt: dto.publishedAt,
         lineage: dto.lineage,
       });
-      const savedVersion = (await manager.save(version)) as any;
+      const savedVersion = await manager.save(version);
 
       return {
         playlist: {
@@ -1034,22 +1034,22 @@ export class VersionsService {
       const sequenceStatusId = dto.statusId || null;
 
       // 3. Create sequence directly
-      const sequence = manager.create('Sequence', {
+      const sequence = manager.create(Sequence, {
         name: dto.name,
-        cutOrder: dto.cutOrder,
+        cutOrder: dto.cutOrder || 1,
         episodeId: episode.id,
         code: sequenceCode,
         description: dto.description,
         statusId: sequenceStatusId,
         duration: dto.duration,
         storyId: dto.storyId,
-        createdBy: userContext?.userId || null,
+        createdBy: userContext?.userId ?? null,
         assignedTo: dto.assignedTo,
       });
-      const savedSequence = (await manager.save(sequence)) as any;
+      const savedSequence = await manager.save(sequence);
 
       // 4. Create custom version
-      const version = manager.create('Version', {
+      const version = manager.create(Version, {
         code: dto.versionCode || `${savedSequence.code}_001`,
         name: dto.versionName || `Initial version of ${savedSequence.name}`,
         description: dto.versionDescription || 'Initial version created automatically',
@@ -1064,12 +1064,12 @@ export class VersionsService {
         frameRange: dto.frameRange,
         artist: dto.artist,
         createdBy: userContext?.userId || null,
-        assignedTo: dto.versionAssignedTo || dto.assignedTo,
+        assignedTo: dto.versionAssignedTo ? Number(dto.versionAssignedTo) : dto.assignedTo,
         thumbnailPath: dto.versionThumbnailPath,
         publishedAt: dto.publishedAt,
         lineage: dto.lineage,
       });
-      const savedVersion = (await manager.save(version)) as any;
+      const savedVersion = await manager.save(version);
 
       return {
         sequence: {
