@@ -51,10 +51,6 @@
 
 - **[CI Review](./ci/CI_REVIEW.md)** - Revisión de CI/CD
 
-#### 📊 Monitoring
-
-- **[Checkly Guide](./monitoring/CHECKLY_GUIDE.md)** - Configuración de Checkly
-- **[Checkly README](./monitoring/README.md)** - Documentación de Checkly
 
 ---
 
@@ -116,7 +112,6 @@ docs/
 ├── deployment/            # Guías de despliegue
 ├── migrations/            # Guías de migración
 ├── ci/                    # CI/CD
-├── monitoring/            # Monitoreo (Checkly)
 └── README.md             # Este archivo
 ```
 
@@ -143,7 +138,6 @@ docs/
 ## 🔗 Enlaces Útiles
 
 - [GitHub Repository](https://github.com/oinotna/shogun)
-- [Checkly Dashboard](https://app.checklyhq.com)
 
 ---
 

@@ -22,14 +22,10 @@
     "migration:create": "npm run migration:create --workspace=shogun-api --",
     "migration:run": "npm run migration:run --workspace=shogun-api",
     "migration:revert": "npm run migration:revert --workspace=shogun-api",
-    "migration:show": "npm run migration:show --workspace=shogun-api",
-    "checkly:test": "checkly test",
-    "checkly:deploy": "checkly deploy",
-    "checkly:list": "checkly list"
+    "migration:show": "npm run migration:show --workspace=shogun-api"
   },
   "devDependencies": {
     "baseline-browser-mapping": "^2.9.6",
-    "checkly": "^6.9.7",
     "prettier": "^3.6.2",
     "turbo": "^2.5.6",
     "typescript": "5.9.2"
