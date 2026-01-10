@@ -6,7 +6,7 @@ import { LoadingSpinner, EmptyState } from '@shared/ui';
 import { useProjects } from '@features/projects/api/useProjects';
 import { useEpisodes } from '@features/episodes/api/useEpisodes';
 import { useSequences } from '@features/sequences/api/useSequences';
-import { useShots } from '@features/shots/api/useShots';
+
 import type { StatusMeta, TabType } from '@shogun/shared';
 import type { Playlist } from '@shared/api/client';
 
@@ -38,10 +38,10 @@ export const PlaylistsTabWrapper: React.FC<PlaylistsTabWrapperProps> = (props) =
 
   const { data: sequences = [], isLoading: sequencesLoading } = useSequences();
 
-  const { data: shots = [], isLoading: shotsLoading } = useShots();
+
 
   const isLoading =
-    playlistsLoading || projectsLoading || episodesLoading || sequencesLoading || shotsLoading;
+    playlistsLoading || projectsLoading || episodesLoading || sequencesLoading;
 
   if (isLoading) {
     return (
@@ -93,17 +93,15 @@ export const PlaylistsTabWrapper: React.FC<PlaylistsTabWrapperProps> = (props) =
 
     // Filter by episode through versions
     if (filters.selectedEpisodeId !== 'all') {
-      // Check if any version in the playlist belongs to the selected episode
+      const episodeId = parseInt(filters.selectedEpisodeId);
       const hasVersionInEpisode = playlist.versions?.some((version) => {
-        if (version.entityCode) {
-          // Find the shot for this version
-          const shot = shots.find((s) => s.code === version.entityCode);
-          if (shot?.sequence?.code) {
-            // Find the sequence for this shot
-            const sequence = sequences.find((seq) => seq.code === shot.sequence?.code);
-            if (String(sequence?.episodeId) === filters.selectedEpisodeId) {
-              return true;
-            }
+        if (version.entityType === 'episode' && version.entityId === episodeId) {
+          return true;
+        }
+        if (version.entityType === 'sequence') {
+          const sequence = sequences.find(s => s.id === version.entityId);
+          if (sequence && sequence.episodeId === episodeId) {
+            return true;
           }
         }
         return false;
@@ -116,14 +114,10 @@ export const PlaylistsTabWrapper: React.FC<PlaylistsTabWrapperProps> = (props) =
 
     // Filter by sequence through versions
     if (filters.selectedSequenceId !== 'all') {
-      // Check if any version in the playlist belongs to the selected sequence
+      const sequenceId = parseInt(filters.selectedSequenceId);
       const hasVersionInSequence = playlist.versions?.some((version) => {
-        if (version.entityCode) {
-          // Find the shot for this version
-          const shot = shots.find((s) => s.code === version.entityCode);
-          if (shot?.sequence?.code === filters.selectedSequenceId) {
-            return true;
-          }
+        if (version.entityType === 'sequence' && version.entityId === sequenceId) {
+          return true;
         }
         return false;
       });

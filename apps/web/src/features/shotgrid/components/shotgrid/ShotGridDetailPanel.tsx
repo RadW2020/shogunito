@@ -10,12 +10,7 @@ interface ShotGridDetailPanelProps {
     item: { id: string | number; name?: string; code?: string };
   } | null;
   onClose: () => void;
-  apiShots: Array<{
-    id: number;
-    code: string;
-    name: string;
-    sequence?: { code: string };
-  }>;
+
   apiSequences: Array<{
     id: number;
     code: string;
@@ -37,12 +32,7 @@ const DetailPanelContent: React.FC<{
     type: TabType;
     item: { id: string | number; name?: string; code?: string };
   };
-  apiShots: Array<{
-    id: number;
-    code: string;
-    name: string;
-    sequence?: { code: string };
-  }>;
+
   apiSequences: Array<{
     id: number;
     code: string;
@@ -56,62 +46,31 @@ const DetailPanelContent: React.FC<{
     projectId?: number;
   }>;
   apiProjects: Array<{ id: number; code: string; name: string }>;
-}> = memo(({ selectedDetail, apiShots, apiSequences, apiEpisodes, apiProjects }) => {
+}> = memo(({ selectedDetail, apiSequences, apiEpisodes, apiProjects }) => {
   const itemToShow = useMemo(() => {
     let item = selectedDetail.item;
 
-    // Add fromEntity field for versions
-    if (selectedDetail.type === 'versions' && (selectedDetail.item as ApiVersion).entityCode) {
+    // Add fromEntity field for versions using new entityType/entityId
+    if (selectedDetail.type === 'versions') {
       const version = selectedDetail.item as ApiVersion;
-      const shot = apiShots.find((s) => s.code === version.entityCode);
+      let hierarchyItem: any = null;
 
-      if (shot) {
-        const sequence = apiSequences.find((seq) => seq.code === shot.sequence?.code);
-        const episode = apiEpisodes.find((ep) => sequence && ep.id === sequence.episodeId);
-        const project = apiProjects.find((proj) => episode && proj.id === episode.projectId);
+      if (version.entityType === 'episode') {
+        hierarchyItem = apiEpisodes.find(e => e.id === version.entityId);
+      } else if (version.entityType === 'sequence') {
+        hierarchyItem = apiSequences.find(s => s.id === version.entityId);
+      }
 
-        // Create enhanced shot object with hierarchy
-        const enhancedShot = {
-          ...shot,
-          hierarchy: project
-            ? {
-                project: {
-                  id: project.id,
-                  code: project.code,
-                  name: project.name,
-                  episode: episode
-                    ? {
-                        code: episode.code,
-                        name: episode.name,
-                        sequence: sequence
-                          ? {
-                              code: sequence.code,
-                              name: sequence.name,
-                              shot: {
-                                code: shot.code,
-                                name: shot.name,
-                              },
-                            }
-                          : null,
-                      }
-                    : null,
-                },
-              }
-            : null,
-        };
-
-        // Remove duplicate sequence field from shot if it exists
-        delete (enhancedShot as any).sequence;
-
+      if (hierarchyItem) {
         item = {
           ...version,
-          fromEntity: enhancedShot,
+          fromEntity: hierarchyItem,
         } as any;
       }
     }
 
     return item;
-  }, [selectedDetail, apiShots, apiSequences, apiEpisodes, apiProjects]);
+  }, [selectedDetail, apiSequences, apiEpisodes, apiProjects]);
 
   return (
     <div className="p-4">
@@ -131,7 +90,6 @@ export const ShotGridDetailPanel: React.FC<ShotGridDetailPanelProps> = memo(
     showDetailPanel,
     selectedDetail,
     onClose,
-    apiShots,
     apiSequences,
     apiEpisodes,
     apiProjects,
@@ -170,7 +128,6 @@ export const ShotGridDetailPanel: React.FC<ShotGridDetailPanelProps> = memo(
 
         <DetailPanelContent
           selectedDetail={selectedDetail}
-          apiShots={apiShots}
           apiSequences={apiSequences}
           apiEpisodes={apiEpisodes}
           apiProjects={apiProjects}

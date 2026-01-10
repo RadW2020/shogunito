@@ -43,7 +43,6 @@ export function ShotGrid() {
     episodes: apiEpisodes,
     assets: apiAssets,
     sequences: apiSequences,
-    shots: apiShots,
     versions: apiVersions,
     playlists: apiPlaylists,
     statuses: apiStatuses,
@@ -141,7 +140,6 @@ export function ShotGrid() {
       projects: 'projects',
       episodes: 'episodes',
       sequences: 'sequences',
-      shots: 'shots',
       assets: 'assets',
       versions: 'versions',
       playlists: 'playlists',
@@ -207,18 +205,15 @@ export function ShotGrid() {
           episodes={apiEpisodes}
           assets={apiAssets}
           sequences={apiSequences}
-          shots={apiShots}
           selectedProjectId={filters.selectedProjectId}
           selectedEpisodeId={filters.selectedEpisodeId}
           selectedAssetId={filters.selectedAssetId}
           selectedSequenceId={filters.selectedSequenceId}
-          selectedShotId={filters.selectedShotId}
           selectedFormat={filters.selectedFormat}
           onProjectChange={(id) => setFilter('selectedProjectId', id)}
           onEpisodeChange={(id) => setFilter('selectedEpisodeId', id)}
           onAssetChange={(id) => setFilter('selectedAssetId', id)}
           onSequenceChange={(id) => setFilter('selectedSequenceId', id)}
-          onShotChange={(id) => setFilter('selectedShotId', id)}
           onFormatChange={(format) => setFilter('selectedFormat', format)}
         />
       )}
@@ -241,7 +236,6 @@ export function ShotGrid() {
             onEditEpisode={editHandlers.handleEditEpisode}
             onEditAsset={editHandlers.handleEditAsset}
             onEditSequence={editHandlers.handleEditSequence}
-            onEditShot={editHandlers.handleEditShot}
             onEditVersion={editHandlers.handleEditVersion}
             onEditPlaylist={editHandlers.handleEditPlaylist}
             onEditStatus={editHandlers.handleEditStatus}
@@ -249,7 +243,6 @@ export function ShotGrid() {
             onAddNoteToEpisode={addNoteHandlers.handleAddNoteToEpisode}
             onAddNoteToAsset={addNoteHandlers.handleAddNoteToAsset}
             onAddNoteToSequence={addNoteHandlers.handleAddNoteToSequence}
-            onAddNoteToShot={addNoteHandlers.handleAddNoteToShot}
             onAddNoteToVersion={addNoteHandlers.handleAddNoteToVersion}
             onAddNoteToPlaylist={addNoteHandlers.handleAddNoteToPlaylist}
             onViewNotes={handleViewNotes}
@@ -259,7 +252,6 @@ export function ShotGrid() {
             episodes={apiEpisodes}
             assets={apiAssets}
             sequences={apiSequences}
-            shots={apiShots}
             versions={apiVersions}
             playlists={apiPlaylists}
             statuses={apiStatuses}
@@ -272,7 +264,6 @@ export function ShotGrid() {
           showDetailPanel={showDetailPanel}
           selectedDetail={selectedDetail}
           onClose={handleCloseDetailPanel}
-          apiShots={apiShots}
           apiSequences={apiSequences}
           apiEpisodes={apiEpisodes}
           apiProjects={apiProjects}
@@ -287,7 +278,6 @@ export function ShotGrid() {
         episodes={apiEpisodes}
         assets={apiAssets}
         sequences={apiSequences}
-        shots={apiShots}
         versions={apiVersions}
         playlists={apiPlaylists}
       />
