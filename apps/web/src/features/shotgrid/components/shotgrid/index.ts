@@ -6,7 +6,6 @@ export type {
   Episode,
   Asset,
   Sequence,
-  Shot,
   Version,
   Playlist,
   Note,

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { apiService } from '@shared/api/client';
-import type { Project, Episode, Asset, Sequence, Shot, Status } from '@shogun/shared';
+import type { Project, Episode, Asset, Sequence, Status } from '@shogun/shared';
 import type { ApiVersion, Playlist } from '@shared/api/client';
 
 // Simplified user type for UI display
@@ -18,7 +18,6 @@ interface UseShotGridDataReturn {
   episodes: Episode[];
   assets: Asset[];
   sequences: Sequence[];
-  shots: Shot[];
   versions: ApiVersion[];
   playlists: Playlist[];
   statuses: Status[];
@@ -48,7 +47,6 @@ export function useShotGridData(): UseShotGridDataReturn {
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [assets, setAssets] = useState<Asset[]>([]);
   const [sequences, setSequences] = useState<Sequence[]>([]);
-  const [shots, setShots] = useState<Shot[]>([]);
   const [versions, setVersions] = useState<ApiVersion[]>([]);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [statuses, setStatuses] = useState<Status[]>([]);
@@ -65,7 +63,6 @@ export function useShotGridData(): UseShotGridDataReturn {
         queryClient.invalidateQueries({ queryKey: ['episodes'] }),
         queryClient.invalidateQueries({ queryKey: ['assets'] }),
         queryClient.invalidateQueries({ queryKey: ['sequences'] }),
-        queryClient.invalidateQueries({ queryKey: ['shots'] }),
         queryClient.invalidateQueries({ queryKey: ['versions'] }),
         queryClient.invalidateQueries({ queryKey: ['playlists'] }),
         queryClient.invalidateQueries({ queryKey: ['statuses'] }),
@@ -78,7 +75,6 @@ export function useShotGridData(): UseShotGridDataReturn {
         apiService.getEpisodes(),
         apiService.getAssets(),
         apiService.getSequences(),
-        apiService.getShots(),
         apiService.getVersions(),
         apiService.getPlaylists(),
         apiService.getStatuses(),
@@ -90,11 +86,10 @@ export function useShotGridData(): UseShotGridDataReturn {
       const episodesData = results[1].status === 'fulfilled' ? results[1].value : (console.error('Failed to load episodes:', results[1].reason), []);
       const assetsData = results[2].status === 'fulfilled' ? results[2].value : (console.error('Failed to load assets:', results[2].reason), []);
       const sequencesData = results[3].status === 'fulfilled' ? results[3].value : (console.error('Failed to load sequences:', results[3].reason), []);
-      const shotsData = results[4].status === 'fulfilled' ? results[4].value : (console.error('Failed to load shots:', results[4].reason), []);
-      const versionsData = results[5].status === 'fulfilled' ? results[5].value : (console.error('Failed to load versions:', results[5].reason), []);
-      const playlistsData = results[6].status === 'fulfilled' ? results[6].value : (console.error('Failed to load playlists:', results[6].reason), []);
-      const statusesData = results[7].status === 'fulfilled' ? results[7].value : (console.error('Failed to load statuses:', results[7].reason), []);
-      const usersData = results[8].status === 'fulfilled' ? results[8].value : (console.error('Failed to load users:', results[8].reason), []);
+      const versionsData = results[4].status === 'fulfilled' ? results[4].value : (console.error('Failed to load versions:', results[4].reason), []);
+      const playlistsData = results[5].status === 'fulfilled' ? results[5].value : (console.error('Failed to load playlists:', results[5].reason), []);
+      const statusesData = results[6].status === 'fulfilled' ? results[6].value : (console.error('Failed to load statuses:', results[6].reason), []);
+      const usersData = results[7].status === 'fulfilled' ? results[7].value : (console.error('Failed to load users:', results[7].reason), []);
 
       console.log('Refreshed data. Projects:', projectsData.length, 'Statuses:', statusesData.length, statusesData);
 
@@ -103,7 +98,6 @@ export function useShotGridData(): UseShotGridDataReturn {
       setEpisodes(episodesData);
       setAssets(assetsData);
       setSequences(sequencesData);
-      setShots(shotsData);
       setVersions(versionsData);
       setPlaylists(playlistsData);
       setStatuses(statusesData);
@@ -123,7 +117,6 @@ export function useShotGridData(): UseShotGridDataReturn {
         queryClient.refetchQueries({ queryKey: ['episodes'], type: 'active' }),
         queryClient.refetchQueries({ queryKey: ['assets'], type: 'active' }),
         queryClient.refetchQueries({ queryKey: ['sequences'], type: 'active' }),
-        queryClient.refetchQueries({ queryKey: ['shots'], type: 'active' }),
         queryClient.refetchQueries({ queryKey: ['versions'], type: 'active' }),
         queryClient.refetchQueries({ queryKey: ['playlists'], type: 'active' }),
         queryClient.refetchQueries({ queryKey: ['statuses'], type: 'active' }),
@@ -150,7 +143,6 @@ export function useShotGridData(): UseShotGridDataReturn {
     episodes,
     assets,
     sequences,
-    shots,
     versions,
     playlists,
     statuses,

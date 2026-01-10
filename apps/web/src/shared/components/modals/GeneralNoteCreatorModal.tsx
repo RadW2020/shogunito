@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NoteCreator } from '../shared/NoteCreator';
 import type { LinkType } from '../shared/NoteCreator';
-import type { Project, Episode, Asset, Sequence, Shot } from '@shogun/shared';
+import type { Project, Episode, Asset, Sequence } from '@shogun/shared';
 import type { ApiVersion, Playlist } from '@shared/api/client';
 
 interface GeneralNoteCreatorModalProps {
@@ -11,7 +11,6 @@ interface GeneralNoteCreatorModalProps {
   episodes: Episode[];
   assets: Asset[];
   sequences: Sequence[];
-  shots: Shot[];
   playlists: Playlist[];
   versions: ApiVersion[];
 }
@@ -23,13 +22,12 @@ export const GeneralNoteCreatorModal: React.FC<GeneralNoteCreatorModalProps> = (
   episodes,
   assets,
   sequences,
-  shots,
   playlists,
   versions,
 }) => {
   const [selectedEntityType, setSelectedEntityType] = useState<string>('');
   const [selectedEntity, setSelectedEntity] = useState<
-    Project | Episode | Asset | Sequence | Shot | Playlist | ApiVersion | null
+    Project | Episode | Asset | Sequence | Playlist | ApiVersion | null
   >(null);
   const [showNoteCreator, setShowNoteCreator] = useState(false);
 
@@ -39,7 +37,7 @@ export const GeneralNoteCreatorModal: React.FC<GeneralNoteCreatorModalProps> = (
   };
 
   const handleEntitySelect = (
-    entity: Project | Episode | Asset | Sequence | Shot | Playlist | ApiVersion,
+    entity: Project | Episode | Asset | Sequence | Playlist | ApiVersion,
   ) => {
     setSelectedEntity(entity);
     setShowNoteCreator(true);
@@ -58,7 +56,6 @@ export const GeneralNoteCreatorModal: React.FC<GeneralNoteCreatorModalProps> = (
     | Episode
     | Asset
     | Sequence
-    | Shot
     | Playlist
     | ApiVersion
   )[] => {
@@ -71,8 +68,6 @@ export const GeneralNoteCreatorModal: React.FC<GeneralNoteCreatorModalProps> = (
         return assets;
       case 'Sequence':
         return sequences;
-      case 'Shot':
-        return shots;
       case 'Playlist':
         return playlists;
       case 'Version':
@@ -88,7 +83,6 @@ export const GeneralNoteCreatorModal: React.FC<GeneralNoteCreatorModalProps> = (
       Episode: '🎬',
       Asset: '🎨',
       Sequence: '🎞️',
-      Shot: '📸',
       Playlist: '📋',
       Version: '🔄',
     };
@@ -138,7 +132,7 @@ export const GeneralNoteCreatorModal: React.FC<GeneralNoteCreatorModalProps> = (
                   1. Select Entity Type
                 </h3>
                 <div className="grid grid-cols-2 gap-3">
-                  {['Project', 'Episode', 'Asset', 'Sequence', 'Shot', 'Playlist', 'Version'].map(
+                  {['Project', 'Episode', 'Asset', 'Sequence', 'Playlist', 'Version'].map(
                     (type) => (
                       <button
                         key={type}

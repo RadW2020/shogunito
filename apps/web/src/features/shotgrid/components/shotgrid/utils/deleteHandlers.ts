@@ -59,12 +59,8 @@ export async function handleDeleteSelected({
           await deleteSequenceMutation.mutateAsync(Number(id));
         }
 
-        // Invalidate both sequences and shots queries in parallel since shots depend on sequences
-        // Solution #1 from SEQUENCES_DELAY_INVESTIGATION.md: Remove delays and use Promise.all
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: ['sequences'] }),
-          queryClient.invalidateQueries({ queryKey: ['shots'] }),
-        ]);
+        // Invalidate sequences query
+        await queryClient.invalidateQueries({ queryKey: ['sequences'] });
 
         // Refetch sequences after invalidation
         await queryClient.refetchQueries({
@@ -73,11 +69,6 @@ export async function handleDeleteSelected({
         });
         break;
 
-      case 'shots':
-        for (const id of ids) {
-          await apiService.deleteShot(Number(id));
-        }
-        break;
 
       case 'versions':
         for (const id of ids) {

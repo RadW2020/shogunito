@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { VersionsTab } from '@features/shotgrid/components/shotgrid/tabs/VersionsTab';
 import { useVersionsPaginated, useIsVersionsInitialLoading } from '../api/useVersionsPaginated';
 import { VirtualTable, type VirtualTableColumn } from '@shared/components/pagination';
-import { useShots } from '@features/shots/api/useShots';
 import { useSequences } from '@features/sequences/api/useSequences';
 import { useEpisodes } from '@features/episodes/api/useEpisodes';
 import { useUiStore } from '@app/stores/uiStore';
@@ -35,11 +34,6 @@ interface VersionsTabWrapperWithPaginationProps {
  * Virtual scrolling only renders visible rows, which significantly
  * improves performance when dealing with thousands of versions.
  *
- * Usage:
- * - Set useVirtualTable={true} for virtual scrolling mode
- * - Set useVirtualTable={false} for traditional table view
- * - Adjust pageSize to control initial load size (default: 100)
- *
  * @example
  * <VersionsTabWrapperWithPagination
  *   {...props}
@@ -54,60 +48,50 @@ export const VersionsTabWrapperWithPagination: React.FC<VersionsTabWrapperWithPa
 }) => {
   const { filters, viewModes } = useUiStore();
 
-  // Use shot filter if available
-  const shotId = filters.selectedShotId !== 'all' ? Number(filters.selectedShotId) : undefined;
-
-  const query = useVersionsPaginated({ shotId, limit: pageSize });
+  const query = useVersionsPaginated({ limit: pageSize });
   const isInitialLoading = useIsVersionsInitialLoading(query);
 
-  const { data: shots = [], isLoading: shotsLoading } = useShots();
   const { data: sequences = [], isLoading: sequencesLoading } = useSequences();
   const { data: episodes = [], isLoading: episodesLoading } = useEpisodes();
 
-  const isLoading = isInitialLoading || shotsLoading || sequencesLoading || episodesLoading;
+  const isLoading = isInitialLoading || sequencesLoading || episodesLoading;
 
   // Apply hierarchical filters
   const filteredVersions = useMemo(() => {
-    return query.flatData.filter((version) => {
-      // Filter by shot if specified
-      if (
-        filters.selectedShotId !== 'all' &&
-        (version as any).entityCode !== filters.selectedShotId
-      ) {
+    return query.flatData.filter((version: ApiVersion) => {
+      // Filter by entity type
+      if (filters.selectedEntityType !== 'all' && version.entityType !== filters.selectedEntityType.toLowerCase()) {
         return false;
       }
 
-      // Filter by sequence through shot relationship
-      if (filters.selectedSequenceId !== 'all') {
-        const shot = shots.find((s) => s.code === (version as any).entityCode);
-        if (!shot || shot.sequence?.code !== filters.selectedSequenceId) {
-          return false;
-        }
-      }
-
-      // Filter by episode through sequence-shot relationship
-      if (filters.selectedEpisodeId !== 'all') {
-        const shot = shots.find((s) => s.code === (version as any).entityCode);
-        if (shot && shot.sequence?.code) {
-          const sequence = sequences.find((seq) => seq.code === shot.sequence?.code);
-          if (String(sequence?.episodeId) !== filters.selectedEpisodeId) {
-            return false;
-          }
-        }
-      }
-
-      // Filter by project through episode-sequence-shot relationship
+      // Filter by project
       if (filters.selectedProjectId !== 'all') {
-        const shot = shots.find((s) => s.code === (version as any).entityCode);
-        if (shot && shot.sequence?.code) {
-          const sequence = sequences.find((seq) => seq.code === shot.sequence?.code);
-          if (sequence) {
-            const episode = episodes.find((ep) => ep.id === sequence.episodeId);
-            if (String(episode?.projectId) !== filters.selectedProjectId) {
-              return false;
-            }
-          }
+        const projectId = parseInt(filters.selectedProjectId);
+        if (version.entityType === 'episode') {
+          const episode = episodes.find(e => e.id === version.entityId);
+          if (!episode || episode.projectId !== projectId) return false;
+        } else if (version.entityType === 'sequence') {
+          const sequence = sequences.find(s => s.id === version.entityId);
+          if (!sequence) return false;
+          const episode = episodes.find(e => e.id === sequence.episodeId);
+          if (!episode || episode.projectId !== projectId) return false;
         }
+      }
+
+      // Filter by episode
+      if (filters.selectedEpisodeId !== 'all') {
+        const episodeId = parseInt(filters.selectedEpisodeId);
+        if (version.entityType === 'episode' && version.entityId !== episodeId) return false;
+        if (version.entityType === 'sequence') {
+          const sequence = sequences.find(s => s.id === version.entityId);
+          if (!sequence || sequence.episodeId !== episodeId) return false;
+        }
+      }
+
+      // Filter by sequence
+      if (filters.selectedSequenceId !== 'all') {
+        const sequenceId = parseInt(filters.selectedSequenceId);
+        if (version.entityType === 'sequence' && version.entityId !== sequenceId) return false;
       }
 
       // Apply search filter
@@ -121,7 +105,7 @@ export const VersionsTabWrapperWithPagination: React.FC<VersionsTabWrapperWithPa
 
       return true;
     });
-  }, [query.flatData, filters, shots, sequences, episodes, props.searchTerm]);
+  }, [query.flatData, filters, sequences, episodes, props.searchTerm]);
 
   // Show loading spinner on initial load
   if (isLoading) {
@@ -212,6 +196,7 @@ export const VersionsTabWrapperWithPagination: React.FC<VersionsTabWrapperWithPa
             style={{
               backgroundColor: props.statusMap[version.statusId || '']?.color || '#gray',
               color: 'white',
+              cursor: 'default'
             }}
           >
             {props.statusMap[version.statusId || '']?.label || version.statusId || ''}
@@ -219,10 +204,10 @@ export const VersionsTabWrapperWithPagination: React.FC<VersionsTabWrapperWithPa
         ),
       },
       {
-        key: 'shot',
-        header: 'Shot',
+        key: 'entity',
+        header: 'Entity',
         width: 150,
-        render: (version) => (version as any).entityCode || '-',
+        render: (version) => version.entityCode || '-',
       },
       {
         key: 'created',
@@ -272,7 +257,6 @@ export const VersionsTabWrapperWithPagination: React.FC<VersionsTabWrapperWithPa
     <VersionsTab
       {...props}
       versions={filteredVersions}
-      shots={shots}
       viewMode={viewModes.versions}
     />
   );

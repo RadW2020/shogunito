@@ -340,18 +340,13 @@ export class NotesService {
           where: { id: entityId },
         }));
         break;
-      case LinkType.SHOT:
-        entityExists = !!(await this.shotRepository.findOne({
+      case LinkType.ASSET:
+        entityExists = !!(await this.assetRepository.findOne({
           where: { id: entityId },
         }));
         break;
       case LinkType.VERSION:
         entityExists = !!(await this.versionRepository.findOne({
-          where: { id: entityId },
-        }));
-        break;
-      case LinkType.ASSET:
-        entityExists = !!(await this.assetRepository.findOne({
           where: { id: entityId },
         }));
         break;
@@ -361,16 +356,16 @@ export class NotesService {
         }));
         break;
       default:
-        throw new NotFoundException(`Invalid link type: ${linkType as string}`);
+        throw new BadRequestException(`Invalid link type: ${linkType as string}`);
     }
 
     if (!entityExists) {
-      throw new NotFoundException(`${linkType} with ID ${entityId} not found`);
+      throw new NotFoundException(`${linkType} with ID ${linkId} not found`);
     }
   }
 
   /**
-   * Get projectId from a note's linked entity
+   * Get project ID from a note's linked entity
    */
   private async getProjectIdFromNote(note: Note): Promise<number | null> {
     const entityId = parseInt(note.linkId, 10);
@@ -380,11 +375,18 @@ export class NotesService {
       case LinkType.PROJECT:
         return entityId;
       case LinkType.EPISODE:
-        return this.projectAccessService.getProjectIdFromEpisode(entityId);
+        const episode = await this.episodeRepository.findOne({
+          where: { id: entityId },
+          select: ['projectId'],
+        });
+        return episode?.projectId || null;
       case LinkType.SEQUENCE:
-        return this.projectAccessService.getProjectIdFromSequence(entityId);
-      case LinkType.SHOT:
-        return this.projectAccessService.getProjectIdFromShot(entityId);
+        const sequence = await this.sequenceRepository.findOne({
+          where: { id: entityId },
+          relations: ['episode'],
+          select: ['id'],
+        });
+        return (sequence as any)?.episode?.projectId || null;
       case LinkType.ASSET:
         const asset = await this.assetRepository.findOne({
           where: { id: entityId },
@@ -396,14 +398,11 @@ export class NotesService {
           where: { id: entityId },
           select: ['entityId', 'entityType'],
         });
-        if (version) {
-          if (version.entityId && version.entityType) {
-            return this.projectAccessService.getProjectIdFromVersion({
-              entityId: version.entityId,
-              entityType: version.entityType,
-            });
-          }
-          return null;
+        if (version && version.entityId && version.entityType) {
+          return this.projectAccessService.getProjectIdFromVersion({
+            entityId: version.entityId,
+            entityType: version.entityType,
+          });
         }
         return null;
       case LinkType.PLAYLIST:
@@ -440,9 +439,6 @@ export class NotesService {
         break;
       case LinkType.SEQUENCE:
         await this.projectAccessService.verifySequenceAccess(entityId, userContext, minRole);
-        break;
-      case LinkType.SHOT:
-        await this.projectAccessService.verifyShotAccess(entityId, userContext, minRole);
         break;
       case LinkType.ASSET:
         const asset = await this.assetRepository.findOne({

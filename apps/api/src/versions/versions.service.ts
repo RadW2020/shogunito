@@ -9,7 +9,6 @@ import { Repository, DataSource, Not } from 'typeorm';
 import type { File } from 'multer';
 import { CreateVersionDto, VersionEntityType } from './dto/create-version.dto';
 import { UpdateVersionDto } from './dto/update-version.dto';
-import { CreateShotWithVersionDto } from './dto/create-shot-with-version.dto';
 import { CreateAssetWithVersionDto } from './dto/create-asset-with-version.dto';
 import { CreatePlaylistWithVersionDto } from './dto/create-playlist-with-version.dto';
 import { CreateSequenceWithVersionDto } from './dto/create-sequence-with-version.dto';
@@ -889,7 +888,7 @@ export class VersionsService {
         createdBy: userContext?.userId || null,
         assignedTo: dto.assignedTo,
       });
-      const savedAsset = (await manager.save(asset));
+      const savedAsset = (await manager.save(asset)) as any;
 
       // 4. Create custom version
       const version = manager.create('Version', {
@@ -912,7 +911,7 @@ export class VersionsService {
         publishedAt: dto.publishedAt,
         lineage: dto.lineage,
       });
-      const savedVersion = (await manager.save(version));
+      const savedVersion = (await manager.save(version)) as any;
 
       return {
         asset: {
@@ -967,7 +966,7 @@ export class VersionsService {
         createdBy: userContext?.userId || null,
         assignedTo: dto.assignedTo,
       });
-      const savedPlaylist = (await manager.save(playlist));
+      const savedPlaylist = (await manager.save(playlist)) as any;
 
       // 4. Create custom version
       const version = manager.create('Version', {
@@ -990,7 +989,7 @@ export class VersionsService {
         publishedAt: dto.publishedAt,
         lineage: dto.lineage,
       });
-      const savedVersion = (await manager.save(version));
+      const savedVersion = (await manager.save(version)) as any;
 
       return {
         playlist: {
@@ -1047,7 +1046,7 @@ export class VersionsService {
         createdBy: userContext?.userId || null,
         assignedTo: dto.assignedTo,
       });
-      const savedSequence = (await manager.save(sequence));
+      const savedSequence = (await manager.save(sequence)) as any;
 
       // 4. Create custom version
       const version = manager.create('Version', {
@@ -1070,7 +1069,7 @@ export class VersionsService {
         publishedAt: dto.publishedAt,
         lineage: dto.lineage,
       });
-      const savedVersion = (await manager.save(version));
+      const savedVersion = (await manager.save(version)) as any;
 
       return {
         sequence: {

@@ -1,9 +1,9 @@
-import type { Project, Episode, Asset, Sequence, Shot, Status } from '@shogun/shared';
+import type { Project, Episode, Asset, Sequence, Status } from '@shogun/shared';
 import type { ApiVersion, Playlist } from '@shared/api/client';
 
 interface ModalActions {
   openEditModal: (
-    type: 'project' | 'episode' | 'asset' | 'sequence' | 'shot' | 'version' | 'playlist' | 'status',
+    type: 'project' | 'episode' | 'asset' | 'sequence' | 'version' | 'playlist' | 'status',
     entity: any,
   ) => void;
   setNoteCreatorEntity: (
@@ -15,7 +15,7 @@ interface ModalActions {
  * Factory function to create edit handlers for different entity types
  */
 export function createEditHandler<T extends { id?: string | number }>(
-  type: 'project' | 'episode' | 'asset' | 'sequence' | 'shot' | 'version' | 'playlist' | 'status',
+  type: 'project' | 'episode' | 'asset' | 'sequence' | 'version' | 'playlist' | 'status',
   modalActions: ModalActions,
 ) {
   return (entity: T) => {
@@ -27,7 +27,7 @@ export function createEditHandler<T extends { id?: string | number }>(
  * Factory function to create "add note" handlers for different entity types
  */
 export function createAddNoteHandler<T extends { id?: string | number; name?: string }>(
-  type: 'Project' | 'Episode' | 'Asset' | 'Sequence' | 'Shot' | 'Version' | 'Playlist',
+  type: 'Project' | 'Episode' | 'Asset' | 'Sequence' | 'Version' | 'Playlist',
   modalActions: ModalActions,
 ) {
   return (entity: T) => {
@@ -53,7 +53,6 @@ export function createEditHandlers(modalActions: ModalActions) {
     handleEditEpisode: createEditHandler<Episode>('episode', modalActions),
     handleEditAsset: createEditHandler<Asset>('asset', modalActions),
     handleEditSequence: createEditHandler<Sequence>('sequence', modalActions),
-    handleEditShot: createEditHandler<Shot>('shot', modalActions),
     handleEditVersion: createEditHandler<ApiVersion>('version', modalActions),
     handleEditPlaylist: createEditHandler<Playlist>('playlist', modalActions),
     handleEditStatus: createEditHandler<Status>('status', modalActions),
@@ -69,7 +68,6 @@ export function createAddNoteHandlers(modalActions: ModalActions) {
     handleAddNoteToEpisode: createAddNoteHandler<Episode>('Episode', modalActions),
     handleAddNoteToAsset: createAddNoteHandler<Asset>('Asset', modalActions),
     handleAddNoteToSequence: createAddNoteHandler<Sequence>('Sequence', modalActions),
-    handleAddNoteToShot: createAddNoteHandler<Shot>('Shot', modalActions),
     handleAddNoteToVersion: createAddNoteHandler<ApiVersion>('Version', modalActions),
     handleAddNoteToPlaylist: createAddNoteHandler<Playlist>('Playlist', modalActions),
   };

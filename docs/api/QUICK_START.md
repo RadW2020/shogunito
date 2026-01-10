@@ -48,13 +48,7 @@ createdb shogun
 npm run migration:run
 ```
 
-### 5. Poblar con Datos de Ejemplo (Opcional)
-
-```bash
-npm run seed
-```
-
-### 6. Iniciar Servidor
+### 5. Iniciar Servidor
 
 ```bash
 # Modo desarrollo

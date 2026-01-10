@@ -1,6 +1,5 @@
 export { AssetEditModal } from './AssetEditModal';
 export { SequenceEditModal } from './SequenceEditModal';
-export { ShotEditModal } from './ShotEditModal';
 export { NoteEditModal } from './NoteEditModal';
 export { VersionEditModal } from './VersionEditModal';
 export { PlaylistEditModal } from './PlaylistEditModal';
@@ -9,7 +8,6 @@ export { AddProjectModal } from './AddProjectModal';
 export { AddEpisodeModal } from './AddEpisodeModal';
 export { AddAssetModal } from './AddAssetModal';
 export { AddSequenceModal } from './AddSequenceModal';
-export { AddShotModal } from './AddShotModal';
 export { AddVersionModal } from './AddVersionModal';
 export { AddStatusModal } from './AddStatusModal';
 export { AddPlaylistModal } from './AddPlaylistModal';

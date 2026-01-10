@@ -125,14 +125,6 @@ db-migrate:
 	@echo "Running database migrations..."
 	docker-compose -p shogun-dev exec api npm run migration:run
 
-db-seed:
-	@echo "Seeding database..."
-	docker-compose -p shogun-dev exec api npm run seed
-
-db-reset:
-	@echo "Resetting database..."
-	docker-compose -p shogun-dev exec api npm run db:reset
-
 # Restart services
 restart-api:
 	docker-compose -p shogun-dev restart api

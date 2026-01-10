@@ -8,7 +8,7 @@ import { FileModal } from '../../../../../shared/components/modals/FileModal';
 import { useNotesSorting } from '../hooks/useNotesSorting';
 import { useNotesByEntity } from '../../../../../features/notes/api/useNotes';
 import { formatDuration, getFileType } from '../../../../../shared/utils';
-import type { StatusMeta, TabType, Shot } from '@shogun/shared';
+import type { StatusMeta, TabType } from '@shogun/shared';
 import type { ApiVersion } from '@shared/api/client';
 
 interface VersionNotesCellProps {
@@ -68,7 +68,6 @@ const VersionNotesCell: React.FC<VersionNotesCellProps> = ({ item, onAddNote, on
 
 interface VersionsTabProps {
   versions: ApiVersion[];
-  shots: Shot[];
   statusMap: Record<string, StatusMeta>;
   selectedItems: Set<string>;
   viewMode: 'table' | 'thumbnails';
@@ -83,7 +82,6 @@ interface VersionsTabProps {
 
 export const VersionsTab: React.FC<VersionsTabProps> = ({
   versions,
-  shots,
   statusMap,
   selectedItems,
   viewMode,
@@ -141,7 +139,6 @@ export const VersionsTab: React.FC<VersionsTabProps> = ({
     return (
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {versions.map((version) => {
-          const shot = version.shotId ? shots.find((s) => s.id === version.shotId) : undefined;
           return (
             <div
               key={version.id}
@@ -230,7 +227,7 @@ export const VersionsTab: React.FC<VersionsTabProps> = ({
                   className="text-sm font-medium truncate"
                   style={{ color: 'var(--text-primary)' }}
                 >
-                  {version.name || version.code || shot?.code || 'Version'}
+                  {version.name || version.code || version.entityCode || 'Version'}
                 </div>
                 <div className="text-xs truncate mt-1" style={{ color: 'var(--text-secondary)' }}>
                   {version.versionNumber} • {version.artist || 'Unknown'}
@@ -278,7 +275,7 @@ export const VersionsTab: React.FC<VersionsTabProps> = ({
       field: 'duration',
       render: (item: ApiVersion) => formatDuration(item.duration),
     },
-    { label: 'Entity Type', field: 'entityType' },
+    { label: 'Entity', field: 'entityCode' },
     {
       label: 'Thumbnail',
       field: 'thumbnailPath',

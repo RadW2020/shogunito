@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ShotGridModals } from '../ShotGridModals';
-import type { Project, Episode, Asset, Sequence, Shot } from '@shogun/shared';
+import type { Project, Episode, Asset, Sequence } from '@shogun/shared';
 import type { ApiVersion, Playlist } from '@shared/api/client';
 
 // Mock all modals - Make them call onClose and onSuccess to cover callback paths
@@ -48,17 +48,8 @@ vi.mock('@shared/components/modals', () => ({
     }
     return null;
   },
-  AddShotModal: ({ isOpen, onClose, onSuccess, sequences }: any) => {
-    if (isOpen) {
-      setTimeout(() => {
-        if (onClose) onClose();
-        if (onSuccess) onSuccess();
-      }, 0);
-      return <div data-testid="add-shot-modal">Add Shot {sequences?.length || 0}</div>;
-    }
-    return null;
-  },
-  AddVersionModal: ({ isOpen, onClose, onSuccess, shots, assets, sequences, episodes }: any) => {
+
+  AddVersionModal: ({ isOpen, onClose, onSuccess, assets, sequences, episodes }: any) => {
     if (isOpen) {
       setTimeout(() => {
         if (onClose) onClose();
@@ -66,7 +57,7 @@ vi.mock('@shared/components/modals', () => ({
       }, 0);
       return (
         <div data-testid="add-version-modal">
-          Add Version {shots?.length || 0} {assets?.length || 0} {sequences?.length || 0}{' '}
+          Add Version {assets?.length || 0} {sequences?.length || 0}{' '}
           {episodes?.length || 0}
         </div>
       );
@@ -133,16 +124,7 @@ vi.mock('@shared/components/modals', () => ({
     }
     return null;
   },
-  ShotEditModal: ({ isOpen, shot, onClose, onSuccess }: any) => {
-    if (isOpen && shot) {
-      setTimeout(() => {
-        if (onClose) onClose();
-        if (onSuccess) onSuccess();
-      }, 0);
-      return <div data-testid="edit-shot-modal">Edit Shot</div>;
-    }
-    return null;
-  },
+
   VersionEditModal: ({ isOpen, version, onClose, onSuccess }: any) => {
     if (isOpen && version) {
       setTimeout(() => {
@@ -190,7 +172,7 @@ vi.mock('@shared/components/modals', () => ({
 }));
 
 vi.mock('@shared/components/modals/GeneralNoteCreatorModal', () => ({
-  GeneralNoteCreatorModal: ({ isOpen, onClose, projects, episodes, assets, sequences, shots, playlists, versions }: any) => {
+  GeneralNoteCreatorModal: ({ isOpen, onClose, projects, episodes, assets, sequences, playlists, versions }: any) => {
     if (isOpen) {
       setTimeout(() => {
         if (onClose) onClose();
@@ -198,7 +180,7 @@ vi.mock('@shared/components/modals/GeneralNoteCreatorModal', () => ({
       return (
         <div data-testid="general-note-creator-modal">
           General Note Creator {projects?.length || 0} {episodes?.length || 0} {assets?.length || 0}{' '}
-          {sequences?.length || 0} {shots?.length || 0} {playlists?.length || 0} {versions?.length || 0}
+          {sequences?.length || 0} {playlists?.length || 0} {versions?.length || 0}
         </div>
       );
     }
@@ -241,7 +223,6 @@ describe('ShotGridModals', () => {
     showAddEpisode: false,
     showAddAsset: false,
     showAddSequence: false,
-    showAddShot: false,
     showAddPlaylist: false,
     showAddVersion: false,
     showAddNote: false,
@@ -250,7 +231,6 @@ describe('ShotGridModals', () => {
     showEditEpisode: false,
     showEditAsset: false,
     showEditSequence: false,
-    showEditShot: false,
     showEditVersion: false,
     showEditPlaylist: false,
     showEditStatus: false,
@@ -259,7 +239,6 @@ describe('ShotGridModals', () => {
     editingEpisode: null,
     editingAsset: null,
     editingSequence: null,
-    editingShot: null,
     editingVersion: null,
     editingPlaylist: null,
     editingStatus: null,
@@ -278,7 +257,6 @@ describe('ShotGridModals', () => {
     episodes: [] as Episode[],
     assets: [] as Asset[],
     sequences: [] as Sequence[],
-    shots: [] as Shot[],
     versions: [] as ApiVersion[],
     playlists: [] as Playlist[],
   };
@@ -330,15 +308,7 @@ describe('ShotGridModals', () => {
       expect(screen.getByTestId('add-sequence-modal')).toBeInTheDocument();
     });
 
-    it('should render AddShotModal when showAddShot is true', () => {
-      render(
-        <ShotGridModals
-          {...defaultProps}
-          modals={{ ...defaultModals, showAddShot: true }}
-        />,
-      );
-      expect(screen.getByTestId('add-shot-modal')).toBeInTheDocument();
-    });
+
 
     it('should render AddVersionModal when showAddVersion is true', () => {
       render(
@@ -386,7 +356,6 @@ describe('ShotGridModals', () => {
     const mockEpisode: Episode = { id: 1, code: 'EP-001', name: 'Test Episode' } as Episode;
     const mockAsset: Asset = { id: 1, code: 'ASSET-001', name: 'Test Asset' } as Asset;
     const mockSequence: Sequence = { id: 1, code: 'SEQ-001', name: 'Test Sequence' } as Sequence;
-    const mockShot: Shot = { id: 1, code: 'SHOT-001', name: 'Test Shot' } as Shot;
     const mockVersion: ApiVersion = { id: 1, code: 'VER-001' } as ApiVersion;
     const mockPlaylist: Playlist = { id: 1, code: 'PLAY-001', name: 'Test Playlist' } as Playlist;
 
@@ -440,15 +409,7 @@ describe('ShotGridModals', () => {
       expect(screen.getByTestId('edit-sequence-modal')).toBeInTheDocument();
     });
 
-    it('should render ShotEditModal when showEditShot is true and editingShot exists', () => {
-      render(
-        <ShotGridModals
-          {...defaultProps}
-          modals={{ ...defaultModals, showEditShot: true, editingShot: mockShot }}
-        />,
-      );
-      expect(screen.getByTestId('edit-shot-modal')).toBeInTheDocument();
-    });
+
 
     it('should render VersionEditModal when showEditVersion is true and editingVersion exists', () => {
       render(
@@ -641,20 +602,9 @@ describe('ShotGridModals', () => {
       expect(screen.getByTestId('add-sequence-modal')).toBeInTheDocument();
     });
 
-    it('should pass sequences to AddShotModal', () => {
-      const sequences = [{ id: 1, code: 'SEQ-001', name: 'Test Sequence' }] as Sequence[];
-      render(
-        <ShotGridModals
-          {...defaultProps}
-          sequences={sequences}
-          modals={{ ...defaultModals, showAddShot: true }}
-        />,
-      );
-      expect(screen.getByTestId('add-shot-modal')).toBeInTheDocument();
-    });
+
 
     it('should pass multiple props to AddVersionModal', () => {
-      const shots = [{ id: 1, code: 'SHOT-001' }] as Shot[];
       const assets = [{ id: 1, code: 'ASSET-001' }] as Asset[];
       const sequences = [{ id: 1, code: 'SEQ-001' }] as Sequence[];
       const episodes = [{ id: 1, code: 'EP-001' }] as Episode[];
@@ -662,7 +612,6 @@ describe('ShotGridModals', () => {
       render(
         <ShotGridModals
           {...defaultProps}
-          shots={shots}
           assets={assets}
           sequences={sequences}
           episodes={episodes}
@@ -677,7 +626,6 @@ describe('ShotGridModals', () => {
       const episodes = [{ id: 1, code: 'EP-001' }] as Episode[];
       const assets = [{ id: 1, code: 'ASSET-001' }] as Asset[];
       const sequences = [{ id: 1, code: 'SEQ-001' }] as Sequence[];
-      const shots = [{ id: 1, code: 'SHOT-001' }] as Shot[];
       const playlists = [{ id: 1, code: 'PLAY-001' }] as Playlist[];
       const versions = [{ id: 1, code: 'VER-001' }] as ApiVersion[];
 
@@ -688,7 +636,6 @@ describe('ShotGridModals', () => {
           episodes={episodes}
           assets={assets}
           sequences={sequences}
-          shots={shots}
           playlists={playlists}
           versions={versions}
           modals={{ ...defaultModals, showAddNote: true }}
@@ -774,7 +721,6 @@ describe('ShotGridModals', () => {
             showAddEpisode: true,
             showAddAsset: true,
             showAddSequence: true,
-            showAddShot: true,
             showAddVersion: true,
             showAddPlaylist: true,
             showAddNote: true,
@@ -787,7 +733,6 @@ describe('ShotGridModals', () => {
       expect(screen.getByTestId('add-episode-modal')).toBeInTheDocument();
       expect(screen.getByTestId('add-asset-modal')).toBeInTheDocument();
       expect(screen.getByTestId('add-sequence-modal')).toBeInTheDocument();
-      expect(screen.getByTestId('add-shot-modal')).toBeInTheDocument();
       expect(screen.getByTestId('add-version-modal')).toBeInTheDocument();
       expect(screen.getByTestId('add-playlist-modal')).toBeInTheDocument();
       expect(screen.getByTestId('general-note-creator-modal')).toBeInTheDocument();
@@ -799,7 +744,6 @@ describe('ShotGridModals', () => {
       const mockEpisode: Episode = { id: 1, code: 'EP-001' } as Episode;
       const mockAsset: Asset = { id: 1, code: 'ASSET-001' } as Asset;
       const mockSequence: Sequence = { id: 1, code: 'SEQ-001' } as Sequence;
-      const mockShot: Shot = { id: 1, code: 'SHOT-001' } as Shot;
       const mockVersion: ApiVersion = { id: 1, code: 'VER-001' } as ApiVersion;
       const mockPlaylist: Playlist = { id: 1, code: 'PLAY-001' } as Playlist;
       const mockStatus = { id: 'status-1', code: 'STATUS-001' } as any;
@@ -817,8 +761,6 @@ describe('ShotGridModals', () => {
             editingAsset: mockAsset,
             showEditSequence: true,
             editingSequence: mockSequence,
-            showEditShot: true,
-            editingShot: mockShot,
             showEditVersion: true,
             editingVersion: mockVersion,
             showEditPlaylist: true,
@@ -833,7 +775,6 @@ describe('ShotGridModals', () => {
       expect(screen.getByTestId('edit-episode-modal')).toBeInTheDocument();
       expect(screen.getByTestId('edit-asset-modal')).toBeInTheDocument();
       expect(screen.getByTestId('edit-sequence-modal')).toBeInTheDocument();
-      expect(screen.getByTestId('edit-shot-modal')).toBeInTheDocument();
       expect(screen.getByTestId('edit-version-modal')).toBeInTheDocument();
       expect(screen.getByTestId('edit-playlist-modal')).toBeInTheDocument();
       expect(screen.getByTestId('edit-status-modal')).toBeInTheDocument();

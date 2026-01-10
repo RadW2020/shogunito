@@ -83,9 +83,6 @@ createdb shogun
 
 # Ejecutar migraciones
 npm run migration:run
-
-# Poblar con datos de ejemplo (opcional)
-npm run seed
 ```
 
 ### Servidor en Ejecución

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SearchQueryDto, SearchEntity } from './dto/search-query.dto';
+import { Project, Episode, Sequence, Asset, Note } from '../entities';
 import { PaginatedResponse, createPaginatedResponse } from '../common/dto/pagination.dto';
 import { UserContext, ProjectAccessService } from '../auth/services';
 
@@ -92,8 +93,6 @@ export class SearchService {
         return this.searchEpisodes(sanitizedQuery, page, limit, userContext);
       case SearchEntity.SEQUENCE:
         return this.searchSequences(sanitizedQuery, page, limit, userContext);
-      case SearchEntity.SHOT:
-        return this.searchShots(sanitizedQuery, page, limit, userContext);
       case SearchEntity.ASSET:
         return this.searchAssets(sanitizedQuery, page, limit, userContext);
       case SearchEntity.NOTE:
@@ -353,87 +352,6 @@ export class SearchService {
   /**
    * Search in Shots
    */
-  private async searchShots(
-    query: string,
-    page: number,
-    limit: number,
-    userContext?: UserContext,
-  ): Promise<PaginatedResponse<SearchResult>> {
-    const offset = (page - 1) * limit;
-
-    const queryBuilder = this.shotRepository
-      .createQueryBuilder('shot')
-      .leftJoin('shot.sequence', 'sequence')
-      .leftJoin('sequence.episode', 'episode')
-      .select('shot.id', 'id')
-      .addSelect('shot.code', 'code')
-      .addSelect('shot.name', 'name')
-      .addSelect('shot.description', 'description')
-      .addSelect(
-        `ts_rank(
-          to_tsvector('english', coalesce(shot.name, '') || ' ' || coalesce(shot.description, '') || ' ' || coalesce(shot.code, '')),
-          plainto_tsquery('english', :query)
-        )`,
-        'rank',
-      )
-      .addSelect(
-        "ts_headline('english', coalesce(shot.description, shot.name), plainto_tsquery('english', :query))",
-        'highlightedText',
-      )
-      .where(
-        "to_tsvector('english', coalesce(shot.name, '') || ' ' || coalesce(shot.description, '') || ' ' || coalesce(shot.code, '')) @@ plainto_tsquery('english', :query)",
-      )
-      .setParameter('query', query);
-
-    // Filter by user's accessible projects (unless admin)
-    if (userContext && !this.projectAccessService.isAdmin(userContext)) {
-      const accessibleProjectIds = await this.projectAccessService.getAccessibleProjectIds(userContext);
-      if (accessibleProjectIds.length === 0) {
-        return createPaginatedResponse([], 0, page, limit);
-      }
-      queryBuilder.andWhere('episode.projectId IN (:...accessibleProjectIds)', {
-        accessibleProjectIds,
-      });
-    }
-
-    queryBuilder.orderBy('rank', 'DESC').offset(offset).limit(limit);
-
-    const results = (await queryBuilder.getRawMany()) as unknown as RawSearchResult[];
-    
-    const countQuery = this.shotRepository
-      .createQueryBuilder('shot')
-      .leftJoin('shot.sequence', 'sequence')
-      .leftJoin('sequence.episode', 'episode')
-      .where(
-        "to_tsvector('english', coalesce(shot.name, '') || ' ' || coalesce(shot.description, '') || ' ' || coalesce(shot.code, '')) @@ plainto_tsquery('english', :query)",
-      )
-      .setParameter('query', query);
-
-    // Apply same project filter to count query
-    if (userContext && !this.projectAccessService.isAdmin(userContext)) {
-      const accessibleProjectIds = await this.projectAccessService.getAccessibleProjectIds(userContext);
-      if (accessibleProjectIds.length === 0) {
-        return createPaginatedResponse([], 0, page, limit);
-      }
-      countQuery.andWhere('episode.projectId IN (:...accessibleProjectIds)', {
-        accessibleProjectIds,
-      });
-    }
-
-    const total = await countQuery.getCount();
-
-    const searchResults: SearchResult[] = results.map((r) => ({
-      entity: 'shot',
-      id: r.id,
-      code: r.code,
-      name: r.name,
-      description: r.description,
-      rank: parseFloat(String(r.rank)),
-      highlightedText: r.highlightedText,
-    }));
-
-    return createPaginatedResponse(searchResults, total, page, limit);
-  }
 
   /**
    * Search in Assets
@@ -613,11 +531,10 @@ export class SearchService {
     userContext?: UserContext,
   ): Promise<PaginatedResponse<SearchResult>> {
     // Search in parallel across all entities
-    const [projects, episodes, sequences, shots, assets, notes] = await Promise.all([
+    const [projects, episodes, sequences, assets, notes] = await Promise.all([
       this.searchProjects(query, 1, 100, userContext),
       this.searchEpisodes(query, 1, 100, userContext),
       this.searchSequences(query, 1, 100, userContext),
-      this.searchShots(query, 1, 100, userContext),
       this.searchAssets(query, 1, 100, userContext),
       this.searchNotes(query, 1, 100, userContext),
     ]);
@@ -627,7 +544,6 @@ export class SearchService {
       ...projects.data,
       ...episodes.data,
       ...sequences.data,
-      ...shots.data,
       ...assets.data,
       ...notes.data,
     ];
@@ -640,7 +556,6 @@ export class SearchService {
       projects.pagination.total +
       episodes.pagination.total +
       sequences.pagination.total +
-      shots.pagination.total +
       assets.pagination.total +
       notes.pagination.total;
 

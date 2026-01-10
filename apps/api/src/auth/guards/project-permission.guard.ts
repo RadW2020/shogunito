@@ -164,16 +164,6 @@ export class ProjectPermissionGuard implements CanActivate {
       return this.getProjectIdFromEpisode(parseInt(request.body.episodeId, 10));
     }
 
-    // Shots routes: /shots/:id
-    if (path.includes('/shots/') && params.id) {
-      return this.getProjectIdFromShot(parseInt(params.id, 10));
-    }
-
-    // For shot creation with sequenceId in body
-    if (path.includes('/shots') && request.body?.sequenceId) {
-      return this.getProjectIdFromSequence(parseInt(request.body.sequenceId, 10));
-    }
-
     // Assets routes - assets belong to projects directly
     if (path.includes('/assets/') && params.id) {
       // Assets have projectId directly
@@ -227,24 +217,6 @@ export class ProjectPermissionGuard implements CanActivate {
     }
 
     return this.getProjectIdFromEpisode(sequence.episodeId);
-  }
-
-  /**
-   * Navigate from shot to project via sequence -> episode
-   */
-  private async getProjectIdFromShot(shotId: number): Promise<number | null> {
-    if (isNaN(shotId)) return null;
-
-    const shot = await this.shotRepository.findOne({
-      where: { id: shotId },
-      select: ['sequenceId'],
-    });
-
-    if (!shot) {
-      throw new NotFoundException(`Shot with ID ${shotId} not found`);
-    }
-
-    return this.getProjectIdFromSequence(shot.sequenceId);
   }
 
   /**

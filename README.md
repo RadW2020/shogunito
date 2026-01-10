@@ -24,9 +24,6 @@ cp apps/web/.env.example apps/web/.env
 # Start services first (PostgreSQL, MinIO)
 npm run docker:up
 
-# Seed the database with sample data
-npm run seed
-
 # Start development (API + Frontend)
 npm run dev
 ```

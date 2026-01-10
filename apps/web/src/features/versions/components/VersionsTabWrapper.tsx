@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { VersionsTab } from '@features/shotgrid/components/shotgrid/tabs/VersionsTab';
 import { useVersions } from '../api/useVersions';
-import { useShots } from '@features/shots/api/useShots';
 import { useSequences } from '@features/sequences/api/useSequences';
 import { useEpisodes } from '@features/episodes/api/useEpisodes';
 import { useUiStore } from '@app/stores/uiStore';
@@ -26,18 +25,17 @@ export const VersionsTabWrapper: React.FC<VersionsTabWrapperProps> = (props) => 
   const { filters, viewModes } = useUiStore();
   const [showCreatePlaylistModal, setShowCreatePlaylistModal] = useState(false);
 
-  // Use shot filter if available, otherwise get all versions
-  const shotId = filters.selectedShotId !== 'all' ? Number(filters.selectedShotId) : undefined;
+  // Use entity filters if available
   const {
     data: versions = [],
     isLoading: versionsLoading,
     error: versionsError,
-  } = useVersions(shotId);
-  const { data: shots = [], isLoading: shotsLoading } = useShots();
+  } = useVersions();
+  
   const { data: sequences = [], isLoading: sequencesLoading } = useSequences();
   const { data: episodes = [], isLoading: episodesLoading } = useEpisodes();
 
-  const isLoading = versionsLoading || shotsLoading || sequencesLoading || episodesLoading;
+  const isLoading = versionsLoading || sequencesLoading || episodesLoading;
 
   if (isLoading) {
     return (
@@ -74,90 +72,42 @@ export const VersionsTabWrapper: React.FC<VersionsTabWrapperProps> = (props) => 
   }
 
   // Apply hierarchical filters based on relationships
-  let filteredVersions = versions.filter((version) => {
-    // Filter by shot if specified
-    // Note: entityCode is the shot CODE, but selectedShotId is the shot ID
-    // We need to find the shot by code and compare its id
-    if (filters.selectedShotId !== 'all') {
-      const shot = shots.find((s) => s.code === (version as any).entityCode);
-      if (!shot || String(shot.id) !== filters.selectedShotId) {
-        return false;
-      }
+  let filteredVersions = versions.filter((version: ApiVersion) => {
+    // Filter by entity type if specified
+    if (filters.selectedEntityType !== 'all' && version.entityType !== filters.selectedEntityType.toLowerCase()) {
+      return false;
     }
 
-    // Filter by sequence through shot relationship
-    if (filters.selectedSequenceId !== 'all') {
-      const shot = shots.find((s) => s.code === (version as any).entityCode);
-      if (!shot) {
-        // Version doesn't have a corresponding shot, exclude it
-        return false;
-      }
-
-      if (shot.sequence?.code !== filters.selectedSequenceId) {
-        // Shot doesn't belong to selected sequence, exclude it
-        return false;
-      }
-    }
-
-    // Filter by episode through shot->sequence relationship
-    if (filters.selectedEpisodeId !== 'all') {
-      const shot = shots.find((s) => s.code === (version as any).entityCode);
-      if (!shot) {
-        // Version doesn't have a corresponding shot, exclude it
-        return false;
-      }
-
-      if (!shot.sequence?.code) {
-        // Shot doesn't have a sequence, exclude it
-        return false;
-      }
-
-      const sequence = sequences.find((seq) => seq.code === shot.sequence?.code);
-      if (!sequence) {
-        // Sequence not found, exclude it
-        return false;
-      }
-
-      if (String(sequence.episodeId) !== filters.selectedEpisodeId) {
-        // Sequence doesn't belong to selected episode, exclude it
-        return false;
-      }
-    }
-
-    // Filter by project through shot->sequence->episode relationship
+    // Filter by project through entity relationship
     if (filters.selectedProjectId !== 'all') {
-      const shot = shots.find((s) => s.code === (version as any).entityCode);
-      if (!shot) {
-        // Version doesn't have a corresponding shot, exclude it
-        return false;
+      const projectId = parseInt(filters.selectedProjectId);
+      
+      if (version.entityType === 'episode') {
+        const episode = episodes.find(e => e.id === version.entityId);
+        if (!episode || episode.projectId !== projectId) return false;
+      } else if (version.entityType === 'sequence') {
+        const sequence = sequences.find(s => s.id === version.entityId);
+        if (!sequence) return false;
+        const episode = episodes.find(e => e.id === sequence.episodeId);
+        if (!episode || episode.projectId !== projectId) return false;
       }
+      // Note: asset and playlist should also link to project, but for now we focus on the main ones
+    }
 
-      if (!shot.sequence?.code) {
-        // Shot doesn't have a sequence, exclude it
-        return false;
+    // Filter by episode
+    if (filters.selectedEpisodeId !== 'all') {
+      const episodeId = parseInt(filters.selectedEpisodeId);
+      if (version.entityType === 'episode' && version.entityId !== episodeId) return false;
+      if (version.entityType === 'sequence') {
+        const sequence = sequences.find(s => s.id === version.entityId);
+        if (!sequence || sequence.episodeId !== episodeId) return false;
       }
+    }
 
-      const sequence = sequences.find((seq) => seq.code === shot.sequence?.code);
-      if (!sequence) {
-        // Sequence not found, exclude it
-        return false;
-      }
-
-      if (!sequence.episodeId) {
-        // Sequence doesn't have an episode, exclude it
-        return false;
-      }
-
-      const episode = episodes.find((ep) => ep.id === sequence.episodeId);
-      if (!episode) {
-        // Episode not found, exclude it
-        return false;
-      }
-
-      if (String(episode.projectId) !== filters.selectedProjectId) {
-        // Episode doesn't belong to selected project, exclude it
-        return false;
-      }
+    // Filter by sequence
+    if (filters.selectedSequenceId !== 'all') {
+      const sequenceId = parseInt(filters.selectedSequenceId);
+      if (version.entityType === 'sequence' && version.entityId !== sequenceId) return false;
     }
 
     return true;
@@ -195,7 +145,6 @@ export const VersionsTabWrapper: React.FC<VersionsTabWrapperProps> = (props) => 
       filters.selectedProjectId !== 'all' ||
       filters.selectedEpisodeId !== 'all' ||
       filters.selectedSequenceId !== 'all' ||
-      filters.selectedShotId !== 'all' ||
       filters.selectedVersionStatus !== 'all' ||
       filters.latestOnly ||
       filters.selectedFormat !== 'all';
@@ -217,7 +166,6 @@ export const VersionsTabWrapper: React.FC<VersionsTabWrapperProps> = (props) => 
                 store.setFilter('selectedProjectId', 'all');
                 store.setFilter('selectedEpisodeId', 'all');
                 store.setFilter('selectedSequenceId', 'all');
-                store.setFilter('selectedShotId', 'all');
                 store.setFilter('selectedVersionStatus', 'all');
                 store.setFilter('latestOnly', false);
                 store.setFilter('selectedFormat', 'all');
@@ -252,7 +200,6 @@ export const VersionsTabWrapper: React.FC<VersionsTabWrapperProps> = (props) => 
       <VersionsTab
         {...props}
         versions={filteredVersions}
-        shots={shots}
         viewMode={viewModes.versions}
         onCreatePlaylist={handleCreatePlaylist}
       />

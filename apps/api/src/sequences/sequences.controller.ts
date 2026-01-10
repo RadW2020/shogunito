@@ -46,10 +46,10 @@ export class SequencesController {
   @ApiOperation({
     summary: 'Crear una nueva secuencia',
     description: `
-Crea una nueva secuencia dentro de un episodio específico. Las secuencias organizan las tomas (shots) en orden narrativo y constituyen los bloques principales de contenido de un episodio.
+Crea una nueva secuencia dentro de un episodio específico. Las secuencias constituyen los bloques principales de contenido de un episodio.
 
 **Concepto de Secuencia:**
-Una secuencia es un grupo de tomas relacionadas que forman una escena narrativa completa. Las secuencias se organizan dentro de episodios mediante \`cutOrder\` para establecer el orden de montaje final.
+Una secuencia es una unidad narrativa completa. Las secuencias se organizan dentro de episodios mediante \`cutOrder\` para establecer el orden de montaje final.
 
 **Relación con Versiones:**
 Las secuencias pueden tener múltiples versiones asociadas mediante el sistema de versiones (\`POST /versions\` con \`entityType="sequence"\`). **IMPORTANTE**: Dependiendo del tipo de producción, las versiones de secuencias pueden contener:
@@ -124,7 +124,7 @@ El tipo de contenido (video o imagen) se determina por la extensión del archivo
   @ApiOperation({
     summary: 'Obtener todas las secuencias con filtros opcionales',
     description: `
-Recupera una lista de secuencias registradas en el sistema con capacidad de filtrado avanzado. Las secuencias organizan tomas (shots) en orden narrativo dentro de episodios.
+Recupera una lista de secuencias registradas en el sistema con capacidad de filtrado avanzado. Las secuencias organizan el contenido en orden narrativo dentro de episodios.
 
 **Sistema de Filtrado:**
 - **status**: Filtro exacto por estado de la secuencia (wip, review, approved, etc.)
@@ -249,7 +249,6 @@ Las versiones de secuencias pueden contener videos o imágenes según el tipo de
             code: 'EP_001',
             name: 'El Inicio de la Aventura',
           },
-          shots: [],
           episodeId: '550e8400-e29b-41d4-a716-446655440001',
         },
       ],
@@ -295,7 +294,7 @@ Las versiones de secuencias pueden contener videos o imágenes según el tipo de
   @ApiOperation({
     summary: 'Obtener secuencia por ID',
     description: `
-Recupera una secuencia específica utilizando su ID único (integer), incluyendo todas las tomas (shots) y relaciones asociadas con el episodio.
+Recupera una secuencia específica utilizando su ID único (integer), incluyendo todas las relaciones asociadas con el episodio.
 
 **Información Retornada:**
 - Metadatos de la secuencia: código, nombre, descripción, cutOrder, duración
@@ -303,7 +302,7 @@ Recupera una secuencia específica utilizando su ID único (integer), incluyendo
 - Estado: \`statusId\` y estado actual en el workflow
 - Asignaciones: \`createdBy\`, \`assignedTo\` para tracking de responsabilidades
 - Timestamps: \`createdAt\`, \`updatedAt\` para auditoría
-- Shots asociados: Array de tomas que pertenecen a esta secuencia
+- Timestamps: \`createdAt\`, \`updatedAt\` para auditoría
 
 **Versiones de la Secuencia:**
 Las versiones de la secuencia NO se incluyen automáticamente en esta respuesta. Para obtener las versiones:
@@ -319,7 +318,7 @@ Las versiones de esta secuencia pueden contener videos o imágenes dependiendo d
 - Ver detalles completos de una secuencia en la UI
 - Obtener información antes de actualizar (PATCH)
 - Verificar existencia y estado de una secuencia
-- Obtener lista de shots asociados para navegación
+- Verificar existencia y estado de una secuencia
     `,
   })
   @ApiParam({
@@ -382,7 +381,7 @@ Las versiones de esta secuencia pueden contener videos o imágenes dependiendo d
   @ApiOperation({
     summary: 'Actualizar secuencia existente',
     description:
-      'Actualiza parcial o completamente los datos de una secuencia existente. Permite modificar cualquier campo incluyendo el orden de montaje sin afectar las tomas asociadas.',
+      'Actualiza parcial o completamente los datos de una secuencia existente. Permite modificar cualquier campo incluyendo el orden de montaje.',
   })
   @ApiParam({
     name: 'id',
@@ -470,7 +469,7 @@ Las versiones de esta secuencia pueden contener videos o imágenes dependiendo d
   @ApiOperation({
     summary: 'Eliminar secuencia',
     description:
-      'Elimina permanentemente una secuencia del sistema. Esta acción también eliminará en cascada todas las tomas y versiones asociadas a la secuencia.',
+      'Elimina permanentemente una secuencia del sistema. Esta acción también eliminará en cascada todas las versiones asociadas a la secuencia.',
   })
   @ApiParam({
     name: 'id',

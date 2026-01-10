@@ -20,7 +20,6 @@ export enum LinkType {
   EPISODE = 'Episode',
   ASSET = 'Asset',
   SEQUENCE = 'Sequence',
-  SHOT = 'Shot',
   PLAYLIST = 'Playlist',
   VERSION = 'Version',
 }

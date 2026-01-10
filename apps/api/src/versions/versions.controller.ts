@@ -29,7 +29,6 @@ import {
 import { VersionsService } from './versions.service';
 import { CreateVersionDto } from './dto/create-version.dto';
 import { UpdateVersionDto } from './dto/update-version.dto';
-import { CreateShotWithVersionDto } from './dto/create-shot-with-version.dto';
 import { CreateAssetWithVersionDto } from './dto/create-asset-with-version.dto';
 import { CreatePlaylistWithVersionDto } from './dto/create-playlist-with-version.dto';
 import { CreateSequenceWithVersionDto } from './dto/create-sequence-with-version.dto';
@@ -193,86 +192,6 @@ Las versiones siguen un flujo de estados definido por \`statusId\`:
     return this.versionsService.create(createVersionDto, userContext);
   }
 
-  @Post('shot')
-  @UserRateLimit({ limit: 100, ttl: 60000 })
-  @ApiOperation({
-    summary: 'Crear shot con versión personalizada',
-    description:
-      'Crea un nuevo shot y su versión asociada en una sola transacción. Permite especificar datos personalizados para ambos.',
-  })
-  @ApiBody({
-    type: CreateShotWithVersionDto,
-    description: 'Datos del shot y versión a crear',
-    examples: {
-      basic: {
-        summary: 'Creación básica',
-        description: 'Crear shot con versión básica',
-        value: {
-          name: 'Nuevo Shot',
-          sequenceNumber: 1,
-          sequenceCode: 'SEQ_FOREST',
-          versionCode: 'CUSTOM_SHOT_001',
-          versionName: 'Versión personalizada',
-          versionDescription: 'Versión con datos específicos',
-          versionStatus: 'review',
-          createdBy: 'ai-operator@studio.com',
-        },
-      },
-      complete: {
-        summary: 'Creación completa con video IA',
-        description: 'Crear shot con video generado por IA',
-        value: {
-          name: 'Plano de Apertura - Bosque',
-          sequenceNumber: 5,
-          sequenceCode: 'SEQ_FOREST',
-          code: 'SH005',
-          description: 'Plano general de apertura - bosque encantado al amanecer',
-          status: 'waiting',
-          shotType: 'establishing',
-          duration: 120,
-          cutOrder: 3,
-          createdBy: 'ai-operator@studio.com',
-          assignedTo: 'director@studio.com',
-          versionCode: 'SH005_001',
-          versionName: 'Primera generación IA',
-          versionDescription:
-            'Video generado con Runway Gen-3 usando prompt de apertura cinematográfica',
-          versionStatus: 'review',
-          filePath: '/uploads/versions/SH005_001.mp4',
-          format: 'MP4',
-          frameRange: '1-120',
-          artist: 'AI Generator',
-          versionCreatedBy: 'ai-operator@studio.com',
-          versionAssignedTo: 'director@studio.com',
-          thumbnailPath: '/uploads/thumbnails/version_123.jpg',
-          latest: true,
-          publishedAt: '2024-01-15T16:30:00Z',
-          lineage:
-            'prompt: "cinematic establishing shot, enchanted forest at dawn, camera slowly pushing forward"',
-        },
-      },
-    },
-  })
-  @ApiResponse({
-    status: 201,
-    description: 'Shot y versión creados exitosamente',
-    schema: {
-      type: 'object',
-      properties: {
-        shot: { $ref: '#/components/schemas/Shot' },
-        version: { $ref: '#/components/schemas/Version' },
-      },
-    },
-  })
-  createShotWithVersion(
-    @Body() createShotWithVersionDto: CreateShotWithVersionDto,
-    @CurrentUser() currentUser?: User,
-  ) {
-    const userContext: UserContext | undefined = currentUser
-      ? { userId: currentUser.id, role: currentUser.role }
-      : undefined;
-    return this.versionsService.createShotWithVersion(createShotWithVersionDto, userContext);
-  }
 
   @Post('asset')
   @UserRateLimit({ limit: 100, ttl: 60000 })

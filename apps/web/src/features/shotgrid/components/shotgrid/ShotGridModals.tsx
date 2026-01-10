@@ -4,7 +4,6 @@ import {
   AddEpisodeModal,
   AddAssetModal,
   AddSequenceModal,
-  AddShotModal,
   AddVersionModal,
   AddPlaylistModal,
   AddStatusModal,
@@ -12,7 +11,6 @@ import {
   EpisodeEditModal,
   AssetEditModal,
   SequenceEditModal,
-  ShotEditModal,
   VersionEditModal,
   PlaylistEditModal,
   StatusEditModal,
@@ -20,7 +18,7 @@ import {
 } from '@shared/components/modals';
 import { GeneralNoteCreatorModal } from '@shared/components/modals/GeneralNoteCreatorModal';
 import { NoteCreator } from '@shared/components/shared/NoteCreator';
-import type { Project, Episode, Asset, Sequence, Shot, Status } from '@shogun/shared';
+import type { Project, Episode, Asset, Sequence, Status } from '@shogun/shared';
 import type { ApiVersion, Playlist } from '@shared/api/client';
 
 interface ShotGridModalsProps {
@@ -30,7 +28,6 @@ interface ShotGridModalsProps {
     showAddEpisode: boolean;
     showAddAsset: boolean;
     showAddSequence: boolean;
-    showAddShot: boolean;
     showAddPlaylist: boolean;
     showAddVersion: boolean;
     showAddNote: boolean;
@@ -41,7 +38,6 @@ interface ShotGridModalsProps {
     showEditEpisode: boolean;
     showEditAsset: boolean;
     showEditSequence: boolean;
-    showEditShot: boolean;
     showEditVersion: boolean;
     showEditPlaylist: boolean;
     showEditStatus: boolean;
@@ -54,7 +50,6 @@ interface ShotGridModalsProps {
     editingEpisode: Episode | null;
     editingAsset: Asset | null;
     editingSequence: Sequence | null;
-    editingShot: Shot | null;
     editingVersion: ApiVersion | null;
     editingPlaylist: Playlist | null;
     editingStatus: Status | null;
@@ -78,7 +73,6 @@ interface ShotGridModalsProps {
         | 'episode'
         | 'asset'
         | 'sequence'
-        | 'shot'
         | 'version'
         | 'playlist'
         | 'note'
@@ -90,7 +84,6 @@ interface ShotGridModalsProps {
         | 'episode'
         | 'asset'
         | 'sequence'
-        | 'shot'
         | 'version'
         | 'playlist'
         | 'status',
@@ -107,7 +100,6 @@ interface ShotGridModalsProps {
   episodes: Episode[];
   assets: Asset[];
   sequences: Sequence[];
-  shots: Shot[];
   versions: ApiVersion[];
   playlists: Playlist[];
 }
@@ -122,7 +114,6 @@ export const ShotGridModals: React.FC<ShotGridModalsProps> = ({
   episodes,
   assets,
   sequences,
-  shots,
   versions,
   playlists,
 }) => {
@@ -162,12 +153,6 @@ export const ShotGridModals: React.FC<ShotGridModalsProps> = ({
         onSuccess={onRefresh}
       />
 
-      <ShotEditModal
-        shot={modals.editingShot}
-        isOpen={modals.showEditShot && modals.editingShot !== null}
-        onClose={() => modals.closeEditModal('shot')}
-        onSuccess={onRefresh}
-      />
 
       <VersionEditModal
         version={modals.editingVersion}
@@ -193,7 +178,6 @@ export const ShotGridModals: React.FC<ShotGridModalsProps> = ({
             | 'Episode'
             | 'Asset'
             | 'Sequence'
-            | 'Shot'
             | 'Playlist'
             | 'Version'
         }
@@ -222,12 +206,6 @@ export const ShotGridModals: React.FC<ShotGridModalsProps> = ({
         episodes={episodes}
       />
 
-      <AddShotModal
-        isOpen={modals.showAddShot}
-        onClose={() => modals.closeAddModal('shot')}
-        onSuccess={onRefresh}
-        sequences={sequences}
-      />
 
       <AddPlaylistModal
         isOpen={modals.showAddPlaylist}
@@ -239,7 +217,6 @@ export const ShotGridModals: React.FC<ShotGridModalsProps> = ({
         isOpen={modals.showAddVersion}
         onClose={() => modals.closeAddModal('version')}
         onSuccess={onRefresh}
-        shots={shots}
         assets={assets}
         sequences={sequences}
         episodes={episodes}
@@ -252,7 +229,6 @@ export const ShotGridModals: React.FC<ShotGridModalsProps> = ({
         episodes={episodes}
         assets={assets}
         sequences={sequences}
-        shots={shots}
         playlists={playlists}
         versions={versions}
       />
@@ -328,7 +304,6 @@ export const ShotGridModals: React.FC<ShotGridModalsProps> = ({
                     | 'Episode'
                     | 'Asset'
                     | 'Sequence'
-                    | 'Shot'
                     | 'Playlist'
                     | 'Version'
                 }

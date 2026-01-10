@@ -4,7 +4,7 @@
   "description": "Shogun - Flow tracking application",
   "private": true,
   "scripts": {
-    "build": "turbo run build",
+    "build": "CI=true turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
@@ -17,7 +17,6 @@
     "test:e2e:web:debug": "npm run test:e2e:debug --workspace=shogun-web",
     "test:e2e:web:headed": "npm run test:e2e:headed --workspace=shogun-web",
     "clean": "turbo run clean",
-    "seed": "turbo run seed",
     "migration:generate": "npm run migration:generate --workspace=shogun-api --",
     "migration:create": "npm run migration:create --workspace=shogun-api --",
     "migration:run": "npm run migration:run --workspace=shogun-api",

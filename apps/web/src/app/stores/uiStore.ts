@@ -11,7 +11,6 @@ interface FilterState {
   selectedEpisodeId: string;
   selectedAssetId: string;
   selectedSequenceId: string;
-  selectedShotId: string;
   selectedFormat: string;
   selectedVersionStatus: string;
   selectedPlaylistStatus: string;
@@ -60,7 +59,6 @@ const initialFilters: FilterState = {
   selectedEpisodeId: 'all',
   selectedAssetId: 'all',
   selectedSequenceId: 'all',
-  selectedShotId: 'all',
   selectedFormat: 'all',
   selectedVersionStatus: 'all',
   selectedPlaylistStatus: 'all',

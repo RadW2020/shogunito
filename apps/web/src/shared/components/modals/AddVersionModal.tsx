@@ -4,13 +4,12 @@ import { FormField } from '../shared/FormField';
 import { useCreateVersion } from '@features/versions/api/useVersions';
 import { useProjects } from '@features/projects/api/useProjects';
 import { showToast } from '../feedback';
-import type { Shot, Asset, Sequence, Episode } from '@shogun/shared';
+import type { Asset, Sequence, Episode } from '@shogun/shared';
 
 interface AddVersionModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void | Promise<void>;
-  shots: Shot[];
   assets: Asset[];
   sequences: Sequence[];
   episodes: Episode[];
@@ -20,7 +19,7 @@ interface VersionFormData {
   projectId: string;
   name: string;
   description: string;
-  entityType: 'shot' | 'asset' | 'sequence' | 'episode';
+  entityType: 'asset' | 'sequence' | 'episode';
   entityId: string;
   format: '16:9' | '9:16' | '1:1' | 'custom' | '';
   artist: string;
@@ -28,7 +27,6 @@ interface VersionFormData {
 }
 
 const ENTITY_TYPE_OPTIONS = [
-  { value: 'shot', label: 'Shot' },
   { value: 'asset', label: 'Asset' },
   { value: 'sequence', label: 'Sequence' },
   { value: 'episode', label: 'Episode' },
@@ -45,7 +43,6 @@ export const AddVersionModal: React.FC<AddVersionModalProps> = ({
   isOpen,
   onClose,
   onSuccess,
-  shots,
   assets,
   sequences,
   episodes,
@@ -56,7 +53,7 @@ export const AddVersionModal: React.FC<AddVersionModalProps> = ({
     projectId: '',
     name: '',
     description: '',
-    entityType: 'shot',
+    entityType: 'asset',
     entityId: '',
     format: '',
     artist: '',
@@ -83,19 +80,6 @@ export const AddVersionModal: React.FC<AddVersionModalProps> = ({
     const projectId = parseInt(formData.projectId);
 
     switch (formData.entityType) {
-      case 'shot': {
-        // Filter shots by project: shots -> sequences -> episodes -> project
-        const projectEpisodes = episodes.filter((ep) => ep.projectId === projectId);
-        const projectEpisodeIds = new Set(projectEpisodes.map((ep) => ep.id));
-        const projectSequences = sequences.filter((seq) => projectEpisodeIds.has(seq.episodeId));
-        const projectSequenceIds = new Set(projectSequences.map((seq) => seq.id));
-        const projectShots = shots.filter((shot) => projectSequenceIds.has(shot.sequenceId));
-
-        return projectShots.map((shot) => ({
-          value: String(shot.id),
-          label: `${shot.code} - ${shot.name}`,
-        }));
-      }
       case 'asset': {
         // Filter assets by project
         const projectAssets = assets.filter((asset) => asset.projectId === projectId);
@@ -136,10 +120,6 @@ export const AddVersionModal: React.FC<AddVersionModalProps> = ({
 
     const entityId = parseInt(formData.entityId);
     switch (formData.entityType) {
-      case 'shot': {
-        const shot = shots.find((s) => s.id === entityId);
-        return shot?.code || null;
-      }
       case 'asset': {
         const asset = assets.find((a) => a.id === entityId);
         return asset?.code || null;
@@ -250,7 +230,7 @@ export const AddVersionModal: React.FC<AddVersionModalProps> = ({
         projectId: '',
         name: '',
         description: '',
-        entityType: 'shot',
+        entityType: 'asset',
         entityId: '',
         format: '',
         artist: '',

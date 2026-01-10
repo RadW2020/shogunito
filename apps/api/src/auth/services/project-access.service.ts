@@ -115,18 +115,6 @@ export class ProjectAccessService {
   }
 
   /**
-   * Get projectId from a shot (via sequence -> episode)
-   */
-  async getProjectIdFromShot(shotId: number): Promise<number | null> {
-    const shot = await this.shotRepository.findOne({
-      where: { id: shotId },
-      select: ['sequenceId'],
-    });
-    if (!shot?.sequenceId) return null;
-    return this.getProjectIdFromSequence(shot.sequenceId);
-  }
-
-  /**
    * Verify access to an episode
    */
   async verifyEpisodeAccess(
@@ -157,29 +145,12 @@ export class ProjectAccessService {
   }
 
   /**
-   * Verify access to a shot
-   */
-  async verifyShotAccess(
-    shotId: number,
-    userContext: UserContext,
-    minRole: ProjectRole = ProjectRole.VIEWER,
-  ): Promise<void> {
-    const projectId = await this.getProjectIdFromShot(shotId);
-    if (!projectId) {
-      throw new ForbiddenException('Shot not found or not associated with a project');
-    }
-    await this.verifyProjectAccess(projectId, userContext, minRole);
-  }
-
-  /**
    * Get projectId from a version (via entityType and entityId)
    */
   async getProjectIdFromVersion(version: { entityId?: number | null; entityType: string }): Promise<number | null> {
     if (!version.entityId) return null;
 
     switch (version.entityType.toLowerCase()) {
-      case 'shot':
-        return this.getProjectIdFromShot(version.entityId);
       case 'asset':
         const asset = await this.projectRepository.manager
           .getRepository('Asset')

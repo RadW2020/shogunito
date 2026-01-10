@@ -3,7 +3,6 @@ import type {
   Project,
   Episode,
   Sequence,
-  Shot,
   Version,
   Asset,
   User,
@@ -57,14 +56,13 @@ export interface ValidateTokenResponse {
 
 // Extended Version interface for API-specific fields
 export interface ApiVersion extends Omit<Version, 'publishedAt' | 'lineage' | 'status'> {
-  shotId?: number;
   statusId?: string; // Status entity relation
   latest: boolean;
   publishedAt?: string;
   statusUpdatedAt?: string;
   // Entity relationship fields
   entityCode?: string;
-  entityType: 'shot' | 'asset' | 'sequence' | 'playlist' | 'episode';
+  entityType: 'asset' | 'sequence' | 'playlist' | 'episode';
   // Legacy fields for compatibility
   lineage: {
     prompt: string;
@@ -81,7 +79,7 @@ export interface ApiVersion extends Omit<Version, 'publishedAt' | 'lineage' | 's
 export interface Note {
   id: string;
   linkId: string;
-  linkType: 'Project' | 'Episode' | 'Asset' | 'Sequence' | 'Shot' | 'Playlist' | 'Version';
+  linkType: 'Project' | 'Episode' | 'Asset' | 'Sequence' | 'Playlist' | 'Version';
   subject: string;
   content: string;
   noteType: 'note' | 'approval' | 'revision' | 'client_note';
@@ -644,9 +642,12 @@ class ApiService {
   }
 
   // Versions API methods
-  async getVersions(shotId?: number): Promise<ApiVersion[]> {
+  async getVersions(entityId?: number, entityType?: string): Promise<ApiVersion[]> {
     try {
-      const url = shotId ? `/versions?shotId=${shotId}` : '/versions';
+      let url = '/versions';
+      if (entityId && entityType) {
+        url = `/versions?entityId=${entityId}&entityType=${entityType}`;
+      }
       return await this.request<ApiVersion[]>(url);
     } catch (error) {
       console.warn('Versions endpoint failed, returning empty array:', error);
@@ -836,36 +837,6 @@ class ApiService {
 
   async deleteSequence(id: number): Promise<void> {
     return this.requestNoContent(`/sequences/${id}`, {
-      method: 'DELETE',
-    });
-  }
-
-  // Shots API methods
-  async getShots(): Promise<Shot[]> {
-    try {
-      return await this.request<Shot[]>('/shots');
-    } catch (error) {
-      console.warn('Shots endpoint not available, returning empty array:', error);
-      return [];
-    }
-  }
-
-  async createShot(shot: Partial<Shot>): Promise<Shot> {
-    return this.request<Shot>('/shots', {
-      method: 'POST',
-      body: JSON.stringify(shot),
-    });
-  }
-
-  async updateShot(id: number, shot: Partial<Shot>): Promise<Shot> {
-    return this.request<Shot>(`/shots/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(shot),
-    });
-  }
-
-  async deleteShot(id: number): Promise<void> {
-    return this.requestNoContent(`/shots/${id}`, {
       method: 'DELETE',
     });
   }
