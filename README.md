@@ -115,7 +115,7 @@ All deployment documentation and scripts are located in `docs/deployment/`:
 - **Docker Production**: See `docs/deployment/DOCKER_PRODUCTION.md` for dockerized production setup (services isolated from local code)
 - **Cloudflare Tunnel**: See `docs/deployment/CLOUDFLARE_TUNNEL.md` for complete setup and troubleshooting
 - **Production Configuration**: See `docs/deployment/PRODUCTION.md` for production deployment, branch protection, and workflow
-- **macOS Production Guide**: See `docs/deployment/MACOS_PRODUCTION_GUIDE.md` for running production on macOS
+
 - **Branch Strategy**: `dev` → `main` (main is protected, only accepts merges from dev)
 
 ### Quick Production Start

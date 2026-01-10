@@ -10,7 +10,7 @@ Complete deployment guides and scripts for Shogun production setup.
   - Environment configuration
   - Deployment methods (Docker, separate directory, systemd)
   - Git workflow & branch protection
-  - macOS-specific considerations
+
   - Maintenance and troubleshooting
 
 - **[DOCKER.md](./DOCKER.md)** - Docker guide for development and production
@@ -24,7 +24,7 @@ Complete deployment guides and scripts for Shogun production setup.
   - Configuration and DNS setup
   - Service installation (launchd/systemd)
   - SSL/TLS configuration
-  - Troubleshooting (including macOS issues)
+
 
 ## 🎯 Quick Start
 
@@ -61,7 +61,7 @@ git clone <repo-url> .
 
 - `check-cloudflare.sh` - Diagnostic script
 - `restart-cloudflare.sh` - Quick restart
-- `fix-cloudflare-service.sh` - Fix macOS service issues
+
 
 **Usage:**
 
@@ -80,7 +80,7 @@ cd docs/deployment
 - Environment variables configuration
 - Docker vs traditional vs systemd deployment
 - Git branch protection (GitHub/GitLab)
-- macOS production setup (auto-start, prevent sleep, backups)
+
 - Monitoring and maintenance
 - Complete troubleshooting section
 
@@ -97,20 +97,20 @@ cd docs/deployment
 ### CLOUDFLARE_TUNNEL.md
 
 - Prerequisites and domain setup
-- Installation (Homebrew or direct download)
+- Installation (Package manager or direct download)
 - Configuration and DNS routing
-- Service installation (launchd for macOS)
+- Service installation (systemd)
 - SSL/TLS setup (Flexible mode)
-- Complete troubleshooting (including tunnel keeps stopping on macOS)
+- Complete troubleshooting (including tunnel keeps stopping)
 - Management commands
 
 ## 🔄 Recent Changes (2025-01-19)
 
 Documentation has been consolidated and optimized:
 
-- **Merged:** PRODUCTION_SETUP.md + MACOS_PRODUCTION_GUIDE.md → PRODUCTION.md
+- **Updated:** PRODUCTION.md (removed macOS content)
 - **Merged:** DOCKER.md + DOCKER_PRODUCTION.md → DOCKER.md
-- **Merged:** CLOUDFLARE_TUNNEL_SETUP.md + CLOUDFLARE_MACOS_TROUBLESHOOTING.md → CLOUDFLARE_TUNNEL.md
+- **Updated:** CLOUDFLARE_TUNNEL.md (removed macOS content)
 - **Reduced:** Total lines from ~3,200 to ~1,800 (44% reduction)
 - **Updated:** All dates, references, and outdated information
 
@@ -124,7 +124,7 @@ docs/deployment/
 ├── CLOUDFLARE_TUNNEL.md       # Tunnel setup guide (~477 lines)
 ├── check-cloudflare.sh        # Diagnostic script
 ├── restart-cloudflare.sh      # Restart script
-└── fix-cloudflare-service.sh  # Fix script (macOS)
+
 ```
 
 ---

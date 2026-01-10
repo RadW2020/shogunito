@@ -33,7 +33,7 @@ test.describe('Keyboard Shortcuts', () => {
       await form.fillField('name', projectData.name);
       await form.fillField('status', 'active');
 
-      // Try Ctrl+Enter (or Cmd+Enter on Mac)
+      // Submit form with keyboard shortcut
       await page.keyboard.press('Control+Enter');
       await page.waitForTimeout(1000);
 
@@ -87,7 +87,7 @@ test.describe('Keyboard Shortcuts', () => {
     test('should focus search with Ctrl+K or Cmd+K', async ({ page, nav }) => {
       await nav.goToTab('Projects');
 
-      // Try Ctrl+K (or Cmd+K on Mac)
+      // Focus search with keyboard shortcut
       await page.keyboard.press('Control+K');
       await page.waitForTimeout(500);
 

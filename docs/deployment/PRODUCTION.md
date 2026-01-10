@@ -1,6 +1,6 @@
 # Production Setup Guide - Shogun
 
-Complete guide for deploying Shogun to production, including Docker, Git workflow, and macOS-specific considerations.
+Complete guide for deploying Shogun to production, including Docker and Git workflow.
 
 ## 📋 Table of Contents
 
@@ -8,7 +8,7 @@ Complete guide for deploying Shogun to production, including Docker, Git workflo
 2. [Environment Configuration](#environment-configuration)
 3. [Deployment Methods](#deployment-methods)
 4. [Git Workflow & Branch Protection](#git-workflow--branch-protection)
-5. [macOS Production](#macos-production)
+5. [Oracle Cloud Setup](#deployment-on-oracle-cloud-free-tier-linux)
 6. [Maintenance](#maintenance)
 
 ---
@@ -276,189 +276,24 @@ docker-compose -f docker-compose.production.yml up -d
 
 ---
 
-## macOS Production
 
-### ⚠️ macOS Limitations
+---
 
-**System behavior:**
+## Deployment on Oracle Cloud Free Tier (Linux)
 
-- LaunchAgents only work while user logged in
-- macOS may force updates/restarts
-- Fewer server-focused tools than Linux
+Since the project has been migrated to Oracle Free Tier, it runs on Linux (Oracle Linux/Ubuntu).
 
-**Mitigations:**
+### Recommended Setup
 
-- Use Docker for all services
-- Configure auto-start scripts
-- Set up monitoring and auto-restart
-- Disable auto-sleep
+1. **Docker Compose**: Use `docker-compose.production.yml` for all services.
+2. **Systemd**: Configure a systemd service to ensure Docker starts on boot.
+3. **Cloudflare Tunnel**: Use the Linux version of `cloudflared` installed as a systemd service.
 
-### Essential macOS Setup
+### Security on Oracle Cloud
 
-#### 1. Auto-start Docker
+- Ensure the VCN (Virtual Cloud Network) Security List or Network Security Group allows inbound traffic on port 443 (if not using Tunnel) or just allow the Tunnel connection.
+- Use the provided backup scripts to store backups in a different region or object storage.
 
-**Docker Desktop:**
-
-- Preferences → General → "Start Docker Desktop when you log in" ✅
-
-#### 2. Prevent Sleep
-
-**Create caffeinate service:**
-
-```bash
-# Create script
-cat > ~/caffeinate-server.sh << 'EOF'
-#!/bin/bash
-/usr/bin/caffeinate -d -i -m -s
-EOF
-
-chmod +x ~/caffeinate-server.sh
-
-# Create LaunchAgent
-cat > ~/Library/LaunchAgents/com.shogun.caffeinate.plist << 'EOF'
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>Label</key>
-    <string>com.shogun.caffeinate</string>
-    <key>ProgramArguments</key>
-    <array>
-        <string>/Users/YOUR_USERNAME/caffeinate-server.sh</string>
-    </array>
-    <key>RunAtLoad</key>
-    <true/>
-    <key>KeepAlive</key>
-    <true/>
-</dict>
-</plist>
-EOF
-
-# Load service
-launchctl load ~/Library/LaunchAgents/com.shogun.caffeinate.plist
-```
-
-**Verify:**
-
-```bash
-ps aux | grep caffeinate | grep -v grep
-```
-
-#### 3. Monitoring & Auto-restart
-
-**Create check script:**
-
-```bash
-cat > ~/check-services.sh << 'EOF'
-#!/bin/bash
-cd ~/shogun  # or ~/shogun-production
-
-# Check Docker
-if ! docker info > /dev/null 2>&1; then
-    open -a Docker
-    sleep 10
-fi
-
-# Check services
-if ! docker-compose -f docker-compose.production.yml ps | grep -q "Up"; then
-    docker-compose -f docker-compose.production.yml up -d
-fi
-
-# Check Cloudflare Tunnel
-if ! pgrep -f "cloudflared tunnel run" > /dev/null; then
-    cloudflared tunnel run shogun-tunnel > /dev/null 2>&1 &
-fi
-EOF
-
-chmod +x ~/check-services.sh
-```
-
-**Add to crontab (check every 5 minutes):**
-
-```bash
-crontab -e
-# Add:
-*/5 * * * * ~/check-services.sh >> ~/Library/Logs/check-services.log 2>&1
-```
-
-#### 4. Startup Script
-
-**Master startup script:**
-
-```bash
-cat > ~/start-production.sh << 'EOF'
-#!/bin/bash
-sleep 5  # Wait for system ready
-
-# Start Docker
-if ! docker info > /dev/null 2>&1; then
-    open -a Docker
-    sleep 15
-fi
-
-# Start services
-cd ~/shogun
-docker-compose -f docker-compose.production.yml up -d
-
-# Start Cloudflare Tunnel
-if ! pgrep -f "cloudflared tunnel run" > /dev/null; then
-    cloudflared tunnel run shogun-tunnel > ~/Library/Logs/cloudflared.log 2>&1 &
-fi
-
-# Start caffeinate
-if ! pgrep -f "caffeinate.*-d.*-i.*-m" > /dev/null; then
-    ~/caffeinate-server.sh &
-fi
-EOF
-
-chmod +x ~/start-production.sh
-```
-
-**Add to Login Items:**
-
-- System Preferences → Users & Groups → Login Items
-- Add `~/start-production.sh`
-
-#### 5. Backups
-
-**Database backup:**
-
-```bash
-cat > ~/backup-database.sh << 'EOF'
-#!/bin/bash
-BACKUP_DIR=~/backups/shogun
-mkdir -p $BACKUP_DIR
-
-docker exec shogun-postgres-prod pg_dump -U shogun_prod shogun_prod > \
-    $BACKUP_DIR/db_$(date +%Y%m%d_%H%M%S).sql
-
-# Keep last 7 days
-find $BACKUP_DIR -name "db_*.sql" -mtime +7 -delete
-EOF
-
-chmod +x ~/backup-database.sh
-
-# Add to crontab (daily at 2 AM)
-crontab -e
-# Add:
-0 2 * * * ~/backup-database.sh >> ~/Library/Logs/backup.log 2>&1
-```
-
-### macOS System Settings
-
-**Energy Saver:**
-
-- Prevent automatic sleeping ✅
-- Wake for network access ✅
-
-**Software Update:**
-
-- Disable automatic updates ✅
-- Check manually before updating
-
-**Security:**
-
-- Disable "Log out after X minutes" ✅
 
 ---
 
@@ -625,7 +460,7 @@ docker-compose -f docker-compose.production.yml logs postgres
 - [ ] Database initialized
 - [ ] Backups configured
 - [ ] Monitoring set up
-- [ ] macOS auto-start configured (if applicable)
+
 
 ---
 

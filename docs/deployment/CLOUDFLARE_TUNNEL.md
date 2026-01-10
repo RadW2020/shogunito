@@ -15,7 +15,7 @@ Esta guía cubre la configuración, gestión y solución de problemas del túnel
 - ✅ No requiere abrir puertos en el router
 - ✅ HTTPS/SSL automático gestionado por Cloudflare
 - ✅ Protección DDoS integrada
-- ✅ Túnel persistente como servicio launchd
+- ✅ Túnel persistente como servicio del sistema (systemd)
 
 ---
 
@@ -23,19 +23,21 @@ Esta guía cubre la configuración, gestión y solución de problemas del túnel
 
 ### Paso 1: Instalar cloudflared
 
-**macOS (Homebrew - Recomendado):**
+
+**Linux (Debian/Ubuntu):**
 
 ```bash
-brew install cloudflared
+curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+sudo dpkg -i cloudflared.deb
 cloudflared --version
 ```
 
-**Descarga directa:**
+**Linux (RHEL/CentOS):**
 
 ```bash
-curl -L --output cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-darwin-amd64
-chmod +x cloudflared
-sudo mv cloudflared /usr/local/bin/
+curl -L --output cloudflared.rpm https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-x86_64.rpm
+sudo yum localinstall cloudflared.rpm
+cloudflared --version
 ```
 
 ### Paso 2: Autenticarse con Cloudflare
@@ -202,65 +204,23 @@ curl -I https://shogunweb.uliber.com
 
 ---
 
-## 🔧 Instalación como Servicio (macOS)
 
-### Paso 8: Crear LaunchAgent simplificado
+## 🔧 Instalación como Servicio (Linux)
 
-**⚠️ IMPORTANTE:** Usamos una configuración simplificada para evitar conflictos. NO uses `StartInterval` ni cron jobs que reinicien el túnel automáticamente.
+### Paso 8: Instalar servicio systemd
 
-```bash
-cat > ~/Library/LaunchAgents/com.cloudflare.cloudflared.plist << EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>Label</key>
-    <string>com.cloudflare.cloudflared</string>
-    <key>ProgramArguments</key>
-    <array>
-        <string>/opt/homebrew/bin/cloudflared</string>
-        <string>tunnel</string>
-        <string>run</string>
-        <string>shogun-tunnel</string>
-    </array>
-    <key>RunAtLoad</key>
-    <true/>
-    <key>KeepAlive</key>
-    <true/>
-    <key>StandardOutPath</key>
-    <string>$HOME/Library/Logs/com.cloudflare.cloudflared.out.log</string>
-    <key>StandardErrorPath</key>
-    <string>$HOME/Library/Logs/com.cloudflare.cloudflared.err.log</string>
-    <key>ThrottleInterval</key>
-    <integer>30</integer>
-</dict>
-</plist>
-EOF
-```
-
-**Explicación de la configuración:**
-
-- ✅ **RunAtLoad**: Inicia automáticamente al cargar el servicio
-- ✅ **KeepAlive**: Reinicia solo si el proceso muere
-- ✅ **ThrottleInterval**: 30 segundos para evitar reinicios demasiado frecuentes
-- ❌ **Sin StartInterval**: No hay reinicios programados (evita conflictos)
-- ❌ **Sin cron jobs**: No usar monitoreo automático que cause conflictos
-
-### Paso 9: Cargar y iniciar el servicio
+Cloudflared puede instalarse como un servicio del sistema automáticamente:
 
 ```bash
-# Cargar el servicio
-launchctl load ~/Library/LaunchAgents/com.cloudflare.cloudflared.plist
+# Instalar el servicio
+sudo cloudflared service install
 
 # Iniciar el servicio
-launchctl start com.cloudflare.cloudflared
+sudo systemctl start cloudflared
 
-# Verificar que está corriendo
-launchctl list | grep cloudflare
-ps aux | grep "[c]loudflared tunnel run"
+# Verificar estado
+sudo systemctl status cloudflared
 ```
-
-**Nota:** El error `exit status 134` al cargar es un falso positivo conocido en macOS. El servicio funciona correctamente a pesar del error.
 
 ---
 
@@ -297,35 +257,28 @@ curl -I https://shogunminio.uliber.com
 
 ## 🛠️ Gestión del Servicio
 
+
 ### Comandos básicos
 
 ```bash
 # Iniciar servicio
-launchctl start com.cloudflare.cloudflared
+sudo systemctl start cloudflared
 
 # Detener servicio
-launchctl stop com.cloudflare.cloudflared
+sudo systemctl stop cloudflared
 
-# Recargar servicio (después de cambios en el plist)
-launchctl unload ~/Library/LaunchAgents/com.cloudflare.cloudflared.plist
-launchctl load ~/Library/LaunchAgents/com.cloudflare.cloudflared.plist
-launchctl start com.cloudflare.cloudflared
+# Reiniciar servicio
+sudo systemctl restart cloudflared
 
 # Ver estado
-launchctl list | grep cloudflare
+sudo systemctl status cloudflared
 ```
 
 ### Ver logs
 
 ```bash
-# Logs de salida en tiempo real
-tail -f ~/Library/Logs/com.cloudflare.cloudflared.out.log
-
-# Logs de error en tiempo real
-tail -f ~/Library/Logs/com.cloudflare.cloudflared.err.log
-
-# Últimas 50 líneas
-tail -n 50 ~/Library/Logs/com.cloudflare.cloudflared.out.log
+# Systemd logs
+journalctl -u cloudflared -f
 ```
 
 ### Información del túnel
@@ -545,71 +498,6 @@ d89b8d1d-42e6-4998-97de-c15b97489f83 2025-11-30T22:17:56Z 2xmad01, 2xmad06
 
 ---
 
-## ⚠️ Problemas Conocidos de macOS
-
-### 1. Servicios LaunchAgents solo funcionan con sesión activa
-
-**Problema:**
-
-- Los servicios `LaunchAgents` (servicios de usuario) solo funcionan cuando hay una sesión de usuario activa
-- Si cierras sesión, el servicio se detiene automáticamente
-- Después de reiniciar, el servicio puede no iniciarse si no hay una sesión activa
-
-**Solución:**
-
-- ✅ Usar `RunAtLoad: true` en el plist (ya configurado)
-- ✅ Usar `KeepAlive` para reiniciar automáticamente (ya configurado)
-- ⚠️ Considerar usar `LaunchDaemons` (requiere root) para servicios del sistema si necesitas que funcione sin sesión activa
-
-### 2. Error 134 al instalar el servicio (Falso Positivo)
-
-**Problema:**
-
-- Al ejecutar `launchctl load`, puede aparecer un error `exit status 134`
-- Este es un **falso positivo conocido** en algunas versiones de macOS
-- El servicio se instala correctamente a pesar del error
-
-**Solución:**
-
-- ✅ Ignorar el error si el servicio aparece en `launchctl list`
-- ✅ Verificar que el servicio funciona: `ps aux | grep cloudflared`
-
-### 3. PATH incompleto en scripts
-
-**Problema:**
-
-- Cuando scripts se ejecutan desde launchd o cron, no tienen acceso al PATH completo del usuario
-- `/opt/homebrew/bin` (donde está instalado cloudflared en Apple Silicon) no está en el PATH
-
-**Solución:**
-
-- ✅ El LaunchAgent usa la ruta completa: `/opt/homebrew/bin/cloudflared`
-- ✅ Si creas scripts personalizados, usa rutas completas o configura PATH explícitamente
-
-### 4. Procesos zombie sin conexiones activas
-
-**Problema:**
-
-- El proceso `cloudflared` puede estar corriendo pero sin conexiones activas
-- El túnel aparece como "activo" pero no tiene `CONNECTOR ID`
-
-**Solución:**
-
-- ✅ Verificar conexiones activas, no solo el proceso: `cloudflared tunnel info shogun-tunnel`
-- ✅ Reiniciar el túnel si no tiene conexiones activas
-- ✅ Esperar tiempo suficiente después del reinicio (hasta 30 segundos)
-
-### 5. macOS cierra procesos en segundo plano
-
-**Problema:**
-
-- macOS puede cerrar procesos en segundo plano, especialmente después de reinicios o cierres de sesión
-- Los servicios de usuario pueden no persistir correctamente
-
-**Solución:**
-
-- ✅ Usar `KeepAlive` en el plist para reiniciar automáticamente (ya configurado)
-- ✅ Verificar que el servicio está realmente corriendo, no solo cargado: `ps aux | grep cloudflared`
 
 ---
 
@@ -631,7 +519,7 @@ d89b8d1d-42e6-4998-97de-c15b97489f83 2025-11-30T22:17:56Z 2xmad01, 2xmad06
                              │ (sin abrir puertos)
                 ┌────────────▼────────────┐
                 │   cloudflared           │
-                │   (servicio launchd)    │
+                │   (servicio systemd)    │
                 └────────────┬────────────┘
                              │
                 ┌────────────┼────────────┬────────────┐
@@ -687,8 +575,8 @@ cloudflared --version
 # Ver procesos
 ps aux | grep cloudflared | grep -v grep
 
-# Ver servicio launchd
-launchctl list | grep cloudflare
+# Ver servicio systemd
+sudo systemctl status cloudflared
 
 # Ver logs
 tail -f ~/Library/Logs/com.cloudflare.cloudflared.out.log
@@ -717,7 +605,7 @@ dig shogunweb.uliber.com
 - [ ] Archivo `~/.cloudflared/config.yml` configurado correctamente
 - [ ] Registros DNS CNAME creados
 - [ ] SSL/TLS configurado en modo "Flexible"
-- [ ] LaunchAgent instalado y activo
+- [ ] Servicio systemd instalado y activo
 - [ ] API accesible en `https://shogunapi.uliber.com`
 - [ ] Frontend accesible en `https://shogunweb.uliber.com`
 - [ ] Certificado SSL válido (candado verde)
@@ -728,31 +616,11 @@ dig shogunweb.uliber.com
 
 ## 🔒 Notas Importantes
 
-### Configuración Simplificada
-
-**⚠️ IMPORTANTE:** La configuración actual usa un LaunchAgent simplificado sin `StartInterval` ni cron jobs. Esto evita conflictos de múltiples sistemas reiniciando el túnel simultáneamente.
-
-**Si anteriormente tenías:**
-
-- ❌ LaunchAgent con `StartInterval: 300` (cada 5 min)
-- ❌ Cron cada 2 minutos
-- ❌ KeepAlive del LaunchAgent
-
-**Ahora solo tienes:**
-
-- ✅ LaunchAgent con `RunAtLoad` y `KeepAlive` (reinicia solo si muere)
-
-### Sesión de Usuario
-
-- Los LaunchAgents solo funcionan cuando hay una sesión de usuario activa
-- Si cierras sesión, el servicio se detiene
-- Al iniciar sesión, el servicio debería iniciarse automáticamente
 
 ### Reinicios Automáticos
 
-- El túnel solo se reinicia si el proceso termina inesperadamente (gracias a `KeepAlive`)
-- No hay reinicios programados
-- No hay monitoreo externo que cause conflictos
+- El túnel se reinicia automáticamente si el proceso muere (gestionado por systemd).
+- No hay reinicios programados innecesarios.
 
 ### CORS
 
@@ -785,7 +653,7 @@ Guarda una copia de:
 
 ---
 
-**Última actualización:** 2025-12-03  
-**Estado:** ✅ Configuración simplificada y funcionando correctamente  
-**Versión de cloudflared probada:** 2025.11.1  
-**Versión de macOS probada:** macOS 24.6.0 (Sequoia)
+**Última actualización:** 2026-01-10  
+**Estado:** ✅ Configuración para Linux/Oracle Cloud funcionando  
+**Versión de cloudflared probada:** 2025.11.1
+

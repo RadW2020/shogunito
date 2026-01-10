@@ -28,8 +28,8 @@
 
 - **[Production Deployment](./deployment/PRODUCTION.md)** - Guía de producción
 - **[Docker Deployment](./deployment/DOCKER.md)** - Configuración con Docker
-- **[macOS Production Guide](./deployment/MACOS_PRODUCTION_GUIDE.md)** - Producción en macOS
-- **[GitHub Runner Setup](./deployment/GITHUB_RUNNER_SETUP.md)** - Configuración de GitHub Actions
+
+
 - **[Backup System](./deployment/backup-system-readme.md)** - Sistema de backups
 
 #### 🔧 API
