@@ -1,5 +1,5 @@
 # ==============================================
-# SHOGUN - Docker Compose for Coolify Deployment
+# SHOGUNITO - Docker Compose for Coolify Deployment
 # ==============================================
 # Optimized for Coolify with Traefik proxy
 # 
@@ -10,8 +10,8 @@
 # 4. Coolify handles SSL certificates automatically
 #
 # BEFORE FIRST DEPLOY, create volumes on the server:
-#   docker volume create shogun_pgdata_prod
-#   docker volume create shogun_minio_prod
+#   docker volume create shogunito_pgdata_prod
+#   docker volume create shogunito_minio_prod
 
 services:
   # ============================================
@@ -19,7 +19,7 @@ services:
   # ============================================
   postgres:
     image: postgres:16
-    container_name: shogun-postgres-prod
+    container_name: shogunito-postgres-prod
     environment:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_USER: ${DATABASE_USERNAME}
@@ -33,14 +33,14 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - shogun-network
+      - shogunito-network
 
   # ============================================
   # Object Storage (Coolify will proxy this)
   # ============================================
   minio:
     image: minio/minio:latest
-    container_name: shogun-minio-prod
+    container_name: shogunito-minio-prod
     command: server /data --console-address ":9001"
     environment:
       MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
@@ -52,10 +52,10 @@ services:
       - "9001"  # Console
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.shogun-minio.rule=Host(`shogunminio.uliber.com`)"
-      - "traefik.http.routers.shogun-minio.entrypoints=http"
-      - "traefik.http.routers.shogun-minio.service=shogun-minio-svc"
-      - "traefik.http.services.shogun-minio-svc.loadbalancer.server.port=9000"
+      - "traefik.http.routers.shogunito-minio.rule=Host(`shogunitominio.uliber.com`)"
+      - "traefik.http.routers.shogunito-minio.entrypoints=http"
+      - "traefik.http.routers.shogunito-minio.service=shogunito-minio-svc"
+      - "traefik.http.services.shogunito-minio-svc.loadbalancer.server.port=9000"
     volumes:
       - minio_prod:/data
     restart: unless-stopped
@@ -65,7 +65,7 @@ services:
       timeout: 20s
       retries: 3
     networks:
-      - shogun-network
+      - shogunito-network
 
   # ============================================
   # API Service (Coolify will proxy this)
@@ -74,7 +74,7 @@ services:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
-    container_name: shogun-api-prod
+    container_name: shogunito-api-prod
     environment:
       NODE_ENV: production
       PORT: 3002
@@ -97,18 +97,18 @@ services:
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
       MINIO_PUBLIC_ENDPOINT: ${MINIO_PUBLIC_ENDPOINT}
       # CORS - set your actual domains
-      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-https://shogunweb.uliber.com}
-      FRONTEND_URL: ${FRONTEND_URL:-https://shogunweb.uliber.com}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-https://shogunitoweb.uliber.com}
+      FRONTEND_URL: ${FRONTEND_URL:-https://shogunitoweb.uliber.com}
     ports:
       - "3002"
     expose:
       - "3002"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.shogun-api.rule=Host(`shogunapi.uliber.com`)"
-      - "traefik.http.routers.shogun-api.entrypoints=http"
-      - "traefik.http.routers.shogun-api.service=shogun-api-svc"
-      - "traefik.http.services.shogun-api-svc.loadbalancer.server.port=3002"
+      - "traefik.http.routers.shogunito-api.rule=Host(`shogunitoapi.uliber.com`)"
+      - "traefik.http.routers.shogunito-api.entrypoints=http"
+      - "traefik.http.routers.shogunito-api.service=shogunito-api-svc"
+      - "traefik.http.services.shogunito-api-svc.loadbalancer.server.port=3002"
     depends_on:
       postgres:
         condition: service_healthy
@@ -122,7 +122,7 @@ services:
       start_period: 40s
       retries: 3
     networks:
-      - shogun-network
+      - shogunito-network
 
   # ============================================
   # Web Frontend (Coolify will proxy this)
@@ -132,19 +132,19 @@ services:
       context: .
       dockerfile: apps/web/Dockerfile
       args:
-        VITE_API_URL: ${VITE_API_URL:-https://shogunapi.uliber.com}
+        VITE_API_URL: ${VITE_API_URL:-https://shogunitoapi.uliber.com}
         VITE_NODE_ENV: production
-    container_name: shogun-web-prod
+    container_name: shogunito-web-prod
     ports:
       - "3003"
     expose:
       - "3003"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.shogun-web.rule=Host(`shogunweb.uliber.com`)"
-      - "traefik.http.routers.shogun-web.entrypoints=http"
-      - "traefik.http.routers.shogun-web.service=shogun-web-svc"
-      - "traefik.http.services.shogun-web-svc.loadbalancer.server.port=3003"
+      - "traefik.http.routers.shogunito-web.rule=Host(`shogunitoweb.uliber.com`)"
+      - "traefik.http.routers.shogunito-web.entrypoints=http"
+      - "traefik.http.routers.shogunito-web.service=shogunito-web-svc"
+      - "traefik.http.services.shogunito-web-svc.loadbalancer.server.port=3003"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3003/health"]
@@ -153,17 +153,17 @@ services:
       start_period: 10s
       retries: 3
     networks:
-      - shogun-network
+      - shogunito-network
 
 volumes:
   pgdata_prod:
     external: true
-    name: shogun_pgdata_prod
+    name: shogunito_pgdata_prod
   minio_prod:
     external: true
-    name: shogun_minio_prod
+    name: shogunito_minio_prod
 
 networks:
-  shogun-network:
+  shogunito-network:
     driver: bridge
 

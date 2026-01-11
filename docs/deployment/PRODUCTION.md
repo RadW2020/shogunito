@@ -1,6 +1,6 @@
-# Production Setup Guide - Shogun
+# Production Setup Guide - Shogunito
 
-Complete guide for deploying Shogun to production, including Docker and Git workflow.
+Complete guide for deploying Shogunito to production, including Docker and Git workflow.
 
 ## 📋 Table of Contents
 
@@ -55,9 +55,9 @@ openssl rand -base64 32  # For each secret below
 # Database
 DATABASE_HOST=postgres
 DATABASE_PORT=5432
-DATABASE_USERNAME=shogun_prod
+DATABASE_USERNAME=shogunito_prod
 DATABASE_PASSWORD=CHANGE_THIS_STRONG_PASSWORD
-DATABASE_NAME=shogun_prod
+DATABASE_NAME=shogunito_prod
 
 # Authentication
 # ⚠️ CRITICAL: JWT_SECRET and JWT_REFRESH_SECRET MUST remain the same between deployments
@@ -75,18 +75,18 @@ MINIO_ENDPOINT=minio
 MINIO_PORT=9000
 MINIO_ACCESS_KEY=CHANGE_THIS_ACCESS_KEY
 MINIO_SECRET_KEY=CHANGE_THIS_SECRET_KEY
-MINIO_BUCKET=shogun-production
+MINIO_BUCKET=shogunito-production
 
 # Application
 NODE_ENV=production
 PORT=3002
-FRONTEND_URL=https://shogunweb.uliber.com
+FRONTEND_URL=https://shogunitoweb.uliber.com
 ```
 
 ### Frontend Configuration (apps/web/.env)
 
 ```bash
-VITE_API_URL=https://shogunapi.uliber.com
+VITE_API_URL=https://shogunitoapi.uliber.com
 VITE_NODE_ENV=production
 ```
 
@@ -158,8 +158,8 @@ docker-compose -f docker-compose.production.yml up -d
 
 ```bash
 # Create production directory
-mkdir -p ~/shogun-production
-cd ~/shogun-production
+mkdir -p ~/shogunito-production
+cd ~/shogunito-production
 
 # Clone repository
 git clone <repo-url> .
@@ -182,14 +182,14 @@ docker-compose -f docker-compose.production.yml up -d
 **Additional safety (systemd):**
 
 ```bash
-# Create /etc/systemd/system/shogun-api.service
+# Create /etc/systemd/system/shogunito-api.service
 [Unit]
-Description=Shogun API
+Description=Shogunito API
 After=docker.service
 
 [Service]
 Type=oneshot
-WorkingDirectory=/home/user/shogun
+WorkingDirectory=/home/user/shogunito
 ExecStartPre=/usr/bin/git checkout main
 ExecStartPre=/usr/bin/git pull origin main
 ExecStart=/usr/bin/docker-compose -f docker-compose.production.yml up -d
@@ -311,8 +311,8 @@ curl http://localhost:3002/health
 curl http://localhost:3003
 
 # Public endpoints
-curl https://shogunapi.yourdomain.com/health
-curl https://shogunweb.yourdomain.com
+curl https://shogunitoapi.yourdomain.com/health
+curl https://shogunitoweb.yourdomain.com
 
 # View logs
 docker-compose -f docker-compose.production.yml logs -f
@@ -363,13 +363,13 @@ docker-compose -f docker-compose.production.yml up -d
 **Backup:**
 
 ```bash
-docker exec shogun-postgres-prod pg_dump -U shogun_prod shogun_prod > backup.sql
+docker exec shogunito-postgres-prod pg_dump -U shogunito_prod shogunito_prod > backup.sql
 ```
 
 **Restore:**
 
 ```bash
-docker exec -i shogun-postgres-prod psql -U shogun_prod shogun_prod < backup.sql
+docker exec -i shogunito-postgres-prod psql -U shogunito_prod shogunito_prod < backup.sql
 ```
 
 ### Logs Management
@@ -423,7 +423,7 @@ docker-compose -f docker-compose.production.yml up -d
 docker-compose -f docker-compose.production.yml ps postgres
 
 # Check connectivity
-docker exec shogun-postgres-prod pg_isready -U shogun_prod
+docker exec shogunito-postgres-prod pg_isready -U shogunito_prod
 
 # View database logs
 docker-compose -f docker-compose.production.yml logs postgres
@@ -481,7 +481,7 @@ docker-compose -f docker-compose.production.yml ps
 docker-compose -f docker-compose.production.yml down
 
 # Backup
-docker exec shogun-postgres-prod pg_dump -U shogun_prod shogun_prod > backup.sql
+docker exec shogunito-postgres-prod pg_dump -U shogunito_prod shogunito_prod > backup.sql
 ```
 
 ---

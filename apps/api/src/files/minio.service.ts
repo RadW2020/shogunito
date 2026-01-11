@@ -265,7 +265,7 @@ export class MinioService {
     if (isDevelopment || isPublicBucket) {
       // Use direct public URL for development or public buckets
       if (publicEndpoint) {
-        // Use public endpoint (e.g., https://shogunminio.uliber.com)
+        // Use public endpoint (e.g., https://shogunitominio.uliber.com)
         const baseUrl = publicEndpoint.startsWith('http')
           ? publicEndpoint
           : `https://${publicEndpoint}`;

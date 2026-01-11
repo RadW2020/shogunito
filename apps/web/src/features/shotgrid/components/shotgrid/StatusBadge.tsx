@@ -1,5 +1,5 @@
 import React from 'react';
-import type { StatusMeta } from '@shogun/shared';
+import type { StatusMeta } from '@shogunito/shared';
 
 interface StatusBadgeProps {
   status: string;

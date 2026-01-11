@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { TabType } from '@shogun/shared';
+import type { TabType } from '@shogunito/shared';
 
 interface ViewMode {
   versions: 'table' | 'thumbnails';
@@ -127,7 +127,7 @@ export const useUiStore = create<UiState>()(
         }),
     }),
     {
-      name: 'shogun-ui-state',
+      name: 'shogunito-ui-state',
       partialize: (state) => ({
         activeTab: state.activeTab,
         viewModes: state.viewModes,

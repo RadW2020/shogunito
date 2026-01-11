@@ -1,6 +1,6 @@
 import React from 'react';
-import type { TabType } from '@shogun/shared';
-import { TAB_CONFIG } from '@shogun/shared';
+import type { TabType } from '@shogunito/shared';
+import { TAB_CONFIG } from '@shogunito/shared';
 
 interface ToolbarProps {
   activeTab: TabType;

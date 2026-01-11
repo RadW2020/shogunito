@@ -24,8 +24,8 @@ Conecta por SSH y crea los volúmenes externos:
 ssh opc@TU_IP_ORACLE
 
 # Crear volúmenes para persistencia de datos
-docker volume create shogun_pgdata_prod
-docker volume create shogun_minio_prod
+docker volume create shogunito_pgdata_prod
+docker volume create shogunito_minio_prod
 ```
 
 ## Paso 2: Configurar en Coolify
@@ -55,9 +55,9 @@ En la sección **Environment Variables**, añade:
 
 ```env
 # ========== DATABASE ==========
-DATABASE_USERNAME=shogun_prod
+DATABASE_USERNAME=shogunito_prod
 DATABASE_PASSWORD=GENERA_PASSWORD_SEGURO
-DATABASE_NAME=shogun_prod
+DATABASE_NAME=shogunito_prod
 
 # ========== MINIO (Object Storage) ==========
 MINIO_ACCESS_KEY=GENERA_ACCESS_KEY
@@ -147,7 +147,7 @@ https://api.tudominio.com/api/v1/docs
 
 1. Verifica que los volúmenes externos existen:
    ```bash
-   docker volume ls | grep shogun
+   docker volume ls | grep shogunito
    ```
 
 2. Revisa los logs en Coolify
@@ -179,13 +179,13 @@ Para actualizar la aplicación:
 
 ```bash
 # En el servidor
-docker exec shogun-postgres-prod pg_dump -U shogun_prod shogun_prod > backup.sql
+docker exec shogunito-postgres-prod pg_dump -U shogunito_prod shogunito_prod > backup.sql
 ```
 
 ### MinIO
 
-Los archivos están en el volumen `shogun_minio_prod`. Puedes hacer backup con:
+Los archivos están en el volumen `shogunito_minio_prod`. Puedes hacer backup con:
 
 ```bash
-docker run --rm -v shogun_minio_prod:/data -v $(pwd):/backup alpine tar czf /backup/minio-backup.tar.gz /data
+docker run --rm -v shogunito_minio_prod:/data -v $(pwd):/backup alpine tar czf /backup/minio-backup.tar.gz /data
 ```

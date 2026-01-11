@@ -1,5 +1,5 @@
 {
-  "name": "shogun-api",
+  "name": "shogunito-api",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -55,7 +55,7 @@
     "sharp": "^0.34.5",
     "swagger-ui-express": "^5.0.1",
     "typeorm": "^0.3.26",
-    "@shogun/shared": "*"
+    "@shogunito/shared": "*"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

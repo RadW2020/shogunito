@@ -12,7 +12,7 @@ import {
   useUpdateProjectOptimistic,
   useDeleteProjectOptimistic,
 } from '@features/projects/api/useProjectsOptimistic';
-import type { Project } from '@shogun/shared';
+import type { Project } from '@shogunito/shared';
 
 export function OptimisticUpdateExample() {
   const [editingId, setEditingId] = useState<string | null>(null);

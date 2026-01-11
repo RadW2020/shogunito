@@ -1,5 +1,5 @@
 # ==============================================
-# SHOGUN API - Dockerfile for Production
+# SHOGUNITO API - Dockerfile for Production
 # ==============================================
 # Optimized multi-stage build with layer caching and BuildKit
 
@@ -42,8 +42,8 @@ COPY apps/api ./apps/api
 
 # Build shared first, then API (turbo will cache unchanged packages)
 RUN --mount=type=cache,target=/app/.turbo \
-    npm run build --filter=@shogun/shared && \
-    npm run build --filter=shogun-api
+    npm run build --filter=@shogunito/shared && \
+    npm run build --filter=shogunito-api
 
 # Stage 3: Production dependencies
 FROM node:20-alpine AS prod-deps
@@ -94,10 +94,10 @@ USER nodejs
 EXPOSE 3002
 
 # Add labels for metadata
-LABEL org.opencontainers.image.title="Shogun API"
-LABEL org.opencontainers.image.description="Shogun API backend service"
-LABEL org.opencontainers.image.vendor="Shogun"
-LABEL maintainer="Shogun Team"
+LABEL org.opencontainers.image.title="Shogunito API"
+LABEL org.opencontainers.image.description="Shogunito API backend service"
+LABEL org.opencontainers.image.vendor="Shogunito"
+LABEL maintainer="Shogunito Team"
 
 # Health check with increased frequency
 # Note: Using -O /dev/null instead of --spider because the /health endpoint only handles GET, not HEAD

@@ -262,7 +262,7 @@ export class AuthController {
         authEnabled: false,
         mockUser: {
           id: 'mock-user-id',
-          email: 'admin@shogun.com',
+          email: 'admin@shogunito.com',
           name: 'Development User',
           role: 'admin',
         },
@@ -277,7 +277,7 @@ export class AuthController {
       mockUser: !authEnabled
         ? {
             id: 'mock-user-id',
-            email: 'admin@shogun.com',
+            email: 'admin@shogunito.com',
             name: 'Development User',
             role: 'admin',
             isActive: true,

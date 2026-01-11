@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
-import type { User } from '@shogun/shared';
+import type { User } from '@shogunito/shared';
 import { apiService } from '../shared/api/client';
 import type { AuthResponse, LoginDto, RegisterDto } from '../shared/api/client';
 

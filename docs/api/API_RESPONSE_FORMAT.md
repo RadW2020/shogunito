@@ -1,6 +1,6 @@
 # Formato Estandarizado de Respuestas API
 
-Todas las respuestas de la API Shogun siguen un formato consistente que facilita el manejo de respuestas exitosas y errores en el cliente.
+Todas las respuestas de la API Shogunito siguen un formato consistente que facilita el manejo de respuestas exitosas y errores en el cliente.
 
 ## Estructura de Respuesta
 

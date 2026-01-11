@@ -1,5 +1,5 @@
 # ==============================================
-# SHOGUN WEB - Dockerfile for Production
+# SHOGUNITO WEB - Dockerfile for Production
 # ==============================================
 
 # Stage 1: Dependencies
@@ -15,8 +15,7 @@ COPY packages/typescript-config/package.json ./packages/typescript-config/
 
 # Install dependencies fresh (without lock file to get correct native binaries)
 # Use --legacy-peer-deps to handle version conflicts
-# Include devDependencies needed for building
-RUN npm install --legacy-peer-deps --include=dev
+RUN npm install --legacy-peer-deps
 
 # Stage 2: Build
 FROM node:20 AS builder
@@ -29,9 +28,8 @@ COPY apps/web/package.json ./apps/web/
 COPY packages/shared/package.json ./packages/shared/
 COPY packages/typescript-config/package.json ./packages/typescript-config/
 
-# Install ALL dependencies (including devDependencies) needed for build
-# Force production=false to ensure devDependencies are installed
-RUN npm install --legacy-peer-deps --include=dev
+# Install dependencies fresh (for production build)
+RUN npm install --legacy-peer-deps
 
 # Now copy the source code (DON'T copy api - not needed for web build)
 COPY apps/web ./apps/web
@@ -47,8 +45,8 @@ ENV VITE_NODE_ENV=$VITE_NODE_ENV
 ENV CI=true
 
 # Build only shared and web (not api)
-RUN npm run build --filter=@shogun/shared && \
-    npm run build --filter=shogun-web
+RUN npm run build --filter=@shogunito/shared && \
+    npm run build --filter=shogunito-web
 
 # Stage 2: Production with Nginx
 FROM nginx:alpine AS production

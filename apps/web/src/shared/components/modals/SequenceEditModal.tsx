@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useUpdateSequence } from '@features/sequences/api/useSequences';
 import toast from 'react-hot-toast';
 import { apiService } from '../../api/client';
-import type { Sequence, Status } from '@shogun/shared';
+import type { Sequence, Status } from '@shogunito/shared';
 
 interface SequenceEditModalProps {
   sequence: Sequence | null;

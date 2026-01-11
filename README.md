@@ -1,4 +1,4 @@
-# Shogun
+# Shogunito
 
 ![CI](https://github.com/radw2020/shogunito/actions/workflows/deploy.yml/badge.svg)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)

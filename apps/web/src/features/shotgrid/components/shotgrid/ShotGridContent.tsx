@@ -1,5 +1,5 @@
 import React from 'react';
-import type { TabType, StatusMeta } from '@shogun/shared';
+import type { TabType, StatusMeta } from '@shogunito/shared';
 import { ProjectsTabWrapper } from '@features/projects/components/ProjectsTabWrapper';
 import { EpisodesTabWrapper } from '@features/episodes/components/EpisodesTabWrapper';
 import { AssetsTabWrapper } from '@features/assets/components/AssetsTabWrapper';
@@ -7,7 +7,7 @@ import { SequencesTabWrapper } from '@features/sequences/components/SequencesTab
 import { VersionsTabWrapper } from '@features/versions/components/VersionsTabWrapper';
 import { NotesTabWrapper } from '@features/notes/components/NotesTabWrapper';
 import { UsersTab, StatusTab } from './tabs';
-import type { Project, Episode, Asset, Sequence, Status, User } from '@shogun/shared';
+import type { Project, Episode, Asset, Sequence, Status, User } from '@shogunito/shared';
 import type { ApiVersion } from '@shared/api/client';
 
 interface ShotGridContentProps {

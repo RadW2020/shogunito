@@ -36,7 +36,7 @@ Agrega las siguientes variables a tu archivo `.env`:
 # Email Configuration
 # Note: Email sending is currently disabled. Configure your email provider when implementing email functionality.
 EMAIL_FROM_EMAIL=noreply@yourdomain.com
-EMAIL_FROM_NAME=Shogun
+EMAIL_FROM_NAME=Shogunito
 
 # Password Reset Configuration
 PASSWORD_RESET_URL=http://localhost:5173/reset-password
@@ -327,7 +327,7 @@ const resetPassword = async (token: string, newPassword: string) => {
 
 El email incluye:
 
-- Logo de Shogun
+- Logo de Shogunito
 - Saludo personalizado con el nombre del usuario
 - Botón destacado para resetear contraseña
 - Link alternativo por si el botón no funciona
@@ -418,4 +418,4 @@ Para el frontend:
 
 ## Licencia
 
-Este código es parte del proyecto Shogun.
+Este código es parte del proyecto Shogunito.

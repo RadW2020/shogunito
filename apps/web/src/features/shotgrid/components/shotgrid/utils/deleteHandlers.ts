@@ -1,4 +1,4 @@
-import type { TabType } from '@shogun/shared';
+import type { TabType } from '@shogunito/shared';
 import { apiService } from '@shared/api/client';
 import { useQueryClient } from '@tanstack/react-query';
 

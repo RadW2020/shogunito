@@ -3,7 +3,7 @@ import { Modal } from '../shared/Modal';
 import { FormField } from '../shared/FormField';
 import { apiService } from '@shared/api/client';
 import toast from 'react-hot-toast';
-import type { Status } from '@shogun/shared';
+import type { Status } from '@shogunito/shared';
 
 interface StatusEditModalProps {
   status: Status | null;

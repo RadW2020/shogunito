@@ -3,7 +3,7 @@ import { IsString, IsOptional, IsEnum, IsUUID, IsNumber } from 'class-validator'
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateAssetDto } from './create-asset.dto';
-import { AssetType } from '@shogun/shared';
+import { AssetType } from '@shogunito/shared';
 
 export class UpdateAssetDto extends PartialType(CreateAssetDto) {
   @IsOptional()

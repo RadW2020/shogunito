@@ -47,7 +47,7 @@ import { ProjectPermissionsModule } from './project-permissions/project-permissi
       port: parseInt(process.env.DATABASE_PORT || '5432'),
       username: process.env.DATABASE_USERNAME || 'dev',
       password: process.env.DATABASE_PASSWORD || 'dev',
-      database: process.env.DATABASE_NAME || 'shogun',
+      database: process.env.DATABASE_NAME || 'shogunito',
       entities: [
         Project,
         Episode,

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Project, Episode, Asset, Sequence, TabType } from '@shogun/shared';
+import type { Project, Episode, Asset, Sequence, TabType } from '@shogunito/shared';
 import { useUiStore } from '@app/stores/uiStore';
 
 export interface FiltersBarProps {

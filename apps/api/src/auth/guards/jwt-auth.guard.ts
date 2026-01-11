@@ -27,7 +27,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       // Inject a mock admin user when auth is disabled
       request.user = {
         id: 1, // Mock user ID for development
-        email: 'admin@shogun.com',
+        email: 'admin@shogunito.com',
         name: 'Development User',
         role: 'admin',
         isActive: true,

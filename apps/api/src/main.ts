@@ -214,9 +214,9 @@ async function bootstrap() {
 
   // Configuración de Swagger v1 - Incluye configuración de Bearer Auth
   const configV1 = new DocumentBuilder()
-    .setTitle('Shogun API v1')
+    .setTitle('Shogunito API v1')
     .setDescription(
-      'API REST para el sistema de gestión de proyectos multimedia Shogun - Version 1',
+      'API REST para el sistema de gestión de proyectos multimedia Shogunito - Version 1',
     )
     .setVersion('1.0')
     .addBearerAuth()

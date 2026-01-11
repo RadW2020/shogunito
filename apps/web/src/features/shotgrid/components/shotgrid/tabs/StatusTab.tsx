@@ -1,7 +1,7 @@
 import React from 'react';
 import { DataTable, type TableColumn } from '../DataTable';
 import { StatusBadge } from '../StatusBadge';
-import type { Status, StatusMeta, TabType } from '@shogun/shared';
+import type { Status, StatusMeta, TabType } from '@shogunito/shared';
 
 interface StatusTabProps {
   statuses: Status[];

@@ -1,12 +1,12 @@
 # ==============================================
-# SHOGUN - Makefile for Docker Operations
+# SHOGUNITO - Makefile for Docker Operations
 # ==============================================
 
 .PHONY: help dev prod test build clean logs ci ci
 
 # Default target
 help:
-	@echo "Shogun Docker Commands"
+	@echo "Shogunito Docker Commands"
 	@echo ""
 	@echo "Development:"
 	@echo "  make dev              - Stop, rebuild and start development (full restart)"
@@ -39,50 +39,50 @@ help:
 # Development
 dev:
 	@echo "Stopping existing development environment..."
-	docker-compose -p shogun-dev down --remove-orphans
+	docker-compose -p shogunito-dev down --remove-orphans
 	@echo "Starting development environment..."
-	DOCKER_BUILDKIT=1 docker-compose -p shogun-dev up -d
+	DOCKER_BUILDKIT=1 docker-compose -p shogunito-dev up -d
 
 dev-up:
 	@echo "Starting development environment (without stopping existing)..."
-	DOCKER_BUILDKIT=1 docker-compose -p shogun-dev up -d
+	DOCKER_BUILDKIT=1 docker-compose -p shogunito-dev up -d
 
 dev-build:
 	@echo "Rebuilding and starting development environment..."
-	DOCKER_BUILDKIT=1 docker-compose -p shogun-dev up -d --build
+	DOCKER_BUILDKIT=1 docker-compose -p shogunito-dev up -d --build
 
 dev-down:
 	@echo "Stopping development environment..."
-	docker-compose -p shogun-dev down --remove-orphans
+	docker-compose -p shogunito-dev down --remove-orphans
 
 dev-logs:
-	docker-compose -p shogun-dev logs -f
+	docker-compose -p shogunito-dev logs -f
 
 # Production
 prod:
 	@echo "Stopping existing production environment..."
-	@docker-compose -f docker-compose.production.yml -p shogun-prod down --remove-orphans || true
+	@docker-compose -f docker-compose.production.yml -p shogunito-prod down --remove-orphans || true
 	@echo "Force removing any remaining containers..."
-	@docker rm -f shogun-api-prod shogun-web-prod shogun-postgres-prod shogun-minio-prod 2>/dev/null || true
+	@docker rm -f shogunito-api-prod shogunito-web-prod shogunito-postgres-prod shogunito-minio-prod 2>/dev/null || true
 	@echo "Building and starting production environment..."
-	DOCKER_BUILDKIT=1 docker-compose -f docker-compose.production.yml -p shogun-prod up -d --build
+	DOCKER_BUILDKIT=1 docker-compose -f docker-compose.production.yml -p shogunito-prod up -d --build
 
 prod-up:
 	@echo "Starting production environment (without stopping existing)..."
-	DOCKER_BUILDKIT=1 docker-compose -f docker-compose.production.yml -p shogun-prod up -d --build
+	DOCKER_BUILDKIT=1 docker-compose -f docker-compose.production.yml -p shogunito-prod up -d --build
 
 prod-build:
 	@echo "Building production images..."
-	DOCKER_BUILDKIT=1 docker-compose -f docker-compose.production.yml -p shogun-prod build --parallel
+	DOCKER_BUILDKIT=1 docker-compose -f docker-compose.production.yml -p shogunito-prod build --parallel
 
 prod-down:
 	@echo "Stopping production environment..."
-	@docker-compose -f docker-compose.production.yml -p shogun-prod down --remove-orphans || true
+	@docker-compose -f docker-compose.production.yml -p shogunito-prod down --remove-orphans || true
 	@echo "Force removing any remaining containers..."
-	@docker rm -f shogun-api-prod shogun-web-prod shogun-postgres-prod shogun-minio-prod 2>/dev/null || true
+	@docker rm -f shogunito-api-prod shogunito-web-prod shogunito-postgres-prod shogunito-minio-prod 2>/dev/null || true
 
 prod-logs:
-	docker-compose -f docker-compose.production.yml -p shogun-prod logs -f
+	docker-compose -f docker-compose.production.yml -p shogunito-prod logs -f
 
 # Testing
 test-up:
@@ -96,11 +96,11 @@ test-down:
 # Build individual services
 build-api:
 	@echo "Building API image..."
-	DOCKER_BUILDKIT=1 docker build -f apps/api/Dockerfile -t shogun-api:latest .
+	DOCKER_BUILDKIT=1 docker build -f apps/api/Dockerfile -t shogunito-api:latest .
 
 build-web:
 	@echo "Building Web image..."
-	DOCKER_BUILDKIT=1 docker build -f apps/web/Dockerfile -t shogun-web:latest .
+	DOCKER_BUILDKIT=1 docker build -f apps/web/Dockerfile -t shogunito-web:latest .
 
 # Utilities
 clean:
@@ -110,10 +110,10 @@ clean:
 
 ps:
 	@echo "Running containers:"
-	docker-compose -p shogun-dev ps
+	docker-compose -p shogunito-dev ps
 
 logs:
-	docker-compose -p shogun-dev logs -f
+	docker-compose -p shogunito-dev logs -f
 
 # Health checks
 health:
@@ -123,17 +123,17 @@ health:
 # Database operations
 db-migrate:
 	@echo "Running database migrations..."
-	docker-compose -p shogun-dev exec api npm run migration:run
+	docker-compose -p shogunito-dev exec api npm run migration:run
 
 # Restart services
 restart-api:
-	docker-compose -p shogun-dev restart api
+	docker-compose -p shogunito-dev restart api
 
 restart-web:
-	docker-compose -p shogun-dev restart web
+	docker-compose -p shogunito-dev restart web
 
 restart-all:
-	docker-compose -p shogun-dev restart
+	docker-compose -p shogunito-dev restart
 
 # CI - Run the same checks as GitHub Actions
 ci:

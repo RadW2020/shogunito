@@ -1,4 +1,4 @@
-import type { TabType } from '@shogun/shared';
+import type { TabType } from '@shogunito/shared';
 
 interface ModalActions {
   openAddModal: (

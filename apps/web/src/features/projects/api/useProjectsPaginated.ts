@@ -1,6 +1,6 @@
 import { usePaginatedQuery, type UsePaginatedQueryResult } from '@shared/hooks/usePaginatedQuery';
 import { paginateArray, type InfiniteScrollParams } from '@shared/utils/pagination';
-import type { Project } from '@shogun/shared';
+import type { Project } from '@shogunito/shared';
 import { apiService } from '@shared/api/client';
 
 /**

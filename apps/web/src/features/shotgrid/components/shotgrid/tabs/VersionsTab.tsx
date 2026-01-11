@@ -8,7 +8,7 @@ import { FileModal } from '../../../../../shared/components/modals/FileModal';
 import { useNotesSorting } from '../hooks/useNotesSorting';
 import { useNotesByEntity } from '../../../../../features/notes/api/useNotes';
 import { formatDuration, getFileType } from '../../../../../shared/utils';
-import type { StatusMeta, TabType } from '@shogun/shared';
+import type { StatusMeta, TabType } from '@shogunito/shared';
 import type { ApiVersion } from '@shared/api/client';
 
 interface VersionNotesCellProps {

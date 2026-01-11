@@ -8,8 +8,8 @@ export class EmailService {
   private readonly fromName: string;
 
   constructor(private configService: ConfigService) {
-    this.fromEmail = this.configService.get<string>('EMAIL_FROM_EMAIL') || 'noreply@shogun.com';
-    this.fromName = this.configService.get<string>('EMAIL_FROM_NAME') || 'Shogun';
+    this.fromEmail = this.configService.get<string>('EMAIL_FROM_EMAIL') || 'noreply@shogunito.com';
+    this.fromName = this.configService.get<string>('EMAIL_FROM_NAME') || 'Shogunito';
   }
 
   /**
@@ -20,7 +20,7 @@ export class EmailService {
     const resetLink = `${resetUrl}?token=${resetToken}`;
 
     const emailData = {
-      subject: 'Recuperación de contraseña - Shogun',
+      subject: 'Recuperación de contraseña - Shogunito',
       from: {
         name: this.fromName,
         email: this.fromEmail,
@@ -32,7 +32,7 @@ export class EmailService {
         },
       ],
       html: this.getPasswordResetTemplate(name, resetLink),
-      text: `Hola ${name},\n\nHas solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para continuar:\n\n${resetLink}\n\nEste enlace expirará en 1 hora.\n\nSi no solicitaste este cambio, ignora este mensaje.\n\nSaludos,\nEquipo Shogun`,
+      text: `Hola ${name},\n\nHas solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para continuar:\n\n${resetLink}\n\nEste enlace expirará en 1 hora.\n\nSi no solicitaste este cambio, ignora este mensaje.\n\nSaludos,\nEquipo Shogunito`,
     };
 
     return Promise.resolve(this.sendEmail(emailData));
@@ -130,7 +130,7 @@ export class EmailService {
 <body>
   <div class="container">
     <div class="logo">
-      <h1>🎬 SHOGUN</h1>
+      <h1>🎬 SHOGUNITO</h1>
     </div>
 
     <div class="content">
@@ -156,7 +156,7 @@ export class EmailService {
       <p>Si no solicitaste este cambio, puedes ignorar este mensaje de forma segura.</p>
       <p>Por seguridad, nunca compartas este enlace con nadie.</p>
       <p style="margin-top: 20px;">
-        <strong>Equipo Shogun</strong>
+        <strong>Equipo Shogunito</strong>
       </p>
     </div>
   </div>
@@ -170,7 +170,7 @@ export class EmailService {
    */
   async sendPasswordChangedEmail(email: string, name: string): Promise<boolean> {
     const emailData = {
-      subject: 'Tu contraseña ha sido actualizada - Shogun',
+      subject: 'Tu contraseña ha sido actualizada - Shogunito',
       from: {
         name: this.fromName,
         email: this.fromEmail,
@@ -182,7 +182,7 @@ export class EmailService {
         },
       ],
       html: this.getPasswordChangedTemplate(name),
-      text: `Hola ${name},\n\nTu contraseña ha sido actualizada exitosamente.\n\nSi no realizaste este cambio, contacta inmediatamente con soporte.\n\nSaludos,\nEquipo Shogun`,
+      text: `Hola ${name},\n\nTu contraseña ha sido actualizada exitosamente.\n\nSi no realizaste este cambio, contacta inmediatamente con soporte.\n\nSaludos,\nEquipo Shogunito`,
     };
 
     return Promise.resolve(this.sendEmail(emailData));
@@ -252,7 +252,7 @@ export class EmailService {
 <body>
   <div class="container">
     <div class="logo">
-      <h1>🎬 SHOGUN</h1>
+      <h1>🎬 SHOGUNITO</h1>
     </div>
 
     <div class="success-icon">✅</div>
@@ -271,7 +271,7 @@ export class EmailService {
     <div class="footer">
       <p>Este es un mensaje automático, por favor no respondas a este correo.</p>
       <p style="margin-top: 20px;">
-        <strong>Equipo Shogun</strong>
+        <strong>Equipo Shogunito</strong>
       </p>
     </div>
   </div>

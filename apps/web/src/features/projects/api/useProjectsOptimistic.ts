@@ -1,4 +1,4 @@
-import type { Project } from '@shogun/shared';
+import type { Project } from '@shogunito/shared';
 import { apiService } from '@shared/api/client';
 import {
   useOptimisticCreate,

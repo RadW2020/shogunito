@@ -1,6 +1,6 @@
 import React from 'react';
 import { DataTable, type TableColumn } from '../DataTable';
-import type { User, StatusMeta, TabType } from '@shogun/shared';
+import type { User, StatusMeta, TabType } from '@shogunito/shared';
 
 interface UsersTabProps {
   users: User[];

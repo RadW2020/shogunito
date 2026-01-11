@@ -5,7 +5,7 @@ import { useEpisodes } from '../api/useEpisodes';
 import { useUiStore } from '@app/stores/uiStore';
 import { LoadingSpinner, EmptyState } from '@shared/ui';
 import { apiService } from '@shared/api/client';
-import type { StatusMeta, TabType, Episode, Status } from '@shogun/shared';
+import type { StatusMeta, TabType, Episode, Status } from '@shogunito/shared';
 
 interface EpisodesTabWrapperProps {
   statusMap: Record<string, StatusMeta>;

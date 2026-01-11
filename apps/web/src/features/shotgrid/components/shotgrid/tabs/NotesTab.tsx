@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { DataTable, type TableColumn } from '../DataTable';
 import { NoteAttachmentUpload } from '../../../../../shared/components/shared/NoteAttachmentUpload';
 import { NoteEditModal } from '../../../../../shared/components/modals/NoteEditModal';
-import type { StatusMeta, TabType } from '@shogun/shared';
+import type { StatusMeta, TabType } from '@shogunito/shared';
 import type { Note } from '@shared/api/client';
 
 interface NotesTabProps {

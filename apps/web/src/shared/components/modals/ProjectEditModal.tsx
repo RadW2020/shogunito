@@ -6,7 +6,7 @@ import { FormField } from '../shared/FormField';
 import { useUpdateProject } from '@features/projects/api/useProjects';
 import { showToast } from '../feedback';
 import { apiService } from '../../api/client';
-import type { Project, Status } from '@shogun/shared';
+import type { Project, Status } from '@shogunito/shared';
 
 interface ProjectEditModalProps {
   project: Project | null;

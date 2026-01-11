@@ -5,7 +5,7 @@ import { NoteBadge } from '../../../../../shared/components/shared/NoteBadge';
 import { AssetEditModal } from '../../../../../shared/components/modals/AssetEditModal';
 import { useNotesSorting } from '../hooks/useNotesSorting';
 import { useNotesByEntity } from '../../../../../features/notes/api/useNotes';
-import type { Asset, StatusMeta, TabType } from '@shogun/shared';
+import type { Asset, StatusMeta, TabType } from '@shogunito/shared';
 
 interface AssetNotesCellProps {
   item: Asset;

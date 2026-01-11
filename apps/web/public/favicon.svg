@@ -2,7 +2,7 @@
   <!-- Background circle -->
   <circle cx="16" cy="16" r="15" fill="#1a1a1a" stroke="#ffffff" stroke-width="2"/>
   
-  <!-- Shogun helmet design - simplified -->
+  <!-- Shogunito helmet design - simplified -->
   <path d="M8 12 L16 8 L24 12 L24 20 L16 24 L8 20 Z" fill="#2a2a2a" stroke="#ffffff" stroke-width="1"/>
   
   <!-- Helmet crest -->

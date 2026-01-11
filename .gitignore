@@ -1,5 +1,5 @@
 # ==============================================================================
-# SHOGUN PROJECT .GITIGNORE
+# SHOGUNITO PROJECT .GITIGNORE
 # Full-stack project with NestJS API + React/Vite UI + Docker infrastructure
 # ==============================================================================
 
@@ -106,8 +106,8 @@ public/dist/
 # Backend specific (NestJS)
 # ------------------------------------------------------------------------------
 # Compiled output
-shogun-api/dist/
-shogun-api/build/
+shogunito-api/dist/
+shogunito-api/build/
 
 # Testing
 # ------------------------------------------------------------------------------
@@ -144,7 +144,7 @@ assets/uploads/
 
 # Project specific
 # ------------------------------------------------------------------------------
-# Shogun specific temp files
+# Shogunito specific temp files
 /renders/
 /exports/
 /tmp_assets/
@@ -157,5 +157,5 @@ temp-videos
 playwright-report/
 test-results/
 # ==============================================================================
-# END SHOGUN .GITIGNORE
+# END SHOGUNITO .GITIGNORE
 # ==============================================================================

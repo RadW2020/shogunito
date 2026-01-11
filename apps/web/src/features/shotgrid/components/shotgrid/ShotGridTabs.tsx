@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
-import { TAB_CONFIG } from '@shogun/shared';
-import type { TabType } from '@shogun/shared';
+import { TAB_CONFIG } from '@shogunito/shared';
+import type { TabType } from '@shogunito/shared';
 
 interface ShotGridTabsProps {
   activeTab: TabType;

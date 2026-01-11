@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { Project } from '@shogun/shared';
+import type { Project } from '@shogunito/shared';
 import { apiService } from '@shared/api/client';
 
 export function useProjects() {

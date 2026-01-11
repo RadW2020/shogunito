@@ -5,7 +5,7 @@ import { useAssets } from '../api/useAssets';
 import { useUiStore } from '@app/stores/uiStore';
 import { LoadingSpinner, EmptyState } from '@shared/ui';
 import { apiService } from '@shared/api/client';
-import type { StatusMeta, TabType, Asset, Status } from '@shogun/shared';
+import type { StatusMeta, TabType, Asset, Status } from '@shogunito/shared';
 
 interface AssetsTabWrapperProps {
   statusMap: Record<string, StatusMeta>;

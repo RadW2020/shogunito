@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NoteCreator } from '../shared/NoteCreator';
 import type { LinkType } from '../shared/NoteCreator';
-import type { Project, Episode, Asset, Sequence } from '@shogun/shared';
+import type { Project, Episode, Asset, Sequence } from '@shogunito/shared';
 import type { ApiVersion } from '@shared/api/client';
 
 interface GeneralNoteCreatorModalProps {

@@ -1,4 +1,4 @@
-# Docker Guide - Shogun
+# Docker Guide - Shogunito
 
 Complete guide for Docker setup in development and production environments.
 
@@ -304,10 +304,10 @@ RUN --mount=type=cache,target=/root/.npm \
 
 ```bash
 # Check image sizes
-docker images | grep shogun
+docker images | grep shogunito
 
 # Use dive to analyze layers
-dive shogun-api:latest
+dive shogunito-api:latest
 ```
 
 ---

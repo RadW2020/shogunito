@@ -2,7 +2,7 @@ import React from 'react';
 import { ProjectsTab } from '@features/shotgrid/components/shotgrid/tabs/ProjectsTab';
 import { useProjects } from '../api/useProjects';
 import { useUiStore } from '@app/stores/uiStore';
-import type { StatusMeta, TabType, Project } from '@shogun/shared';
+import type { StatusMeta, TabType, Project } from '@shogunito/shared';
 
 interface ProjectsTabWrapperProps {
   statusMap: Record<string, StatusMeta>;

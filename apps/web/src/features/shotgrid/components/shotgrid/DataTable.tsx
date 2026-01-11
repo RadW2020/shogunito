@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { TabType } from '@shogun/shared';
+import type { TabType } from '@shogunito/shared';
 import { useSorting, type CustomSortFunction } from './hooks/useSorting';
 import { DataTableMobileCard } from './DataTableMobileCard';
 import { ScrollIndicator } from './ScrollIndicator';

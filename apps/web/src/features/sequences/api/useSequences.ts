@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { Sequence } from '@shogun/shared';
+import type { Sequence } from '@shogunito/shared';
 import { apiService } from '@shared/api/client';
 
 export function useSequences() {

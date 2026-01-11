@@ -1,12 +1,12 @@
 # ==============================================
-# SHOGUN - Docker Compose for Development
+# SHOGUNITO - Docker Compose for Development
 # ==============================================
 # This file is optimized for local development with hot reload
-# Usage: docker-compose -p shogun-dev up -d
-# Or: COMPOSE_PROJECT_NAME=shogun-dev docker-compose up -d
+# Usage: docker-compose -p shogunito-dev up -d
+# Or: COMPOSE_PROJECT_NAME=shogunito-dev docker-compose up -d
 #
-# IMPORTANT: Use project name "shogun-dev" to avoid conflicts with production
-# This ensures containers from production (shogun-prod) are not affected
+# IMPORTANT: Use project name "shogunito-dev" to avoid conflicts with production
+# This ensures containers from production (shogunito-prod) are not affected
 #
 # SERVICES:
 # - PostgreSQL: Database (port 5432)
@@ -21,11 +21,11 @@ services:
   # ============================================
   postgres:
     image: postgres:16-alpine
-    container_name: shogun-postgres-dev
+    container_name: shogunito-postgres-dev
     environment:
       POSTGRES_PASSWORD: dev
       POSTGRES_USER: dev
-      POSTGRES_DB: shogun
+      POSTGRES_DB: shogunito
     ports:
       - "5432:5432"
     volumes:
@@ -38,14 +38,14 @@ services:
       start_period: 10s
     restart: unless-stopped
     networks:
-      - shogun-dev-network
+      - shogunito-dev-network
 
   # ============================================
   # Object Storage
   # ============================================
   minio:
     image: minio/minio:latest
-    container_name: shogun-minio-dev
+    container_name: shogunito-minio-dev
     command: server /data --console-address ":9001"
     environment:
       MINIO_ROOT_USER: minio
@@ -63,16 +63,16 @@ services:
       start_period: 10s
     restart: unless-stopped
     networks:
-      - shogun-dev-network
+      - shogunito-dev-network
 
   # ============================================
   # Database Management UI
   # ============================================
   pgadmin:
     image: dpage/pgadmin4:latest
-    container_name: shogun-pgadmin-dev
+    container_name: shogunito-pgadmin-dev
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@shogun.com
+      PGADMIN_DEFAULT_EMAIL: admin@shogunito.com
       PGADMIN_DEFAULT_PASSWORD: admin123
       PGADMIN_CONFIG_SERVER_MODE: "False"
     ports:
@@ -98,7 +98,7 @@ services:
         condition: service_healthy
     restart: unless-stopped
     networks:
-      - shogun-dev-network
+      - shogunito-dev-network
 
   # ============================================
   # API Service (Development with Hot Reload)
@@ -108,7 +108,7 @@ services:
       context: .
       dockerfile: apps/api/Dockerfile
       target: deps # Use deps stage for development
-    container_name: shogun-api-dev
+    container_name: shogunito-api-dev
     command: sh -c "cd apps/api && npm run dev"
     environment:
       NODE_ENV: development
@@ -118,7 +118,7 @@ services:
       DATABASE_PORT: 5432
       DATABASE_USERNAME: dev
       DATABASE_PASSWORD: dev
-      DATABASE_NAME: shogun
+      DATABASE_NAME: shogunito
       # JWT
       JWT_SECRET: dev-secret-change-in-production
       JWT_EXPIRES_IN: 24h
@@ -152,7 +152,7 @@ services:
         condition: service_healthy
     restart: unless-stopped
     networks:
-      - shogun-dev-network
+      - shogunito-dev-network
     healthcheck:
       test:
         [
@@ -176,8 +176,8 @@ services:
       context: .
       dockerfile: apps/web/Dockerfile
       target: deps # Use deps stage for development
-    container_name: shogun-web-dev
-    command: npm run dev --workspace=shogun-web -- --host
+    container_name: shogunito-web-dev
+    command: npm run dev --workspace=shogunito-web -- --host
     environment:
       VITE_API_URL: http://localhost:3000
       VITE_NODE_ENV: development
@@ -194,7 +194,7 @@ services:
       - api
     restart: unless-stopped
     networks:
-      - shogun-dev-network
+      - shogunito-dev-network
     healthcheck:
       test:
         [
@@ -219,6 +219,6 @@ volumes:
     driver: local
 
 networks:
-  shogun-dev-network:
+  shogunito-dev-network:
     driver: bridge
-    name: shogun-dev
+    name: shogunito-dev

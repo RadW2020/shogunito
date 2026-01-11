@@ -1,6 +1,6 @@
 # Deployment Documentation
 
-Complete deployment guides and scripts for Shogun production setup.
+Complete deployment guides and scripts for Shogunito production setup.
 
 ## 📚 Documentation
 
@@ -46,8 +46,8 @@ docker-compose -f docker-compose.production.yml up -d
 
 ```bash
 # 1. Create separate production directory
-mkdir -p ~/shogun-production
-cd ~/shogun-production
+mkdir -p ~/shogunito-production
+cd ~/shogunito-production
 git clone <repo-url> .
 
 # 2. Configure and deploy

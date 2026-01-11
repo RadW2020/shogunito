@@ -6,7 +6,7 @@ import { FormField } from '../shared/FormField';
 import { useCreateProject } from '@features/projects/api/useProjects';
 import { showToast } from '../feedback';
 import { apiService } from '../../api/client';
-import type { Status } from '@shogun/shared';
+import type { Status } from '@shogunito/shared';
 
 interface AddProjectModalProps {
   isOpen: boolean;

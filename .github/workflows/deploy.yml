@@ -30,11 +30,11 @@ jobs:
       matrix:
         include:
           - app: api
-            image: shogun-api
+            image: shogunito-api
             context: .
             dockerfile: apps/api/Dockerfile
           - app: web
-            image: shogun-web
+            image: shogunito-web
             context: .
             dockerfile: apps/web/Dockerfile
 

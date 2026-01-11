@@ -16,7 +16,7 @@ import {
 } from '@shared/components/modals';
 import { GeneralNoteCreatorModal } from '@shared/components/modals/GeneralNoteCreatorModal';
 import { NoteCreator } from '@shared/components/shared/NoteCreator';
-import type { Project, Episode, Asset, Sequence, Status } from '@shogun/shared';
+import type { Project, Episode, Asset, Sequence, Status } from '@shogunito/shared';
 import type { ApiVersion } from '@shared/api/client';
 
 interface ShotGridModalsProps {

@@ -1,5 +1,5 @@
 {
-  "name": "@shogun/shared",
+  "name": "@shogunito/shared",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -24,7 +24,7 @@
     "typescript": "^5.0.0"
   },
   "devDependencies": {
-    "@shogun/typescript-config": "*",
+    "@shogunito/typescript-config": "*",
     "eslint": "^9.0.0",
     "typescript": "^5.0.0"
   }

@@ -6,7 +6,7 @@ import { useSequences } from '@features/sequences/api/useSequences';
 import { useEpisodes } from '@features/episodes/api/useEpisodes';
 import { useUiStore } from '@app/stores/uiStore';
 import { LoadingSpinner, EmptyState } from '@shared/ui';
-import type { StatusMeta, TabType } from '@shogun/shared';
+import type { StatusMeta, TabType } from '@shogunito/shared';
 import type { ApiVersion } from '@shared/api/client';
 
 interface VersionsTabWrapperWithPaginationProps {

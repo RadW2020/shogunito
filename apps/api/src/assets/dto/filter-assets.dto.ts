@@ -1,7 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsOptional, IsEnum, IsNumber, IsUUID } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
-import { AssetType } from '@shogun/shared';
+import { AssetType } from '@shogunito/shared';
 import { PaginationDto } from '../../common/dto/pagination.dto';
 
 /**

@@ -3,7 +3,7 @@ import { NotesTab } from '@features/shotgrid/components/shotgrid/tabs/NotesTab';
 import { useNotes } from '../api/useNotes';
 import { useUiStore } from '@app/stores/uiStore';
 import { LoadingSpinner, EmptyState } from '@shared/ui';
-import type { StatusMeta, TabType } from '@shogun/shared';
+import type { StatusMeta, TabType } from '@shogunito/shared';
 import type { Note } from '@shared/api/client';
 
 interface NotesTabWrapperProps {

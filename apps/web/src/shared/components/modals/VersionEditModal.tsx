@@ -4,7 +4,7 @@ import { useUpdateVersion } from '@features/versions/api/useVersions';
 import toast from 'react-hot-toast';
 import { apiService } from '../../api/client';
 import type { ApiVersion } from '@shared/api/client';
-import type { Status } from '@shogun/shared';
+import type { Status } from '@shogunito/shared';
 
 interface VersionEditModalProps {
   version: ApiVersion | null;

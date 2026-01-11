@@ -4,7 +4,7 @@ import { FormField } from '../shared/FormField';
 import { useCreateVersion } from '@features/versions/api/useVersions';
 import { useProjects } from '@features/projects/api/useProjects';
 import { showToast } from '../feedback';
-import type { Asset, Sequence, Episode } from '@shogun/shared';
+import type { Asset, Sequence, Episode } from '@shogunito/shared';
 
 interface AddVersionModalProps {
   isOpen: boolean;

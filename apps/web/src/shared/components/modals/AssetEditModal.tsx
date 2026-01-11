@@ -4,7 +4,7 @@ import { useUpdateAsset } from '@features/assets/api/useAssets';
 import toast from 'react-hot-toast';
 import { useQuery } from '@tanstack/react-query';
 import { apiService } from '@shared/api/client';
-import type { Asset, Status } from '@shogun/shared';
+import type { Asset, Status } from '@shogunito/shared';
 
 interface AssetEditModalProps {
   asset: Asset | null;

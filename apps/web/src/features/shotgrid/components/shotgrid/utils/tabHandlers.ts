@@ -1,4 +1,4 @@
-import type { Project, Episode, Asset, Sequence, Status } from '@shogun/shared';
+import type { Project, Episode, Asset, Sequence, Status } from '@shogunito/shared';
 import type { ApiVersion } from '@shared/api/client';
 
 interface ModalActions {

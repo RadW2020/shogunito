@@ -4,7 +4,7 @@ import { useSequences } from '../api/useSequences';
 import { useEpisodes } from '@features/episodes/api/useEpisodes';
 import { useUiStore } from '@app/stores/uiStore';
 import { LoadingSpinner, EmptyState } from '@shared/ui';
-import type { StatusMeta, TabType, Sequence } from '@shogun/shared';
+import type { StatusMeta, TabType, Sequence } from '@shogunito/shared';
 
 interface SequencesTabWrapperProps {
   statusMap: Record<string, StatusMeta>;

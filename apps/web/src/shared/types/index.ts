@@ -1,5 +1,5 @@
 // Re-export all shared types from the shared package
-export type { Project, Episode, Asset, Sequence, Status, TabType } from '@shogun/shared';
+export type { Project, Episode, Asset, Sequence, Status, TabType } from '@shogunito/shared';
 
 // Re-export API types
 export type { ApiVersion, Note } from '@shared/api/client';

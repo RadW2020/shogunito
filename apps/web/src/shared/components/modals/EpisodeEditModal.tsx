@@ -5,7 +5,7 @@ import { FormField } from '../shared/FormField';
 import { useUpdateEpisode } from '@features/episodes/api/useEpisodes';
 import toast from 'react-hot-toast';
 import { apiService } from '../../api/client';
-import type { Episode, Status } from '@shogun/shared';
+import type { Episode, Status } from '@shogunito/shared';
 
 interface EpisodeEditModalProps {
   episode: Episode | null;

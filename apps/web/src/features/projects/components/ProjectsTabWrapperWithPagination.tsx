@@ -4,7 +4,7 @@ import { useProjectsPaginated, useIsProjectsInitialLoading } from '../api/usePro
 import { InfiniteScrollList } from '@shared/components/pagination';
 import { useUiStore } from '@app/stores/uiStore';
 import { LoadingSpinner, EmptyState } from '@shared/ui';
-import type { StatusMeta, TabType, Project } from '@shogun/shared';
+import type { StatusMeta, TabType, Project } from '@shogunito/shared';
 
 interface ProjectsTabWrapperWithPaginationProps {
   statusMap: Record<string, StatusMeta>;

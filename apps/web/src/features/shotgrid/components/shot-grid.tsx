@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import type { TabType } from '@shogun/shared';
+import type { TabType } from '@shogunito/shared';
 import { FiltersBar } from './shotgrid/FiltersBar';
 import { Toolbar } from './shotgrid/Toolbar';
 import { ShotGridTabs } from './shotgrid/ShotGridTabs';

@@ -4,7 +4,7 @@ import { StatusBadge } from '../StatusBadge';
 import { NoteBadge } from '../../../../../shared/components/shared/NoteBadge';
 import { useNotesSorting } from '../hooks/useNotesSorting';
 import { useNotesByEntity } from '../../../../../features/notes/api/useNotes';
-import type { Project, StatusMeta, TabType } from '@shogun/shared';
+import type { Project, StatusMeta, TabType } from '@shogunito/shared';
 
 interface ProjectNotesCellProps {
   item: Project;

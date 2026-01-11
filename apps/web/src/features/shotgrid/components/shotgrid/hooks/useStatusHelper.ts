@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { Status, StatusMeta, EntityTypeForStatus } from '@shogun/shared';
+import type { Status, StatusMeta, EntityTypeForStatus } from '@shogunito/shared';
 
 export const useStatusHelper = (apiStatuses: Status[]) => {
   const statusMap = useMemo<Record<string, StatusMeta>>(() => {

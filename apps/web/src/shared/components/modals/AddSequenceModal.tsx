@@ -5,7 +5,7 @@ import { FormField } from '../shared/FormField';
 import { useCreateSequence } from '@features/sequences/api/useSequences';
 import { showToast } from '../feedback';
 import { apiService } from '../../api/client';
-import type { Status } from '@shogun/shared';
+import type { Status } from '@shogunito/shared';
 
 interface AddSequenceModalProps {
   isOpen: boolean;

@@ -7,7 +7,7 @@ import type {
   Asset,
   User,
   Status,
-} from '@shogun/shared';
+} from '@shogunito/shared';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 const AUTH_DISABLED = import.meta.env.VITE_AUTH_ENABLED === 'false';

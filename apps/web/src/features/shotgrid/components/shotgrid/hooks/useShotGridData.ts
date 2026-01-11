@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { apiService } from '@shared/api/client';
-import type { Project, Episode, Asset, Sequence, Status, User } from '@shogun/shared';
+import type { Project, Episode, Asset, Sequence, Status, User } from '@shogunito/shared';
 import type { ApiVersion } from '@shared/api/client';
 
 

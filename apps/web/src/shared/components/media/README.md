@@ -351,7 +351,7 @@ const users = [
 ```tsx
 <OptimizedImage
   src="/uploads/hero"
-  alt="Welcome to Shogun"
+  alt="Welcome to Shogunito"
   size="large"
   lazy={false}
   aspectRatio="21/9"

@@ -11,9 +11,9 @@ export type {
   Status,
   User,
   EntityTypeForStatus,
-} from '@shogun/shared';
+} from '@shogunito/shared';
 
-export { TAB_CONFIG } from '@shogun/shared';
+export { TAB_CONFIG } from '@shogunito/shared';
 
 // Components
 export { StatusBadge } from './StatusBadge';

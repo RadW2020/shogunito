@@ -1,6 +1,6 @@
-# Shogun API - Security Guide
+# Shogunito API - Security Guide
 
-This document outlines all security measures implemented in the Shogun API and best practices for deployment.
+This document outlines all security measures implemented in the Shogunito API and best practices for deployment.
 
 ## Table of Contents
 
@@ -18,7 +18,7 @@ This document outlines all security measures implemented in the Shogun API and b
 
 ## Security Features
 
-The Shogun API implements multiple layers of security:
+The Shogunito API implements multiple layers of security:
 
 ✅ **JWT-based Authentication** - Secure token-based auth
 ✅ **Role-Based Access Control (RBAC)** - 42 granular permissions across 6 roles
@@ -354,9 +354,9 @@ npm run migration:show
 ```env
 DATABASE_HOST=your-db-host.com
 DATABASE_PORT=5432
-DATABASE_USERNAME=shogun_prod_user
+DATABASE_USERNAME=shogunito_prod_user
 DATABASE_PASSWORD=STRONG_RANDOM_PASSWORD
-DATABASE_NAME=shogun_production
+DATABASE_NAME=shogunito_production
 ```
 
 **Best Practices:**

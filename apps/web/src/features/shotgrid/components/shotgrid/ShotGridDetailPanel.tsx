@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from 'react';
-import type { TabType } from '@shogun/shared';
+import type { TabType } from '@shogunito/shared';
 import type { ApiVersion } from '@shared/api/client';
 import { JsonViewer } from '@shared/components/JsonViewer';
 

@@ -1,7 +1,7 @@
 {
-  "name": "shogun",
+  "name": "shogunito",
   "version": "1.0.0",
-  "description": "Shogun - Flow tracking application",
+  "description": "Shogunito - Flow tracking application",
   "private": true,
   "scripts": {
     "build": "CI=true turbo run build",
@@ -11,11 +11,11 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
     "clean": "turbo run clean",
-    "migration:generate": "npm run migration:generate --workspace=shogun-api --",
-    "migration:create": "npm run migration:create --workspace=shogun-api --",
-    "migration:run": "npm run migration:run --workspace=shogun-api",
-    "migration:revert": "npm run migration:revert --workspace=shogun-api",
-    "migration:show": "npm run migration:show --workspace=shogun-api"
+    "migration:generate": "npm run migration:generate --workspace=shogunito-api --",
+    "migration:create": "npm run migration:create --workspace=shogunito-api --",
+    "migration:run": "npm run migration:run --workspace=shogunito-api",
+    "migration:revert": "npm run migration:revert --workspace=shogunito-api",
+    "migration:show": "npm run migration:show --workspace=shogunito-api"
   },
   "devDependencies": {
     "baseline-browser-mapping": "^2.9.6",

@@ -10,7 +10,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
-import { AssetType } from '@shogun/shared';
+import { AssetType } from '@shogunito/shared';
 import { Status } from './status.entity';
 
 /**

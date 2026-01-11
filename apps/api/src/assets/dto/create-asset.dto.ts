@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsString, IsNumber, IsOptional, IsEnum, IsUUID } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { AssetType } from '@shogun/shared';
+import { AssetType } from '@shogunito/shared';
 import { IsNotSQLInjection, IsNotXSS } from '../../common/validators/custom-validators';
 
 export class CreateAssetDto {

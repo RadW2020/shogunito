@@ -21,7 +21,7 @@ const dataSourceOptions = {
   port: parseInt(process.env.DATABASE_PORT || '5432'),
   username: process.env.DATABASE_USERNAME || 'dev',
   password: process.env.DATABASE_PASSWORD || 'dev',
-  database: process.env.DATABASE_NAME || 'shogun',
+  database: process.env.DATABASE_NAME || 'shogunito',
   entities: [join(__dirname, '..', 'entities', '*.entity.{ts,js}')],
   migrations: [join(__dirname, '..', 'migrations', '*{.ts,.js}')],
   synchronize: process.env.NODE_ENV !== 'production',
