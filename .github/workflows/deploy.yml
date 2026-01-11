@@ -3,7 +3,7 @@ name: Build & Push to GHCR
 on:
   push:
     branches: ["main"]
-    # Only trigger when relevant files change
+    # Only trigger when relevant files change!
     paths:
       - 'apps/**'
       - 'packages/**'
