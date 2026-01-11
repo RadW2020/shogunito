@@ -109,7 +109,7 @@ services:
       dockerfile: apps/api/Dockerfile
       target: deps # Use deps stage for development
     container_name: shogun-api-dev
-    command: npm run dev --workspace=shogun-api
+    command: sh -c "cd apps/api && npm run dev"
     environment:
       NODE_ENV: development
       PORT: 3000
@@ -126,6 +126,8 @@ services:
       JWT_REFRESH_EXPIRES_IN: 7d
       # CORS
       FRONTEND_URL: http://localhost:5173
+      ALLOWED_ORIGINS: http://localhost:5173,http://localhost:5174,http://localhost:3000
+      ALLOWED_REGISTRATION_EMAILS: "*"
       # MinIO
       MINIO_ENDPOINT: minio
       MINIO_PORT: 9000
@@ -137,8 +139,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      # Mount source code for hot reload
-      - ./apps/api/src:/app/apps/api/src:cached
+      # Mount entire app directory for config and source
+      - ./apps/api:/app/apps/api:cached
       - ./packages:/app/packages:cached
       # Persist node_modules
       - /app/node_modules
@@ -175,18 +177,15 @@ services:
       dockerfile: apps/web/Dockerfile
       target: deps # Use deps stage for development
     container_name: shogun-web-dev
-    command: npm run dev --workspace=shogun-web
+    command: npm run dev --workspace=shogun-web -- --host
     environment:
       VITE_API_URL: http://localhost:3000
       VITE_NODE_ENV: development
     ports:
       - "5173:5173"
     volumes:
-      # Mount source code for hot reload
-      - ./apps/web/src:/app/apps/web/src:cached
-      - ./apps/web/public:/app/apps/web/public:cached
-      - ./apps/web/index.html:/app/apps/web/index.html:cached
-      - ./apps/web/vite.config.ts:/app/apps/web/vite.config.ts:cached
+      # Mount entire app directory
+      - ./apps/web:/app/apps/web:cached
       - ./packages:/app/packages:cached
       # Persist node_modules
       - /app/node_modules

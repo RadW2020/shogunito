@@ -2,8 +2,8 @@
 # SHOGUN WEB - Dockerfile for Production
 # ==============================================
 
-# Stage 1: Build
-FROM node:20 AS builder
+# Stage 1: Dependencies
+FROM node:20 AS deps
 
 WORKDIR /app
 
@@ -16,6 +16,19 @@ COPY packages/typescript-config/package.json ./packages/typescript-config/
 # Install dependencies fresh (without lock file to get correct native binaries)
 # Use --legacy-peer-deps to handle version conflicts
 RUN npm install --legacy-peer-deps
+
+# Stage 2: Build
+FROM node:20 AS builder
+
+WORKDIR /app
+
+# Copy deps
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/package.json /app/turbo.json ./
+COPY --from=deps /app/apps/web/package.json ./apps/web/
+COPY --from=deps /app/packages/shared/package.json ./packages/shared/
+COPY --from=deps /app/packages/typescript-config/package.json ./packages/typescript-config/
+
 
 # Now copy the source code (DON'T copy api - not needed for web build)
 COPY apps/web ./apps/web
