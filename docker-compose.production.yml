@@ -91,10 +91,13 @@ services:
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
       MINIO_PUBLIC_ENDPOINT: ${MINIO_PUBLIC_ENDPOINT}
       # CORS - set your actual domains
-      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-https://shogun.yourdomain.com}
-      FRONTEND_URL: ${FRONTEND_URL:-https://shogun.yourdomain.com}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-https://shogunweb.uliber.com}
+      FRONTEND_URL: ${FRONTEND_URL:-https://shogunweb.uliber.com}
+    ports:
+      - "3002"
     expose:
       - "3002"
+
     depends_on:
       postgres:
         condition: service_healthy
@@ -118,9 +121,11 @@ services:
       context: .
       dockerfile: apps/web/Dockerfile
       args:
-        VITE_API_URL: ${VITE_API_URL:-https://api.yourdomain.com}
+        VITE_API_URL: ${VITE_API_URL:-https://shogunapi.uliber.com}
         VITE_NODE_ENV: production
     container_name: shogun-web-prod
+    ports:
+      - "3003"
     expose:
       - "3003"
     restart: unless-stopped
