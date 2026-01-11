@@ -13,7 +13,6 @@ import { CreateAssetWithVersionDto } from './dto/create-asset-with-version.dto';
 import { CreateSequenceWithVersionDto } from './dto/create-sequence-with-version.dto';
 import { MinioService } from '../files/minio.service';
 import { ImageOptimizationService } from '../files/image-optimization.service';
-import { SlackService } from '../notifications/slack/slack.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { Version } from '../entities/version.entity';
 import { Asset } from '../entities/asset.entity';
@@ -41,7 +40,6 @@ export class VersionsService {
     private dataSource: DataSource,
     private minioService: MinioService,
     private imageOptimizationService: ImageOptimizationService,
-    private slackService: SlackService,
     private notificationsService: NotificationsService,
     private projectAccessService: ProjectAccessService,
   ) {}
@@ -548,12 +546,12 @@ export class VersionsService {
     // Version approved
     if (newStatusCode === 'approved') {
       // Slack notification (convert ID to string for display)
-      const changedByString = changedBy ? String(changedBy) : 'System';
-      await this.slackService.notifyVersionApproved(
-        versionCode,
-        changedByString,
-        updatedVersion.entityCode || 'Unknown Project',
-      );
+      // const changedByString = changedBy ? String(changedBy) : 'System';
+      // await this.slackService.notifyVersionApproved(
+      //   versionCode,
+      //   changedByString,
+      //   updatedVersion.entityCode || 'Unknown Project',
+      // );
 
       // In-app notification to creator
       if (previousVersion.createdBy && changedBy && previousVersion.createdBy !== changedBy) {
@@ -571,8 +569,8 @@ export class VersionsService {
       const reason = updatedVersion.description || 'No reason provided';
 
       // Slack notification (convert ID to string for display)
-      const changedByString = changedBy ? String(changedBy) : 'System';
-      await this.slackService.notifyVersionRejected(versionCode, changedByString, reason);
+      // const changedByString = changedBy ? String(changedBy) : 'System';
+      // await this.slackService.notifyVersionRejected(versionCode, changedByString, reason);
 
       // In-app notification to creator
       if (previousVersion.createdBy && changedBy && previousVersion.createdBy !== changedBy) {

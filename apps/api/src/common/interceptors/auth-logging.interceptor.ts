@@ -13,7 +13,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Request, Response } from 'express';
 import { AuditLog } from '../../entities/audit-log.entity';
-import { SlackService } from '../../notifications/slack/slack.service';
 
 /**
  * Authentication Logging Interceptor
@@ -42,7 +41,6 @@ export class AuthLoggingInterceptor implements NestInterceptor, OnModuleDestroy 
   constructor(
     @InjectRepository(AuditLog)
     private readonly auditLogRepository: Repository<AuditLog>,
-    private readonly slackService: SlackService,
   ) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
@@ -259,22 +257,9 @@ export class AuthLoggingInterceptor implements NestInterceptor, OnModuleDestroy 
         `Failed ${action} attempt #${attempts} for ${username} from ${ipAddress}: ${reason}`,
       );
 
-      // Send Slack alert for suspicious activity
+      // Send alert for suspicious activity
       if (attempts >= this.SUSPICIOUS_ATTEMPT_THRESHOLD) {
-        await this.slackService
-          .notifyFailedLogin(username, ipAddress, attempts)
-          .catch((err: unknown) => {
-            const errorMessage =
-              err instanceof Error
-                ? err.message
-                : typeof err === 'string'
-                  ? err
-                  : JSON.stringify(err);
-            this.logger.error(
-              `Failed to send Slack alert for suspicious activity: ${errorMessage}`,
-            );
-          });
-
+        // Slack alert removed
         this.logger.error(
           `SECURITY ALERT: ${attempts} failed login attempts for ${username} from ${ipAddress}`,
         );

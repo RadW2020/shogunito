@@ -10,7 +10,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Request } from 'express';
 import { AuditLog } from '../../entities/audit-log.entity';
-import { SlackService } from '../../notifications/slack/slack.service';
 
 /**
  * Failed Authentication Attempts Tracker Guard
@@ -65,7 +64,6 @@ export class FailedAttemptsTrackerGuard implements CanActivate {
   constructor(
     @InjectRepository(AuditLog)
     private auditLogRepository: Repository<AuditLog>,
-    private slackService: SlackService,
     private configService: ConfigService,
   ) {
     // Only enable guard in production
@@ -192,9 +190,9 @@ export class FailedAttemptsTrackerGuard implements CanActivate {
       },
     });
 
-    // Send Slack alert for suspicious activity
+    // Send alert for suspicious activity
     if (attempts.length >= 5) {
-      await this.slackService.notifyFailedLogin(username, ipAddress, attempts.length);
+      // Slack alert removed
     }
   }
 

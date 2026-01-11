@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import * as bcrypt from 'bcrypt';
-import { SlackService } from '../notifications/slack/slack.service';
 import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
@@ -11,7 +10,6 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly slackService: SlackService,
     private readonly notificationsService: NotificationsService,
   ) {}
 
@@ -68,12 +66,8 @@ export class UsersService {
 
     // Send notifications if an admin user was created
     if (savedUser.role === 'admin') {
-      const creator = createdBy ? String(createdBy) : 'System';
-      await this.slackService.notifyAdminCreated(
-        savedUser.name || savedUser.email,
-        savedUser.email,
-        creator,
-      );
+      // const creator = createdBy ? String(createdBy) : 'System';
+      // Slack notification removed
     }
 
     return savedUser;
@@ -109,14 +103,8 @@ export class UsersService {
 
     // Send notifications if role/permissions changed
     if (isRoleChanging) {
-      const modifier = changedBy ? String(changedBy) : 'System';
-      await this.slackService.notifyPermissionsChanged(
-        updatedUser.name || updatedUser.email,
-        updatedUser.email,
-        oldRole,
-        updatedUser.role,
-        modifier,
-      );
+      // const modifier = changedBy ? String(changedBy) : 'System';
+      // Slack notification removed
     }
 
     // Explicitly delete password field if it exists (should be deleted by hook, but ensure it)

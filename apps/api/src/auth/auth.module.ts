@@ -26,7 +26,7 @@ import { AuthLoggingInterceptor } from '../common/interceptors/auth-logging.inte
 @Module({
   imports: [
     UsersModule,
-    NotificationsModule, // For SlackService
+    NotificationsModule,
     TypeOrmModule.forFeature([AuditLog, RefreshToken]),
     EmailModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),

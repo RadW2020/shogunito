@@ -14,7 +14,6 @@ import { ProjectPermission, ProjectRole } from '../entities/project-permission.e
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { FilterProjectsDto } from './dto/filter-projects.dto';
-import { SlackService } from '../notifications/slack/slack.service';
 import { NotificationsService } from '../notifications/notifications.service';
 
 type ProjectWithNotes = Omit<Project, 'notes'> & { notes: Note[] };
@@ -34,7 +33,6 @@ export class ProjectsService {
     private projectRepository: Repository<Project>,
     @InjectRepository(ProjectPermission)
     private projectPermissionRepository: Repository<ProjectPermission>,
-    private readonly slackService: SlackService,
     private readonly notificationsService: NotificationsService,
   ) {}
 
@@ -302,9 +300,9 @@ export class ProjectsService {
       }
 
       // Send notification for new project creation
-      const creator =
-        userId || savedProject.createdBy ? String(userId || savedProject.createdBy) : 'System';
-      await this.slackService.notifyProjectCreated(savedProject.code, savedProject.name, creator);
+      // const creator =
+      //   userId || savedProject.createdBy ? String(userId || savedProject.createdBy) : 'System';
+      // await this.slackService.notifyProjectCreated(savedProject.code, savedProject.name, creator);
 
       return savedProject;
     } catch (error) {
@@ -386,12 +384,12 @@ export class ProjectsService {
 
     // Send notification if project is being marked as completed
     if (isStatusChangingToCompleted) {
-      const completer = userContext?.userId ? String(userContext.userId) : 'System';
-      await this.slackService.notifyProjectCompleted(
-        updatedProject.code,
-        updatedProject.name,
-        completer,
-      );
+      // const completer = userContext?.userId ? String(userContext.userId) : 'System';
+      // await this.slackService.notifyProjectCompleted(
+      //   updatedProject.code,
+      //   updatedProject.name,
+      //   completer,
+      // );
     }
 
     return updatedProject;
