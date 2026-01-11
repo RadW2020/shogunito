@@ -22,13 +22,14 @@ FROM node:20 AS builder
 
 WORKDIR /app
 
-# Copy deps
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/package.json /app/turbo.json ./
-COPY --from=deps /app/apps/web/package.json ./apps/web/
-COPY --from=deps /app/packages/shared/package.json ./packages/shared/
-COPY --from=deps /app/packages/typescript-config/package.json ./packages/typescript-config/
+# Copy package files
+COPY package.json turbo.json ./
+COPY apps/web/package.json ./apps/web/
+COPY packages/shared/package.json ./packages/shared/
+COPY packages/typescript-config/package.json ./packages/typescript-config/
 
+# Install dependencies fresh (for production build)
+RUN npm install --legacy-peer-deps
 
 # Now copy the source code (DON'T copy api - not needed for web build)
 COPY apps/web ./apps/web
