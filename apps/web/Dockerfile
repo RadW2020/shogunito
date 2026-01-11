@@ -15,7 +15,8 @@ COPY packages/typescript-config/package.json ./packages/typescript-config/
 
 # Install dependencies fresh (without lock file to get correct native binaries)
 # Use --legacy-peer-deps to handle version conflicts
-RUN npm install --legacy-peer-deps
+# Include devDependencies needed for building
+RUN npm install --legacy-peer-deps --include=dev
 
 # Stage 2: Build
 FROM node:20 AS builder
@@ -28,8 +29,9 @@ COPY apps/web/package.json ./apps/web/
 COPY packages/shared/package.json ./packages/shared/
 COPY packages/typescript-config/package.json ./packages/typescript-config/
 
-# Install dependencies fresh (for production build)
-RUN npm install --legacy-peer-deps
+# Install ALL dependencies (including devDependencies) needed for build
+# Force production=false to ensure devDependencies are installed
+RUN npm install --legacy-peer-deps --include=dev
 
 # Now copy the source code (DON'T copy api - not needed for web build)
 COPY apps/web ./apps/web
