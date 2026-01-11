@@ -6,37 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { Request } from 'express';
-import { AuditLog } from '../../entities/audit-log.entity';
-
-/**
- * Failed Authentication Attempts Tracker Guard
- *
- * Protects authentication endpoints by blocking excessive failed login attempts.
- * **ONLY ACTIVE IN PRODUCTION** - Disabled in development and test environments.
- *
- * Features:
- * - Blocks requests after 5 failed attempts for 15 minutes
- * - Tracks attempts per user/IP combination
- * - Blocks IPs with 15+ total attempts (distributed attack protection)
- * - Logs all failed login attempts to audit_logs table
- * - Sends Slack alerts for suspicious activity (5+ attempts)
- * - Auto-cleanup of old attempts every 10 minutes
- *
- * Environment:
- * - NODE_ENV=production: Guard is ACTIVE
- * - NODE_ENV=development: Guard is DISABLED (always allows requests)
- * - NODE_ENV=test: Guard is DISABLED (always allows requests)
- *
- * Usage:
- * Applied at the controller level for auth endpoints
- *
- * @example
- * @UseGuards(FailedAttemptsTrackerGuard)
- * @Post('login')
- */
 
 interface FailedAttempt {
   username: string;
@@ -62,8 +32,6 @@ export class FailedAttemptsTrackerGuard implements CanActivate {
   private readonly isProduction: boolean;
 
   constructor(
-    @InjectRepository(AuditLog)
-    private auditLogRepository: Repository<AuditLog>,
     private configService: ConfigService,
   ) {
     // Only enable guard in production
@@ -167,33 +135,8 @@ export class FailedAttemptsTrackerGuard implements CanActivate {
     attempts.push(attempt);
     this.recentAttempts.set(key, attempts);
 
-    // Log to database
-    await this.auditLogRepository.save({
-      userId: 0, // System user ID
-      username,
-      action: 'LOGIN_FAILED',
-      entityType: 'Auth',
-      entityId: null,
-      changes: {
-        reason,
-        attempts: attempts.length,
-      },
-      ipAddress,
-      userAgent,
-      method: 'POST',
-      endpoint: '/auth/login',
-      statusCode: 401,
-      errorMessage: reason,
-      metadata: {
-        attemptNumber: attempts.length,
-        recentAttempts: attempts.length,
-      },
-    });
-
-    // Send alert for suspicious activity
-    if (attempts.length >= 5) {
-      // Slack alert removed
-    }
+    // Track to database removed
+    // Only local tracking remains for security protection logic
   }
 
   /**

@@ -36,6 +36,7 @@ async function bootstrap() {
     JWT_EXPIRES_IN: configService.get<string>('JWT_EXPIRES_IN'),
     JWT_REFRESH_SECRET: configService.get<string>('JWT_REFRESH_SECRET'),
     JWT_REFRESH_EXPIRES_IN: configService.get<string>('JWT_REFRESH_EXPIRES_IN'),
+    ALLOWED_REGISTRATION_EMAILS: configService.get<string>('ALLOWED_REGISTRATION_EMAILS'),
     // MinIO
     MINIO_ENDPOINT: configService.get<string>('MINIO_ENDPOINT'),
     MINIO_PORT: configService.get<string>('MINIO_PORT'),
@@ -45,13 +46,7 @@ async function bootstrap() {
     // Email
     EMAIL_FROM_EMAIL: configService.get<string>('EMAIL_FROM_EMAIL'),
     EMAIL_FROM_NAME: configService.get<string>('EMAIL_FROM_NAME'),
-    // Axiom
-    AXIOM_ENABLED: configService.get<string>('AXIOM_ENABLED'),
-    AXIOM_API_TOKEN: configService.get<string>('AXIOM_API_TOKEN'),
-    AXIOM_ORG_ID: configService.get<string>('AXIOM_ORG_ID'),
-    AXIOM_DATASET: configService.get<string>('AXIOM_DATASET'),
-    // Log Retention
-    LOG_RETENTION_ENABLED: configService.get<string>('LOG_RETENTION_ENABLED'),
+
   };
 
   const defaultValues = [

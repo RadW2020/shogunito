@@ -419,7 +419,7 @@ await repository.query(`SELECT * FROM project WHERE code = '${userInput}'`);
 - [ ] Configure CSP headers
 - [ ] Set up monitoring and alerting
 - [ ] Configure centralized logging (ELK, Datadog, etc.)
-- [ ] Set up error tracking (Sentry, Rollbar, etc.)
+
 - [ ] Implement health checks (`/health`, `/ready`)
 
 ### Infrastructure

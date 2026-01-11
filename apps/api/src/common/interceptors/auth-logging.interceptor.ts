@@ -9,10 +9,7 @@ import {
 } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap, finalize } from 'rxjs/operators';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { Request, Response } from 'express';
-import { AuditLog } from '../../entities/audit-log.entity';
 
 /**
  * Authentication Logging Interceptor
@@ -23,8 +20,6 @@ import { AuditLog } from '../../entities/audit-log.entity';
  * - Logs successful logins and registrations
  * - Logs failed login attempts with reason
  * - Tracks IP addresses and user agents
- * - Sends Slack alerts for suspicious activity (5+ failed attempts)
- * - Integrates with audit_logs table
  * - Auto-cleanup of failed attempt tracking after 30 minutes
  *
  * Applied globally in AuthModule.
@@ -38,10 +33,7 @@ export class AuthLoggingInterceptor implements NestInterceptor, OnModuleDestroy 
   private readonly CLEANUP_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
   private readonly SUSPICIOUS_ATTEMPT_THRESHOLD = 5;
 
-  constructor(
-    @InjectRepository(AuditLog)
-    private readonly auditLogRepository: Repository<AuditLog>,
-  ) {}
+  constructor() {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const request = context.switchToHttp().getRequest<Request>();
@@ -63,8 +55,6 @@ export class AuthLoggingInterceptor implements NestInterceptor, OnModuleDestroy 
     return next.handle().pipe(
       tap(() => {
         // Capture response status when available
-        // Note: response.statusCode may not be set immediately in tap,
-        // but we'll use finalize to ensure we have the correct status
         responseStatus = response.statusCode;
       }),
       finalize(() => {
@@ -73,22 +63,7 @@ export class AuthLoggingInterceptor implements NestInterceptor, OnModuleDestroy 
 
         // Log successful authentication (2xx status codes)
         if (finalStatus >= 200 && finalStatus < 300) {
-          this.logSuccessfulAuth(username, ipAddress, userAgent, actionType, finalStatus).catch(
-            (err: unknown) => {
-              const errorMessage =
-                err instanceof Error
-                  ? err.message
-                  : typeof err === 'string'
-                    ? err
-                    : JSON.stringify(err);
-              const errorStack = err instanceof Error ? err.stack : undefined;
-              this.logger.error(
-                `Failed to log successful auth for ${username}: ${errorMessage}`,
-                errorStack,
-              );
-            },
-          );
-
+          this.logSuccessfulAuth(username, ipAddress, userAgent, actionType, finalStatus);
           // Clear failed attempts counter on successful auth
           this.clearFailedAttempts(username, ipAddress);
         }
@@ -114,26 +89,11 @@ export class AuthLoggingInterceptor implements NestInterceptor, OnModuleDestroy 
                 errorMessage = message;
               } else if (Array.isArray(message)) {
                 errorMessage = message.join(', ');
-              } else if (typeof message === 'object' && message !== null) {
-                errorMessage = JSON.stringify(message);
-              } else if (message !== null && message !== undefined) {
-                errorMessage =
-                  typeof message === 'string'
-                    ? message
-                    : typeof message === 'number' || typeof message === 'boolean'
-                      ? String(message)
-                      : JSON.stringify(message);
               } else {
-                errorMessage = 'Authentication failed';
+                errorMessage = JSON.stringify(message);
               }
             } else {
-              errorMessage =
-                error.message ||
-                (typeof errorResponse === 'object' && errorResponse !== null
-                  ? JSON.stringify(errorResponse)
-                  : typeof errorResponse === 'string'
-                    ? errorResponse
-                    : 'Authentication failed');
+              errorMessage = 'Authentication failed';
             }
 
             this.logFailedAuth(
@@ -143,140 +103,51 @@ export class AuthLoggingInterceptor implements NestInterceptor, OnModuleDestroy 
               `${actionType}_FAILED`,
               errorMessage,
               status,
-            ).catch((err: unknown) => {
-              const errorMessage =
-                err instanceof Error
-                  ? err.message
-                  : typeof err === 'string'
-                    ? err
-                    : JSON.stringify(err);
-              const errorStack = err instanceof Error ? err.stack : undefined;
-              this.logger.error(
-                `Failed to log failed auth for ${username}: ${errorMessage}`,
-                errorStack,
-              );
-            });
+            );
           }
         }
 
         // Always re-throw the error to maintain proper error handling
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return throwError(() => error);
       }),
     );
   }
 
   /**
-   * Logs successful authentication attempt
+   * Logs successful authentication attempt (console only)
    */
-  private async logSuccessfulAuth(
+  private logSuccessfulAuth(
     username: string,
     ipAddress: string,
     userAgent: string,
     action: string,
     statusCode: number,
-  ): Promise<void> {
-    try {
-      await this.auditLogRepository.save({
-        userId: 0, // System user ID
-        username,
-        action,
-        entityType: 'Auth',
-        entityId: null,
-        changes: {
-          status: 'success',
-        },
-        ipAddress,
-        userAgent,
-        method: 'POST',
-        endpoint: `/auth/${action.toLowerCase()}`,
-        statusCode,
-        metadata: {
-          timestamp: new Date().toISOString(),
-        },
-      });
-
-      this.logger.log(`Successful ${action} for ${username} from ${ipAddress}`);
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : typeof error === 'string'
-            ? error
-            : JSON.stringify(error);
-      const errorStack = error instanceof Error ? error.stack : undefined;
-      this.logger.error(
-        `Failed to log successful auth for ${username}: ${errorMessage}`,
-        errorStack,
-      );
-    }
+  ): void {
+    this.logger.log(`Successful ${action} for ${username} from ${ipAddress} [${statusCode}]`);
   }
 
   /**
-   * Logs failed authentication attempt and tracks suspicious activity
+   * Logs failed authentication attempt (console only)
    */
-  private async logFailedAuth(
+  private logFailedAuth(
     username: string,
     ipAddress: string,
     userAgent: string,
     action: string,
     reason: string,
     statusCode: number,
-  ): Promise<void> {
-    try {
-      // Track failed attempts
-      const key = this.getFailedAttemptKey(username, ipAddress);
-      const attempts = (this.failedAttempts.get(key) || 0) + 1;
-      this.failedAttempts.set(key, attempts);
+  ): void {
+    // Track failed attempts
+    const key = this.getFailedAttemptKey(username, ipAddress);
+    const attempts = (this.failedAttempts.get(key) || 0) + 1;
+    this.failedAttempts.set(key, attempts);
 
-      // Log to database
-      await this.auditLogRepository.save({
-        userId: 0, // System user ID
-        username,
-        action,
-        entityType: 'Auth',
-        entityId: null,
-        changes: {
-          status: 'failed',
-          reason,
-          attemptNumber: attempts,
-        },
-        ipAddress,
-        userAgent,
-        method: 'POST',
-        endpoint: `/auth/${action.toLowerCase().replace('_failed', '')}`,
-        statusCode,
-        errorMessage: reason,
-        metadata: {
-          timestamp: new Date().toISOString(),
-          totalAttempts: attempts,
-        },
-      });
+    this.logger.warn(
+      `Failed ${action} attempt #${attempts} for ${username} from ${ipAddress}: ${reason} [${statusCode}]`,
+    );
 
-      this.logger.warn(
-        `Failed ${action} attempt #${attempts} for ${username} from ${ipAddress}: ${reason}`,
-      );
-
-      // Send alert for suspicious activity
-      if (attempts >= this.SUSPICIOUS_ATTEMPT_THRESHOLD) {
-        // Slack alert removed
-        this.logger.error(
-          `SECURITY ALERT: ${attempts} failed login attempts for ${username} from ${ipAddress}`,
-        );
-      }
-
-      // Schedule cleanup after timeout
-      this.scheduleCleanup(key, attempts);
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : typeof error === 'string'
-            ? error
-            : JSON.stringify(error);
-      const errorStack = error instanceof Error ? error.stack : undefined;
-      this.logger.error(`Failed to log failed auth for ${username}: ${errorMessage}`, errorStack);
-    }
+    // Schedule cleanup after timeout
+    this.scheduleCleanup(key, attempts);
   }
 
   /**
@@ -320,7 +191,6 @@ export class AuthLoggingInterceptor implements NestInterceptor, OnModuleDestroy 
    * Gets IP address from request, handling proxies and load balancers
    */
   private getIpAddress(request: Request): string {
-    // Check X-Forwarded-For header (first IP in chain)
     const forwardedFor = request.headers['x-forwarded-for'];
     if (forwardedFor) {
       const ips = Array.isArray(forwardedFor) ? forwardedFor[0] : forwardedFor.split(',')[0];
@@ -328,30 +198,7 @@ export class AuthLoggingInterceptor implements NestInterceptor, OnModuleDestroy 
         return ips.trim();
       }
     }
-
-    // Check X-Real-IP header
-    const realIp = request.headers['x-real-ip'];
-    if (realIp) {
-      const ip = Array.isArray(realIp) ? realIp[0] : realIp;
-      if (ip) {
-        return ip;
-      }
-    }
-
-    // Fallback to connection remote address
-    // Note: These properties are not in the Express Request type but exist at runtime
-    const reqWithConnection = request as Request & {
-      connection?: { remoteAddress?: string };
-      socket?: { remoteAddress?: string };
-    };
-    if (reqWithConnection.connection?.remoteAddress) {
-      return reqWithConnection.connection.remoteAddress;
-    }
-    if (reqWithConnection.socket?.remoteAddress) {
-      return reqWithConnection.socket.remoteAddress;
-    }
-
-    return 'unknown';
+    return request.ip || 'unknown';
   }
 
   /**
@@ -374,11 +221,9 @@ export class AuthLoggingInterceptor implements NestInterceptor, OnModuleDestroy 
    */
   private scheduleCleanup(key: string, attempts: number): void {
     const timeout = setTimeout(() => {
-      // Only delete if the attempt count hasn't changed (no new attempts)
       const current = this.failedAttempts.get(key);
       if (current === attempts) {
         this.failedAttempts.delete(key);
-        this.logger.debug(`Cleaned up failed attempts counter for key: ${key}`);
       }
       this.cleanupTimeouts.delete(timeout);
     }, this.CLEANUP_TIMEOUT_MS);
@@ -388,25 +233,12 @@ export class AuthLoggingInterceptor implements NestInterceptor, OnModuleDestroy 
 
   /**
    * Cleanup method called by NestJS when module is destroyed
-   * Clears all pending timeouts and failed attempt counters
    */
   onModuleDestroy(): void {
-    this.logger.log('Cleaning up AuthLoggingInterceptor resources...');
-
-    // Clear all pending timeouts
     for (const timeout of this.cleanupTimeouts) {
       clearTimeout(timeout);
     }
     this.cleanupTimeouts.clear();
-
-    // Clear all failed attempt counters
-    const clearedCount = this.failedAttempts.size;
     this.failedAttempts.clear();
-
-    if (clearedCount > 0) {
-      this.logger.log(
-        `Cleared ${clearedCount} failed attempt counter(s) and ${this.cleanupTimeouts.size} timeout(s)`,
-      );
-    }
   }
 }

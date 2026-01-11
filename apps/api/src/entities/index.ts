@@ -6,5 +6,4 @@ export { Asset } from './asset.entity';
 export { User } from './user.entity';
 export { Status } from './status.entity';
 export { Note, LinkType } from './note.entity';
-export { Notification, NotificationType } from './notification.entity';
 export { ProjectPermission, ProjectRole } from './project-permission.entity';

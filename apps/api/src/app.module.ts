@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
-import { APP_INTERCEPTOR, APP_GUARD } from '@nestjs/core';
-import { AuditLoggerInterceptor } from './common/interceptors/audit-logger.interceptor';
+import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import {
@@ -15,13 +13,10 @@ import {
   User,
   Status,
   Note,
-  Notification,
   ProjectPermission,
 } from './entities';
-import { AuditLog } from './entities/audit-log.entity';
 import { RefreshToken } from './entities/refresh-token.entity';
 import { AuthModule } from './auth/auth.module';
-import { AuditModule } from './audit/audit.module';
 import { ProjectsModule } from './projects/projects.module';
 import { EpisodesModule } from './episodes/episodes.module';
 
@@ -34,7 +29,7 @@ import { AssetsModule } from './assets/assets.module';
 import { NotesModule } from './notes/notes.module';
 import { FilesModule } from './files/files.module';
 import { SearchModule } from './search/search.module';
-import { NotificationsModule } from './notifications/notifications.module';
+
 import { HealthModule } from './health/health.module';
 import { ProjectPermissionsModule } from './project-permissions/project-permissions.module';
 
@@ -45,20 +40,7 @@ import { ProjectPermissionsModule } from './project-permissions/project-permissi
       // Load .env.production when NODE_ENV=production
       envFilePath: process.env.NODE_ENV === 'production' ? '.env.production' : '.env',
     }),
-    ThrottlerModule.forRoot([
-      {
-        name: 'default',
-        ttl: 60000, // 60 seconds
-        // In test environment, allow many more requests to avoid rate limiting issues
-        limit: process.env.NODE_ENV === 'test' ? 10000 : 100, // 100 requests per 60 seconds
-      },
-      {
-        name: 'strict',
-        ttl: 60000, // 60 seconds
-        // In test environment, allow many more requests to avoid rate limiting issues
-        limit: process.env.NODE_ENV === 'test' ? 10000 : 10, // 10 requests per 60 seconds (for auth endpoints)
-      },
-    ]),
+
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DATABASE_HOST || 'localhost',
@@ -77,9 +59,7 @@ import { ProjectPermissionsModule } from './project-permissions/project-permissi
         Status,
 
         Note,
-        AuditLog,
         RefreshToken,
-        Notification,
         ProjectPermission,
       ],
       // CRITICAL: synchronize must be false in production
@@ -106,8 +86,7 @@ import { ProjectPermissionsModule } from './project-permissions/project-permissi
       retryAttempts: process.env.NODE_ENV === 'test' ? 10 : 3,
       retryDelay: 3000, // 3 seconds between retries
     }),
-    TypeOrmModule.forFeature([AuditLog]), // Required for AuditLoggerInterceptor
-    AuditModule, // Global audit logging with Axiom integration and retention policy
+    TypeOrmModule.forFeature([RefreshToken]),
     AuthModule, // Módulo de autenticación
     ProjectsModule,
     EpisodesModule,
@@ -121,31 +100,13 @@ import { ProjectPermissionsModule } from './project-permissions/project-permissi
     NotesModule,
     FilesModule,
     SearchModule,
-    NotificationsModule,
+
     HealthModule,
     ProjectPermissionsModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    // Enable ThrottlerGuard based on THROTTLER_ENABLED environment variable (default: false)
-    ...(process.env.THROTTLER_ENABLED === 'true'
-      ? [
-          {
-            provide: APP_GUARD,
-            useClass: ThrottlerGuard,
-          },
-        ]
-      : []),
-    // Enable AuditLoggerInterceptor based on AUDIT_LOGGER_ENABLED environment variable (default: true)
-    ...(process.env.AUDIT_LOGGER_ENABLED !== 'false'
-      ? [
-          {
-            provide: APP_INTERCEPTOR,
-            useClass: AuditLoggerInterceptor,
-          },
-        ]
-      : []),
   ],
 })
 export class AppModule {}

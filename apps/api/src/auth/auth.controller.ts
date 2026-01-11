@@ -12,7 +12,6 @@ import {
 import type { Request } from 'express';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
-import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -43,7 +42,6 @@ export class AuthController {
   ) {}
 
   @Public()
-  @Throttle({ strict: { limit: 5, ttl: 60000 } }) // 5 registrations per minute
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
@@ -84,7 +82,6 @@ export class AuthController {
   }
 
   @Public()
-  @Throttle({ strict: { limit: 10, ttl: 60000 } }) // 10 login attempts per minute
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)

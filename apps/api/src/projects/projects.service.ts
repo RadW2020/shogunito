@@ -14,7 +14,6 @@ import { ProjectPermission, ProjectRole } from '../entities/project-permission.e
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { FilterProjectsDto } from './dto/filter-projects.dto';
-import { NotificationsService } from '../notifications/notifications.service';
 
 type ProjectWithNotes = Omit<Project, 'notes'> & { notes: Note[] };
 
@@ -33,7 +32,6 @@ export class ProjectsService {
     private projectRepository: Repository<Project>,
     @InjectRepository(ProjectPermission)
     private projectPermissionRepository: Repository<ProjectPermission>,
-    private readonly notificationsService: NotificationsService,
   ) {}
 
   private async loadNotesForEntity(linkId: string | number, linkType: string): Promise<Note[]> {

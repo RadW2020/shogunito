@@ -9,8 +9,6 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { RefreshTokenService } from './refresh-token.service';
 import { UsersModule } from '../users/users.module';
-import { NotificationsModule } from '../notifications/notifications.module';
-import { AuditLog } from '../entities/audit-log.entity';
 import { RefreshToken } from '../entities/refresh-token.entity';
 import { EmailModule } from '../email/email.module';
 
@@ -26,8 +24,8 @@ import { AuthLoggingInterceptor } from '../common/interceptors/auth-logging.inte
 @Module({
   imports: [
     UsersModule,
-    NotificationsModule,
-    TypeOrmModule.forFeature([AuditLog, RefreshToken]),
+
+    TypeOrmModule.forFeature([RefreshToken]),
     EmailModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
