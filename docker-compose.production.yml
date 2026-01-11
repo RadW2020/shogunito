@@ -50,6 +50,12 @@ services:
     expose:
       - "9000"  # S3 API
       - "9001"  # Console
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.shogun-minio.rule=Host(`shogunminio.uliber.com`)"
+      - "traefik.http.routers.shogun-minio.entrypoints=http"
+      - "traefik.http.routers.shogun-minio.service=shogun-minio-svc"
+      - "traefik.http.services.shogun-minio-svc.loadbalancer.server.port=9000"
     volumes:
       - minio_prod:/data
     restart: unless-stopped
@@ -97,7 +103,12 @@ services:
       - "3002"
     expose:
       - "3002"
-
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.shogun-api.rule=Host(`shogunapi.uliber.com`)"
+      - "traefik.http.routers.shogun-api.entrypoints=http"
+      - "traefik.http.routers.shogun-api.service=shogun-api-svc"
+      - "traefik.http.services.shogun-api-svc.loadbalancer.server.port=3002"
     depends_on:
       postgres:
         condition: service_healthy
@@ -128,6 +139,12 @@ services:
       - "3003"
     expose:
       - "3003"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.shogun-web.rule=Host(`shogunweb.uliber.com`)"
+      - "traefik.http.routers.shogun-web.entrypoints=http"
+      - "traefik.http.routers.shogun-web.service=shogun-web-svc"
+      - "traefik.http.services.shogun-web-svc.loadbalancer.server.port=3003"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3003/health"]
