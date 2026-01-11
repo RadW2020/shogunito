@@ -154,7 +154,7 @@ https://api.tudominio.com/api/v1/docs
 
 ### Error de conexión a la base de datos
 
-1. Verifica que las variables `DATABASE_*` están correctas
+1. Verifica que las variables `DATABASE_*` están correctas.
 2. El servicio `postgres` debe estar healthy antes de que `api` inicie
 
 ### MinIO no accesible
