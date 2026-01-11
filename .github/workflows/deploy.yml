@@ -9,6 +9,7 @@ on:
       - 'packages/**'
       - 'package.json'
       - 'package-lock.json'
+      - 'docker-compose.production.yml'
       - 'turbo.json'
       - 'Dockerfile'
       - '.github/workflows/deploy.yml'
