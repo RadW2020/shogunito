@@ -52,15 +52,23 @@ services:
       - "9001"  # Console
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.shogunito-minio.rule=Host(`shogunitominio.uliber.com`)"
-      - "traefik.http.routers.shogunito-minio.entrypoints=http"
+      # S3 API
+      - "traefik.http.routers.shogunito-minio.rule=Host(`shogunitominio.uliber.com`) || Host(`shogunminio.uliber.com`)"
+      - "traefik.http.routers.shogunito-minio.entrypoints=http,https"
+      - "traefik.http.routers.shogunito-minio.tls=true"
       - "traefik.http.routers.shogunito-minio.service=shogunito-minio-svc"
       - "traefik.http.services.shogunito-minio-svc.loadbalancer.server.port=9000"
+      # Console
+      - "traefik.http.routers.shogunito-minio-console.rule=Host(`shogunitominio-console.uliber.com`) || Host(`shogunminio-console.uliber.com`)"
+      - "traefik.http.routers.shogunito-minio-console.entrypoints=http,https"
+      - "traefik.http.routers.shogunito-minio-console.tls=true"
+      - "traefik.http.routers.shogunito-minio-console.service=shogunito-minio-console-svc"
+      - "traefik.http.services.shogunito-minio-console-svc.loadbalancer.server.port=9001"
     volumes:
       - minio_prod:/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: ["CMD", "/usr/bin/mc", "ready", "local"]
       interval: 30s
       timeout: 20s
       retries: 3
@@ -105,8 +113,9 @@ services:
       - "3002"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.shogunito-api.rule=Host(`shogunitoapi.uliber.com`)"
-      - "traefik.http.routers.shogunito-api.entrypoints=http"
+      - "traefik.http.routers.shogunito-api.rule=Host(`shogunitoapi.uliber.com`) || Host(`shogunapi.uliber.com`)"
+      - "traefik.http.routers.shogunito-api.entrypoints=http,https"
+      - "traefik.http.routers.shogunito-api.tls=true"
       - "traefik.http.routers.shogunito-api.service=shogunito-api-svc"
       - "traefik.http.services.shogunito-api-svc.loadbalancer.server.port=3002"
     depends_on:
@@ -141,8 +150,9 @@ services:
       - "3003"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.shogunito-web.rule=Host(`shogunitoweb.uliber.com`)"
-      - "traefik.http.routers.shogunito-web.entrypoints=http"
+      - "traefik.http.routers.shogunito-web.rule=Host(`shogunitoweb.uliber.com`) || Host(`shogunweb.uliber.com`)"
+      - "traefik.http.routers.shogunito-web.entrypoints=http,https"
+      - "traefik.http.routers.shogunito-web.tls=true"
       - "traefik.http.routers.shogunito-web.service=shogunito-web-svc"
       - "traefik.http.services.shogunito-web-svc.loadbalancer.server.port=3003"
     restart: unless-stopped
