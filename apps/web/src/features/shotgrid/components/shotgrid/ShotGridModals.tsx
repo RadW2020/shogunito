@@ -94,6 +94,7 @@ interface ShotGridModalsProps {
   assets: Asset[];
   sequences: Sequence[];
   versions: ApiVersion[];
+  statuses: Status[];
 }
 
 /**
@@ -107,6 +108,7 @@ export const ShotGridModals: React.FC<ShotGridModalsProps> = ({
   assets,
   sequences,
   versions,
+  statuses,
 }) => {
   return (
     <>
@@ -181,6 +183,7 @@ export const ShotGridModals: React.FC<ShotGridModalsProps> = ({
         onClose={() => modals.closeAddModal('asset')}
         onSuccess={onRefresh}
         projects={projects}
+        statuses={statuses}
       />
 
       <AddSequenceModal

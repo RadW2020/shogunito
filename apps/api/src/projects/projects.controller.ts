@@ -379,6 +379,7 @@ export class ProjectsController {
   }
 
   @Delete(':id')
+  @RequirePermissions(Permission.PROJECT_DELETE)
   @UserRateLimit({ limit: 50, ttl: 60000 })
   @ApiOperation({
     summary: 'Eliminar proyecto',

@@ -274,6 +274,7 @@ export function ShotGrid() {
         assets={apiAssets}
         sequences={apiSequences}
         versions={apiVersions}
+        statuses={apiStatuses}
       />
     </div>
   );

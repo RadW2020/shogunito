@@ -1,21 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal } from '../shared/Modal';
 import { FormField } from '../shared/FormField';
 import { useCreateAsset } from '@features/assets/api/useAssets';
 import { showToast } from '../feedback';
+import { AssetType } from '@shogunito/shared';
+import type { Status } from '@shogunito/shared';
 
 interface AddAssetModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
   projects: Array<{ id: number; name: string; code: string }>;
+  statuses: Status[];
 }
 
 interface AssetFormData {
   code: string;
   name: string;
   assetType: string;
-  status: string;
+  statusId: string;
   description: string;
   thumbnailPath: string;
   projectId: string;
@@ -23,21 +26,15 @@ interface AssetFormData {
 }
 
 const ASSET_TYPE_OPTIONS = [
-  { value: 'character', label: 'Character' },
-  { value: 'subtitles', label: 'Subtitles' },
-  { value: 'imagen', label: 'Imagen' },
-  { value: 'audio', label: 'Audio' },
-  { value: 'script', label: 'Script' },
-  { value: 'text', label: 'Text' },
-  { value: 'video', label: 'Video' },
-];
-
-const ASSET_STATUS_OPTIONS = [
-  { value: 'waiting', label: 'Waiting' },
-  { value: 'in_progress', label: 'In Progress' },
-  { value: 'review', label: 'Review' },
-  { value: 'approved', label: 'Approved' },
-  { value: 'final', label: 'Final' },
+  { value: AssetType.PROMPT, label: 'Prompt' },
+  { value: AssetType.TXT, label: 'Text' },
+  { value: AssetType.JSON, label: 'JSON' },
+  { value: AssetType.SUBTITULOS_INGLES, label: 'English Subtitles' },
+  { value: AssetType.SUBTITULOS_ESPANOL, label: 'Spanish Subtitles' },
+  { value: AssetType.DIRECTOR_SCRIPT, label: 'Director Script' },
+  { value: AssetType.AUDIO_ORIGINAL, label: 'Original Audio' },
+  { value: AssetType.AUDIO_CARICATURIZADO_INGLES, label: 'Eng. Caricaturized Audio' },
+  { value: AssetType.AUDIO_CARICATURIZADO_ESPANOL, label: 'Esp. Caricaturized Audio' },
 ];
 
 export const AddAssetModal: React.FC<AddAssetModalProps> = ({
@@ -45,12 +42,13 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({
   onClose,
   onSuccess,
   projects,
+  statuses,
 }) => {
   const [formData, setFormData] = useState<AssetFormData>({
     code: '',
     name: '',
-    assetType: 'text',
-    status: 'waiting',
+    assetType: AssetType.TXT,
+    statusId: '',
     description: '',
     thumbnailPath: '',
     projectId: '',
@@ -65,6 +63,20 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({
     value: String(project.id),
     label: `${project.code} - ${project.name}`,
   }));
+
+  const assetStatuses = statuses
+    .filter((s) => s.applicableEntities.includes('asset') || s.applicableEntities.includes('all'))
+    .map((s) => ({
+      value: s.id.toString(),
+      label: s.name,
+    }));
+
+  // Update initial status if not set
+  useEffect(() => {
+    if (!formData.statusId && assetStatuses.length > 0) {
+      setFormData((prev) => ({ ...prev, statusId: assetStatuses[0].value }));
+    }
+  }, [assetStatuses, formData.statusId]);
 
   const handleInputChange = (field: keyof AssetFormData) => (value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -89,8 +101,8 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({
       newErrors.assetType = 'Asset type is required';
     }
 
-    if (!formData.status) {
-      newErrors.status = 'Status is required';
+    if (!formData.statusId) {
+      newErrors.statusId = 'Status is required';
     }
 
     if (!formData.projectId) {
@@ -116,7 +128,7 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({
         code: formData.code,
         name: formData.name,
         assetType: formData.assetType,
-        status: formData.status,
+        statusId: formData.statusId,
       };
 
       // Only add optional fields if they have values
@@ -142,8 +154,8 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({
       setFormData({
         code: '',
         name: '',
-        assetType: 'text',
-        status: 'waiting',
+        assetType: AssetType.TXT,
+        statusId: assetStatuses[0]?.value || '',
         description: '',
         thumbnailPath: '',
         projectId: '',
@@ -207,13 +219,13 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({
 
           <FormField
             label="Status"
-            name="status"
+            name="statusId"
             type="select"
-            value={formData.status}
-            onChange={handleInputChange('status')}
-            options={ASSET_STATUS_OPTIONS}
+            value={formData.statusId}
+            onChange={handleInputChange('statusId')}
+            options={assetStatuses}
             required
-            error={errors.status}
+            error={errors.statusId}
           />
 
           <FormField

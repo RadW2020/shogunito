@@ -27,7 +27,9 @@ export async function handleDeleteSelected({
   const ids = Array.from(selectedItems);
   const confirmMsg = `Delete ${ids.length} item(s) from ${activeTab}? This cannot be undone.`;
 
-  if (!window.confirm(confirmMsg)) return;
+  if (typeof window !== 'undefined' && !window.confirm(confirmMsg)) {
+    return;
+  }
 
   try {
     // Handle deletion based on active tab
