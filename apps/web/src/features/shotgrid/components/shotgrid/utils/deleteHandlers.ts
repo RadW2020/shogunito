@@ -22,7 +22,9 @@ export async function handleDeleteSelected({
   onSuccess,
   onClearSelection,
 }: DeleteHandlerParams): Promise<void> {
-  if (selectedItems.size === 0) return;
+  if (selectedItems.size === 0) {
+    return;
+  }
 
   const ids = Array.from(selectedItems);
   const confirmMsg = `Delete ${ids.length} item(s) from ${activeTab}? This cannot be undone.`;
@@ -84,9 +86,11 @@ export async function handleDeleteSelected({
         return;
     }
 
+    // Clear selection immediately for better UX
+    onClearSelection();
+    
     // Refresh data after deletion
     await onSuccess();
-    onClearSelection();
   } catch (e) {
     console.error('Error deleting selected items:', e);
     alert('Error deleting items. See console for details.');

@@ -80,7 +80,7 @@ export const useUiStore = create<UiState>()(
 
       // Actions
       setActiveTab: (tab) => {
-        set({ activeTab: tab });
+        set({ activeTab: tab, selectedItems: new Set<string>() });
         // Update URL to reflect tab change
         if (typeof window !== 'undefined') {
           const url = new URL(window.location.href);
