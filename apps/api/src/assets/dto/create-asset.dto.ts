@@ -27,7 +27,8 @@ export class CreateAssetDto {
 
   @IsEnum(AssetType)
   @ApiProperty({
-    description: 'Tipo de asset (subtitles, imagen, audio, script, text, video)',
+    description:
+      'Tipo de asset. Valores: prompt, txt, json, subtitulos_ingles, subtitulos_espanol, director_script, audio_original, audio_caricaturizado_ingles, audio_caricaturizado_espanol',
     enum: AssetType,
     example: AssetType.DIRECTOR_SCRIPT,
     enumName: 'AssetType',

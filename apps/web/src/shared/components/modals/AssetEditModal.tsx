@@ -283,7 +283,6 @@ export const AssetEditModal: React.FC<AssetEditModalProps> = ({
                 <option value="audio">Audio</option>
                 <option value="script">Script</option>
                 <option value="text">Text</option>
-                <option value="video">Video</option>
               </select>
             </div>
             <div>

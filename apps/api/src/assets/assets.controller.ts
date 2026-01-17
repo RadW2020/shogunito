@@ -55,7 +55,7 @@ export class AssetsController {
 Crea un nuevo asset de producción (recursos reutilizables) asociado a un proyecto específico. Los assets representan elementos de producción que se reutilizan a lo largo del proyecto.
 
 **Concepto de Asset:**
-Un asset es un recurso de producción reutilizable que puede aparecer en múltiples sequences o episodios. Ejemplos: personajes, imágenes, archivos de audio, subtítulos, scripts, videos, documentos de texto.
+Un asset es un recurso de producción reutilizable que puede aparecer en múltiples sequences o episodios. Ejemplos: personajes, imágenes, archivos de audio, subtítulos, scripts, documentos de texto.
 
 **Tipos de Assets Soportados:**
 - \`character\`: Personajes principales y secundarios (modelos 3D, concept art, rigs, avatares)
@@ -64,14 +64,13 @@ Un asset es un recurso de producción reutilizable que puede aparecer en múltip
 - \`audio\`: Archivos de audio (música, efectos de sonido, diálogos, MP3, WAV, OGG)
 - \`script\`: Scripts y documentos de producción (guiones, documentos técnicos, PDF, DOCX)
 - \`text\`: Archivos de texto plano (notas, prompts, metadatos, TXT, MD, JSON)
-- \`video\`: Archivos de video (demos de personajes, animaciones de props, referencias, MP4, MOV)
 
 **Campos Requeridos:**
 - \`code\`: Código único identificador del asset (ej: "CHAR_HERO", "PROP_SWORD")
   - Debe ser único dentro del proyecto
   - Convención: Prefijo del tipo + nombre descriptivo
 - \`name\`: Nombre descriptivo del asset (ej: "Personaje Principal", "Espada Mágica")
-- \`assetType\`: Tipo de asset (enum: character, subtitles, imagen, audio, script, text, video)
+- \`assetType\`: Tipo de asset (enum: character, subtitles, imagen, audio, script, text)
 - \`projectId\`: ID UUID del proyecto al que pertenece (debe existir)
 
 **Campos Opcionales:**
@@ -85,14 +84,14 @@ Un asset es un recurso de producción reutilizable que puede aparecer en múltip
 **Relación con Versiones:**
 Los assets pueden tener múltiples versiones asociadas mediante el sistema de versiones:
 - Cada versión representa una iteración del asset (ej: concept v1, v2, v3)
-- Las versiones pueden contener videos, imágenes o texto
+- Las versiones pueden contener imágenes o texto
 - Solo una versión puede estar marcada como \`latest=true\`
 - Se crean versiones usando \`POST /versions\` con \`entityType="asset"\` y \`entityCode\` del asset
 
 **Workflow Típico:**
 1. Crear asset con \`POST /assets\`
 2. Crear versiones del asset con \`POST /versions\` o \`POST /versions/asset\`
-3. Subir archivos (concept art, videos, texturas) con \`POST /versions/:id/file\`
+3. Subir archivos (concept art, texturas) con \`POST /versions/:id/file\`
 4. Actualizar estado durante revisión y aprobación
 
 **Notas para IA:**
@@ -177,20 +176,7 @@ Los assets pueden tener múltiples versiones asociadas mediante el sistema de ve
           assignedTo: 'director@studio.com',
         },
       },
-      video: {
-        summary: 'Asset de video',
-        description: 'Ejemplo de creación de un asset de video (demo, referencia)',
-        value: {
-          code: 'VID_DEMO_01',
-          name: 'Demo Personaje - Animación',
-          assetType: 'video',
-          description: 'Video demo del personaje principal con animaciones de prueba',
-          statusId: '623e4567-e89b-12d3-a456-426614174000',
-          projectId: 123,
-          createdBy: 'animator@studio.com',
-          assignedTo: 'director@studio.com',
-        },
-      },
+
       text: {
         summary: 'Asset de texto',
         description: 'Ejemplo de creación de un asset de texto (notas, prompts)',
@@ -332,13 +318,13 @@ Los assets pueden tener múltiples versiones asociadas mediante el sistema de ve
   @ApiQuery({
     name: 'assetType',
     required: false,
-    enum: ['character', 'subtitles', 'imagen', 'audio', 'script', 'text', 'video'],
+    enum: ['character', 'subtitles', 'imagen', 'audio', 'script', 'text'],
     description:
-      'Filtrar assets por tipo exacto. Valores: character (personajes), subtitles (subtítulos), imagen (imágenes), audio (archivos de audio), script (guiones), text (texto plano), video (videos)',
+      'Filtrar assets por tipo exacto. Valores: character (personajes), subtitles (subtítulos), imagen (imágenes), audio (archivos de audio), script (guiones), text (texto plano)',
     example: 'character',
     schema: {
       type: 'string',
-      enum: ['character', 'subtitles', 'imagen', 'audio', 'script', 'text', 'video'],
+      enum: ['character', 'subtitles', 'imagen', 'audio', 'script', 'text'],
     },
   })
   @ApiQuery({

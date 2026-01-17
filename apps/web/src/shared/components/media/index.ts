@@ -1,7 +1,7 @@
 /**
  * Media Components
  *
- * Optimized components for images, videos, and other media
+ * Optimized components for images and other media
  */
 
 export { OptimizedImage, type OptimizedImageProps, type ImageSize, type ImageFormat } from './OptimizedImage';

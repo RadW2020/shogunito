@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getFileType } from '@shared/utils';
 
 interface FileModalProps {
@@ -14,7 +14,7 @@ export const FileModal: React.FC<FileModalProps> = ({
   fileSrc,
   title = 'File Preview',
 }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
+
   const [textContent, setTextContent] = useState<string>('');
   const [isLoadingText, setIsLoadingText] = useState(false);
   const fileType = getFileType(fileSrc);
@@ -39,12 +39,7 @@ export const FileModal: React.FC<FileModalProps> = ({
     };
   }, [isOpen, onClose]);
 
-  // Auto-play video when modal opens
-  useEffect(() => {
-    if (isOpen && videoRef.current && fileType === 'video') {
-      videoRef.current.play().catch(console.error);
-    }
-  }, [isOpen, fileType]);
+
 
   // Load text content when modal opens for text files
   useEffect(() => {
@@ -67,34 +62,12 @@ export const FileModal: React.FC<FileModalProps> = ({
     }
   }, [isOpen, fileType, fileSrc]);
 
-  // Pause video when modal closes
-  useEffect(() => {
-    if (!isOpen && videoRef.current) {
-      videoRef.current.pause();
-    }
-  }, [isOpen]);
+
 
   if (!isOpen) return null;
 
   const renderContent = () => {
     switch (fileType) {
-      case 'video':
-        return (
-          <div className="relative bg-black rounded-lg overflow-hidden">
-            <video
-              ref={videoRef}
-              src={fileSrc}
-              className="w-full h-auto max-h-[70vh] object-contain"
-              controls
-              autoPlay
-              muted
-              onError={(e) => {
-                console.error('Video failed to load:', e);
-              }}
-            />
-          </div>
-        );
-
       case 'image':
         return (
           <div className="relative bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center min-h-[200px]">

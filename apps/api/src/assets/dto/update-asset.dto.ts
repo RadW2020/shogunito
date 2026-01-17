@@ -27,7 +27,7 @@ export class UpdateAssetDto extends PartialType(CreateAssetDto) {
   @IsOptional()
   @IsEnum(AssetType)
   @ApiPropertyOptional({
-    description: 'Tipo de asset (subtitles, imagen, audio, script, text, video)',
+    description: 'Tipo de asset (subtitles, imagen, audio, script, text)',
     enum: AssetType,
     example: AssetType.DIRECTOR_SCRIPT,
     enumName: 'AssetType',

@@ -52,11 +52,9 @@ Crea una nueva secuencia dentro de un episodio específico. Las secuencias const
 Una secuencia es una unidad narrativa completa. Las secuencias se organizan dentro de episodios mediante \`cutOrder\` para establecer el orden de montaje final.
 
 **Relación con Versiones:**
-Las secuencias pueden tener múltiples versiones asociadas mediante el sistema de versiones (\`POST /versions\` con \`entityType="sequence"\`). **IMPORTANTE**: Dependiendo del tipo de producción, las versiones de secuencias pueden contener:
-- **Videos**: Previz generado con IA, animatics, renders de secuencia completa (MP4, MOV, AVI, WEBM)
-- **Imágenes**: Storyboards estáticos, frames clave, layouts de secuencia (PNG, JPG, WEBP, EXR)
+Las secuencias tienen versiones asociadas mediante el sistema de versiones (\`POST /versions\` con \`entityType="sequence"\`). Las versiones de secuencias contienen imágenes como storyboards estáticos, frames clave o layouts (PNG, JPG, WEBP).
 
-El tipo de contenido (video o imagen) se determina por la extensión del archivo subido en \`filePath\` de la versión. La UI detecta automáticamente el tipo y muestra el reproductor apropiado (video player o image viewer).
+La UI muestra estas imágenes automáticamente en el visor de versiones.
 
 **Proceso de Creación:**
 1. Se crea la secuencia con los metadatos básicos (nombre, descripción, cutOrder)
@@ -65,15 +63,11 @@ El tipo de contenido (video o imagen) se determina por la extensión del archivo
 4. Las versiones posteriores se crean con \`POST /versions\` o \`POST /versions/sequence\`
 
 **Casos de Uso:**
-- **Producción con Video**: Secuencias con previz animado, animatics, renders completos
-- **Producción con Imagen**: Secuencias con storyboards estáticos, layouts, frames clave
-- **Producción Mixta**: Algunas secuencias con video, otras con imágenes según necesidades
+- **Producción Visual**: Secuencias con storyboards estáticos, layouts, frames clave y referencias visuales.
 
-**Notas para IA:**
 - Las versiones de secuencias se crean con \`entityType="sequence"\` y \`entityCode\` de la secuencia
-- El campo \`filePath\` en la versión puede contener videos o imágenes según la producción
-- Para crear secuencia con versión personalizada (video o imagen), usar \`POST /versions/sequence\`
-- El tipo de contenido se detecta por extensión: .mp4/.mov = video, .png/.jpg = imagen
+- El campo \`filePath\` en la versión debe contener imágenes (.png, .jpg, .webp)
+- Para crear secuencia con versión personalizada, usar \`POST /versions/sequence\`
     `,
   })
   @ApiBody({
@@ -144,10 +138,9 @@ Las versiones NO se incluyen en esta respuesta. Para obtener versiones de una se
 - \`GET /versions?entityCode={sequence.code}&entityType=sequence\`
 - \`GET /versions?entityId={sequence.id}&entityType=sequence\`
 
-**Tipos de Contenido en Versiones:**
-Las versiones de secuencias pueden contener videos o imágenes según el tipo de producción:
-- Videos: Previz animado, animatics, renders completos (MP4, MOV, AVI, WEBM)
-- Imágenes: Storyboards estáticos, layouts, frames clave (PNG, JPG, WEBP, EXR)
+**Imágenes en Versiones:**
+Las versiones de secuencias contienen imágenes:
+- Storyboards estáticos, layouts, frames clave (PNG, JPG, WEBP)
 
 **Ejemplos de uso:**
 - \`GET /sequences\` - Todas las secuencias del sistema
@@ -159,7 +152,7 @@ Las versiones de secuencias pueden contener videos o imágenes según el tipo de
 **Notas para IA:**
 - El campo \`cutOrder\` determina el orden de montaje dentro del episodio
 - Las versiones se obtienen por separado usando el endpoint de versions
-- El tipo de contenido (video/imagen) en versiones se detecta por extensión del \`filePath\`
+- La aplicación está optimizada para el manejo de imágenes (storyboards/layouts)
     `,
   })
   @ApiQuery({
@@ -309,10 +302,8 @@ Las versiones de la secuencia NO se incluyen automáticamente en esta respuesta.
 - Usar \`GET /versions?entityCode={sequence.code}&entityType=sequence\`
 - O \`GET /versions?entityId={sequence.id}&entityType=sequence\`
 
-**Tipos de Contenido en Versiones:**
-Las versiones de esta secuencia pueden contener videos o imágenes dependiendo de la producción:
-- Videos: Previz, animatics, renders completos
-- Imágenes: Storyboards, layouts, frames clave
+**Imágenes en Versiones:**
+Las versiones de esta secuencia contienen imágenes como storyboards, layouts o frames clave (PNG, JPG, WEBP).
 
 **Uso Típico:**
 - Ver detalles completos de una secuencia en la UI

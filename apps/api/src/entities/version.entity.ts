@@ -98,7 +98,7 @@ export class Version {
   @Column({ name: 'file_path', nullable: true })
   @ApiProperty({
     description:
-      'URL pública del archivo principal de la versión. Soporta imágenes (PNG, JPG, WEBP, EXR) y archivos de texto (TXT, MD, JSON). Puede ser una ruta relativa o URL completa. Se actualiza automáticamente al subir archivo con POST /versions/:id/file. El tipo de contenido se detecta por extensión del archivo.',
+      'URL pública del archivo principal de la versión. Soporta imágenes (PNG, JPG, WEBP) y archivos de texto (TXT, MD, JSON). Puede ser una ruta relativa o URL completa. Se actualiza automáticamente al subir archivo con POST /versions/:id/file. El tipo de contenido se detecta por extensión del archivo.',
     example: 'https://storage.example.com/media/2025/12/08/version_123.png',
     nullable: true,
     required: false,
@@ -148,7 +148,7 @@ export class Version {
   @Column({ nullable: true })
   @ApiProperty({
     description:
-      'Formato del contenido de la versión. Para imágenes: formato de archivo (PNG, JPG, EXR) o dimensiones. Para texto: tipo de archivo (TXT, MD, JSON). Campo libre para flexibilidad según tipo de contenido.',
+      'Formato del contenido de la versión. Para imágenes: formato de archivo (PNG, JPG, WEBP) o dimensiones. Para texto: tipo de archivo (TXT, MD, JSON). Campo libre para flexibilidad según tipo de contenido.',
     example: '1920x1080',
     nullable: true,
     required: false,
@@ -164,15 +164,7 @@ export class Version {
   })
   frameRange?: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-  @ApiProperty({
-    description: 'Duración en segundos (DEPRECATED - ya no se usa para imágenes)',
-    example: 0,
-    nullable: true,
-    required: false,
-    deprecated: true,
-  })
-  duration?: number;
+
 
   @Column({ default: false })
   @ApiProperty({

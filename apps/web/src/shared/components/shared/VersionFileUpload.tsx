@@ -69,7 +69,7 @@ export const VersionFileUpload: React.FC<VersionFileUploadProps> = ({
     } else {
       return {
         accept:
-          'video/mp4,video/quicktime,video/x-msvideo,image/x-exr,image/png,text/plain,application/octet-stream',
+          'image/png,image/jpeg,image/webp,text/plain,application/octet-stream',
         maxSize: 2048, // 2GB
         icon: (
           <svg className="mx-auto h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -82,7 +82,7 @@ export const VersionFileUpload: React.FC<VersionFileUploadProps> = ({
           </svg>
         ),
         title: 'Upload render file',
-        description: 'MP4, MOV, AVI, EXR, PNG (storyboards), TXT (prompts) up to 2GB',
+        description: 'PNG (storyboards), JPEG, WebP, TXT (prompts) up to 2GB',
       };
     }
   };
@@ -118,13 +118,11 @@ export const VersionFileUpload: React.FC<VersionFileUploadProps> = ({
         (() => {
           const currentFileType = getFileType(version.filePath);
           const fileTypeLabel =
-            currentFileType === 'video'
-              ? 'Video'
-              : currentFileType === 'image'
-                ? 'Image'
-                : currentFileType === 'text'
-                  ? 'Text'
-                  : 'Render';
+            currentFileType === 'image'
+              ? 'Image'
+              : currentFileType === 'text'
+                ? 'Text'
+                : 'Render';
 
           return (
             <div className="mb-4 p-3 bg-gray-50 rounded-lg border">
@@ -134,40 +132,7 @@ export const VersionFileUpload: React.FC<VersionFileUploadProps> = ({
               <div className="space-y-2">
                 <div className="flex items-center space-x-3">
                   <div className="relative">
-                    {currentFileType === 'video' ? (
-                      <>
-                        <video
-                          src={version.filePath}
-                          className="w-32 h-18 object-cover rounded border cursor-pointer hover:opacity-80 transition-opacity"
-                          controls={false}
-                          muted
-                          onClick={(e) => {
-                            const video = e.target as HTMLVideoElement;
-                            if (video.paused) {
-                              video.play();
-                            } else {
-                              video.pause();
-                            }
-                          }}
-                          onError={(e) => {
-                            // Hide broken videos
-                            (e.target as HTMLVideoElement).style.display = 'none';
-                          }}
-                        />
-                        {/* Play button overlay */}
-                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                          <div className="w-8 h-8 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
-                            <svg
-                              className="w-4 h-4 text-white"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path d="M8 5v10l7-5-7-5z" />
-                            </svg>
-                          </div>
-                        </div>
-                      </>
-                    ) : currentFileType === 'image' ? (
+                    {currentFileType === 'image' ? (
                       <img
                         src={version.filePath}
                         alt="Current file preview"
@@ -213,9 +178,6 @@ export const VersionFileUpload: React.FC<VersionFileUploadProps> = ({
                   </div>
                   <div className="text-xs text-gray-600 flex-1">
                     <p className="font-medium">Current file will be replaced</p>
-                    {currentFileType === 'video' && (
-                      <p className="mt-1">Click the video to play/pause preview</p>
-                    )}
                   </div>
                 </div>
                 <div className="text-xs text-gray-500">

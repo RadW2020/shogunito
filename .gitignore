@@ -153,6 +153,9 @@ assets/uploads/
 docker-compose.override.yml
 local.env
 
+# Checkly monitoring configuration (contains API keys)
+checkly_*.json
+
 temp-videos
 playwright-report/
 test-results/

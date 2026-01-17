@@ -121,13 +121,7 @@ export class CreateVersionDto {
   })
   frameRange?: string;
 
-  @IsOptional()
-  @ApiPropertyOptional({
-    description: 'Duración del video en segundos',
-    example: 120.5,
-    type: Number,
-  })
-  duration?: number;
+
 
   @IsOptional()
   @IsString()

@@ -45,7 +45,7 @@ export const NoteAttachmentUpload: React.FC<NoteAttachmentUploadProps> = ({
     <div className={`note-attachment-upload ${className}`}>
       <FileUpload
         onUpload={handleUpload}
-        accept="image/jpeg,image/png,image/webp,application/pdf,video/mp4,video/quicktime,text/plain"
+        accept="image/jpeg,image/png,image/webp,application/pdf,text/plain"
         maxSize={100}
         disabled={isUploading}
       >
@@ -64,7 +64,7 @@ export const NoteAttachmentUpload: React.FC<NoteAttachmentUploadProps> = ({
             Add attachment to note
           </p>
           <p className="text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
-            Images, PDF, Video, Text up to 100MB
+            Images, PDF, Text up to 100MB
           </p>
         </div>
       </FileUpload>

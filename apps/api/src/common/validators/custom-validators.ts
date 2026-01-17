@@ -141,44 +141,6 @@ export function IsSafeFilename(validationOptions?: ValidationOptions) {
 }
 
 /**
- * Validates video codec
- */
-export function IsValidVideoCodec(validationOptions?: ValidationOptions) {
-  return function (object: object, propertyName: string) {
-    registerDecorator({
-      name: 'isValidVideoCodec',
-      target: object.constructor,
-      propertyName: propertyName,
-      options: validationOptions,
-      validator: {
-        validate(value: string) {
-          if (typeof value !== 'string') return false;
-
-          const validCodecs = [
-            'h264',
-            'h265',
-            'hevc',
-            'vp8',
-            'vp9',
-            'av1',
-            'prores',
-            'dnxhd',
-            'dnxhr',
-            'mpeg2',
-            'mpeg4',
-          ];
-
-          return validCodecs.includes(value.toLowerCase());
-        },
-        defaultMessage(args: ValidationArguments) {
-          return `${args.property} must be a valid video codec (h264, h265, prores, etc.)`;
-        },
-      },
-    });
-  };
-}
-
-/**
  * Validates that a number is within a reasonable range
  */
 export function IsReasonableNumber(

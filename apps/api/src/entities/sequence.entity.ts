@@ -92,14 +92,7 @@ export class Sequence {
   @JoinColumn({ name: 'status_id' })
   status?: Status;
 
-  @ApiProperty({
-    description: 'Duración de la secuencia en segundos',
-    example: 120,
-    type: 'number',
-    required: false,
-  })
-  @Column({ nullable: true })
-  duration?: number;
+
 
   @ApiProperty({
     description: 'Identificador de la historia o guión asociado',

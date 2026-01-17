@@ -69,15 +69,7 @@ export class CreateSequenceWithVersionDto {
   })
   statusId?: string;
 
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  @ApiPropertyOptional({
-    description: 'Duración de la secuencia en frames',
-    example: 120,
-    minimum: 0,
-  })
-  duration?: number;
+
 
   @IsOptional()
   @IsString()
@@ -142,8 +134,8 @@ export class CreateSequenceWithVersionDto {
   @IsString()
   @ApiPropertyOptional({
     description:
-      'URL o ruta del archivo principal de la versión. IMPORTANTE: Dependiendo del tipo de producción, puede ser un VIDEO (MP4, MOV, AVI, WEBM) o una IMAGEN (PNG, JPG, WEBP, EXR). El tipo se detecta automáticamente por extensión. Videos: previz animado, animatics, renders completos. Imágenes: storyboards estáticos, layouts, frames clave.',
-    example: '/uploads/versions/SEQ_001_001.mov',
+      'URL o ruta del archivo principal de la versión (imagen PNG, JPG, WEBP). El tipo se detecta automáticamente por extensión.',
+    example: '/uploads/versions/SEQ_001_001.png',
   })
   filePath?: string;
 
@@ -151,8 +143,8 @@ export class CreateSequenceWithVersionDto {
   @IsString()
   @ApiPropertyOptional({
     description:
-      'Formato del archivo multimedia. Para videos: MP4, MOV, AVI, WEBM. Para imágenes: PNG, JPG, WEBP, EXR. Debe coincidir con la extensión del filePath.',
-    example: 'MOV',
+      'Formato del archivo de imagen (PNG, JPG, WEBP). Debe coincidir con la extensión del filePath.',
+    example: 'PNG',
   })
   format?: string;
 

@@ -53,11 +53,11 @@ export class VersionsController {
   @ApiOperation({
     summary: 'Crear una nueva versión multientidad',
     description: `
-Crea una nueva versión asociada a cualquier tipo de entidad del sistema. Las versiones representan iteraciones de contenido (videos, imágenes, texto) asociadas a entidades de producción.
+Crea una nueva versión asociada a cualquier tipo de entidad del sistema. Las versiones representan iteraciones de contenido (imágenes, texto) asociadas a entidades de producción.
 
 **Sistema Multientidad:**
 Las versiones utilizan \`entityCode\` (código único de la entidad) y \`entityType\` (tipo de entidad) para asociarse polimórficamente a cualquier entidad:
-- \`asset\`: Recursos reutilizables (personajes, imágenes, audio, subtítulos, scripts, texto, videos)
+- \`asset\`: Recursos reutilizables (personajes, imágenes, audio, subtítulos, scripts, texto)
 - \`project\`: Versiones asociadas directamente al proyecto (ej: guiones, notas generales)
 - \`sequence\`: Secuencias de planos relacionados
 - \`episode\`: Episodios completos de una serie
@@ -71,8 +71,7 @@ Las versiones utilizan \`entityCode\` (código único de la entidad) y \`entityT
 6. Metadatos IA: Campos \`lineage\` (JSON) para almacenar prompt, seed, model_name de generación IA
 
 **Tipos de Contenido:**
-- Videos: Archivos de video (MP4, MOV, AVI) para renders, animaciones, cortes
-- Imágenes: Archivos de imagen (PNG, JPG, EXR) para concept art, storyboards, frames
+- Imágenes: Archivos de imagen (PNG, JPG, WEBP) para concept art, storyboards, frames
 - Texto: Archivos de texto (TXT, MD, JSON) para prompts, notas, metadatos
 
 **Workflow de Aprobación:**
@@ -81,9 +80,8 @@ Las versiones siguen un flujo de estados definido por \`statusId\`:
 - Estados finales: \`approved\` (aprobado), \`rejected\` (rechazado)
 - El campo \`assignedTo\` indica quién debe revisar la versión
 
-**Casos de Uso Específicos:**
-- **Assets**: Versiones de concept art (Midjourney, DALL-E), videos de personajes, texturas
-- **Sequences**: Versiones de previz generado con IA, animatics, storyboards animados
+- **Assets**: Versiones de concept art (Midjourney, DALL-E), texturas
+- **Sequences**: Versiones de layouts, storyboards estáticos
 
 **Notas para IA:**
 - El campo \`code\` debe ser único y seguir convención: \`{ENTITY_CODE}_{VERSION_NUMBER}\`
@@ -240,32 +238,27 @@ Las versiones siguen un flujo de estados definido por \`statusId\`:
 Crea una nueva sequence y su versión asociada en una sola transacción. Permite especificar datos personalizados para ambos. Soporta tanto JSON como multipart/form-data.
 
 **IMPORTANTE - Tipos de Contenido:**
-Las versiones de secuencias pueden contener **videos o imágenes** dependiendo del tipo de producción:
-- **Videos**: Previz generado con IA, animatics, renders de secuencia completa
-  - Formatos: MP4, MOV, AVI, WEBM
-  - Casos de uso: Producciones animadas, previz animado, secuencias completas renderizadas
-- **Imágenes**: Storyboards estáticos, layouts, frames clave
-  - Formatos: PNG, JPG, WEBP, EXR
-  - Casos de uso: Producciones con storyboards, layouts de secuencia, referencias visuales
+Las versiones de secuencias contienen imágenes de producción:
+- **Imágenes**: Storyboards estáticos, frames clave, layouts de secuencia
+- **Formatos**: PNG, JPG, WEBP
 
-El tipo de contenido se determina automáticamente por la extensión del archivo en \`filePath\`. La UI detecta el tipo y muestra el reproductor apropiado (video player para videos, image viewer para imágenes).
+El tipo de contenido se determina automáticamente por la extensión del archivo en \`filePath\`. La UI muestra la imagen en el visor correspondiente.
 
 **Proceso de Creación:**
 1. Se crea la sequence con los metadatos proporcionados
 2. Se asocia al episodio mediante \`episodeId\` o \`episodeCode\`
 3. Se crea la versión asociada con \`entityType="sequence"\` y \`entityCode\` de la sequence
-4. Se puede incluir \`filePath\` (video o imagen) y \`thumbnailPath\` en la versión
-5. Se retorna tanto la sequence como la versión creada
+4. Se puede incluir \`filePath\` (imagen) y \`thumbnailPath\` en la versión
 
-**Campos de Versión:**
-- \`filePath\`: URL o ruta del archivo principal (video o imagen según producción)
-- \`format\`: Formato del archivo (MP4, MOV para videos; PNG, JPG para imágenes)
+**Parámetros Clave:**
+- \`filePath\`: URL o ruta del archivo principal de imagen
+- \`format\`: Formato o dimensiones de la imagen (PNG, JPG, WEBP)
 - \`thumbnailPath\`: Thumbnail para preview (recomendado para mejor UX)
 - \`versionStatusId\`: Estado inicial de la versión en el workflow
 
 **Notas para IA:**
 - El \`filePath\` puede ser una URL completa o ruta relativa
-- El tipo de contenido (video/imagen) se detecta por extensión del \`filePath\`
+- La aplicación está optimizada para la gestión de storyboards y frames visuales
 - Para subir archivo después de crear, usar \`POST /versions/:id/file\`
 - El campo \`latest\` se establece automáticamente como \`true\` para la primera versión
 - Soporta multipart/form-data para upload directo de archivos durante la creación
@@ -291,8 +284,8 @@ El tipo de contenido se determina automáticamente por la extensión del archivo
         },
       },
       complete: {
-        summary: 'Creación completa con previz IA',
-        description: 'Crear sequence con previz generado por IA',
+        summary: 'Creación completa con arte IA',
+        description: 'Crear sequence con storyboard generado por IA',
         value: {
           name: 'Escena del Bosque Encantado',
           cutOrder: 1,
@@ -305,20 +298,20 @@ El tipo de contenido se determina automáticamente por la extensión del archivo
           createdBy: 'ai-operator@studio.com',
           assignedTo: 'director@studio.com',
           versionCode: 'SEQ_FOREST_001',
-          versionName: 'Previz IA - Primera Iteración',
+          versionName: 'Storyboard IA - Primera Iteración',
           versionDescription:
-            'Previz de la secuencia completa generado con IA para establecer timing y composición',
+            'Storyboard de la secuencia completa generado con IA para establecer composición',
           versionStatus: 'review',
-          filePath: '/uploads/versions/SEQ_FOREST_001.mp4',
-          format: 'MP4',
+          filePath: '/uploads/versions/SEQ_FOREST_001.png',
+          format: 'PNG',
           frameRange: '1-120',
-          artist: 'AI Previz Generator',
+          artist: 'AI Storyboard Generator',
           versionCreatedBy: 'ai-operator@studio.com',
           versionAssignedTo: 'director@studio.com',
           versionThumbnailPath: '/uploads/thumbnails/version_123.jpg',
           latest: true,
           publishedAt: '2024-01-15T16:30:00Z',
-          lineage: 'prompt: "sequence of shots showing characters entering magical forest"',
+          lineage: 'prompt: "character entering magical forest, cinematic lighting, ghibli style"',
         },
       },
     },
@@ -495,12 +488,11 @@ Recupera los detalles completos de una versión específica mediante su ID únic
 - \`entityType\`: Tipo de entidad ("asset", "sequence", "episode", "project")
 
 **Archivos y Contenido:**
-- \`filePath\`: URL pública del archivo principal (video, imagen o texto)
-  - Videos: MP4, MOV, AVI, WEBM
-  - Imágenes: PNG, JPG, WEBP, EXR
+- \`filePath\`: URL pública del archivo principal (imagen o texto)
+  - Imágenes: PNG, JPG, WEBP
   - Texto: TXT, MD, JSON
 - \`thumbnailPath\`: URL pública del thumbnail (imagen de preview)
-- \`format\`: Formato del archivo (ej: "MP4", "PNG", "16:9")
+- \`format\`: Formato del archivo (ej: "PNG", "16:9")
 
 **Metadatos de Producción:**
 - \`description\`: Descripción detallada de cambios/iteraciones
@@ -530,7 +522,7 @@ Recupera los detalles completos de una versión específica mediante su ID únic
 
 **Notas para IA:**
 - El \`filePath\` puede ser null si no se ha subido archivo aún
-- El tipo de contenido se detecta por extensión del \`filePath\`
+- La aplicación está optimizada para el manejo de imágenes y metadatos JSON
 - \`latest=true\` significa que es la versión actual de esa entidad
 - \`lineage\` contiene metadatos estructurados en formato JSON string
 - Los timestamps están en formato ISO 8601
@@ -592,7 +584,7 @@ Actualiza parcial o completamente los datos de una versión existente.
 - \`status\`: Estado en workflow (wip, review, approved, rejected)
 - \`artist\`: Artista responsable
 - \`assignedTo\`: Usuario asignado para revisión
-- \`format\`: Formato del archivo (MOV, FBX, JPG, etc.)
+- \`format\`: Formato o dimensiones de la imagen (PNG, JPG, etc.)
 - \`latest\`: Marca si es la versión más reciente
 - Y otros metadatos
 
@@ -602,7 +594,7 @@ Actualiza parcial o completamente los datos de una versión existente.
 - Reasignar a diferente revisor
 - Marcar como versión latest/no-latest
 
-**Nota:** Para archivos (thumbnail, render), usar los endpoints específicos de upload.
+**Nota:** Para archivos (thumbnail, render visual), usar los endpoints específicos de upload.
     `,
   })
   @ApiParam({
@@ -666,7 +658,7 @@ Elimina una versión del sistema de forma permanente.
 **⚠️ ADVERTENCIA:**
 - Esta operación es irreversible
 - Se elimina la versión y todos sus metadatos de la base de datos
-- Se eliminan automáticamente los archivos asociados del storage (thumbnail y video/imagen)
+- Se eliminan automáticamente los archivos asociados del storage (thumbnail e imagen)
 - La entidad asociada (asset, sequence, etc.) NO se ve afectada
 - Si la versión eliminada tenía \`latest: true\`, se asigna automáticamente a la versión más reciente
 
@@ -755,14 +747,14 @@ Sube una imagen thumbnail (miniatura) para una versión específica. El thumbnai
 - Optimización: Se recomienda comprimir antes de subir para mejor rendimiento
 
 **Uso en UI:**
-- Grids de versiones: Muestra thumbnail en lugar de cargar video/imagen completo
+- Grids de versiones: Muestra thumbnail en lugar de cargar imagen completa
 - Vista previa rápida: Permite identificar versiones sin descargar contenido
 - Navegación visual: Facilita la selección y revisión de versiones
 - Fallback: Si no hay thumbnail, la UI muestra un placeholder genérico
 
 **Relación con filePath:**
 - \`thumbnailPath\`: Imagen pequeña para preview (este endpoint)
-- \`filePath\`: Archivo completo (video, imagen, texto) - endpoint \`POST /versions/:id/file\`
+- \`filePath\`: Archivo completo (imagen, texto) - endpoint \`POST /versions/:id/file\`
 - Ambos son independientes: una versión puede tener thumbnail sin filePath y viceversa
     `,
   })
@@ -821,21 +813,11 @@ Sube una imagen thumbnail (miniatura) para una versión específica. El thumbnai
   @ApiOperation({
     summary: 'Subir archivo principal de versión',
     description: `
-Sube el archivo principal de trabajo de una versión. Soporta múltiples tipos de contenido: videos, imágenes y archivos de texto.
-
-**Tipos de Contenido Soportados:**
-
-**Videos:**
-- Formatos: MP4, MOV, AVI, WEBM, MKV, M4V
-- Casos de uso: Videos generados con IA, renders de animación, cortes editados
-- Tamaño máximo: 2GB
-- Validación: Se verifica el codec y formato antes de almacenar
+Sube el archivo principal de trabajo de una versión. Soporta imágenes y archivos de texto.
 
 **Imágenes:**
-- Formatos: PNG, JPG, JPEG, WEBP, EXR, TIFF, GIF, BMP
-- Casos de uso: Storyboards, concept art, frames individuales, referencias visuales
-- Tamaño máximo: 2GB
-- Nota: EXR se usa para renders de alta calidad con HDR
+- Formatos: PNG, JPG, JPEG, WEBP, TIFF, GIF, BMP
+- Casos de uso: Concept art, storyboards, frames, layouts de producción
 
 **Archivos de Texto:**
 - Formatos: TXT, MD, JSON, XML, CSV
@@ -853,32 +835,22 @@ Sube el archivo principal de trabajo de una versión. Soporta múltiples tipos d
 **Tipos de Archivo Según Entidad:**
 
 **Episodes (Episodios):**
-- Videos: MOV, MP4, WEBM (cortes finales, episodios completos)
 - Texto: TXT (guiones, notas de dirección)
 
 **Assets (Recursos):**
-- Imágenes (\`assetType=imagen\`): PNG, JPG, WEBP, EXR (concept art, texturas, referencias visuales)
-- Videos (\`assetType=video\`): MOV, MP4 (demos de personajes, animaciones, referencias)
-- Audio (\`assetType=audio\`): MP3, WAV, OGG (música, efectos de sonido, diálogos)
-- Subtítulos (\`assetType=subtitles\`): SRT, VTT, TXT (subtítulos y traducciones)
-- Scripts (\`assetType=script\`): PDF, DOCX (guiones, documentos técnicos)
-- Texto (\`assetType=text\`): TXT, MD, JSON (notas, prompts, metadatos)
-- Personajes (\`assetType=character\`): Pueden tener versiones con imágenes, videos o modelos 3D
-
-
+- Imágenes (\`assetType=imagen\`): PNG, JPG, WEBP (concept art, texturas, referencias visuales)
+- Otros Assets: Pueden tener versiones con imágenes o modelos vinculados
 
 **Sequences (Secuencias):**
-- Videos: MOV, MP4 (previz generado con IA, animatics)
 - Imágenes: PNG, JPG (storyboards, frames clave)
 - Texto: TXT (notas de dirección, timing)
 
 **Consideraciones Técnicas:**
-- Storage: Archivos grandes se almacenan en MinIO/S3 con URLs firmadas temporales
+- Storage: Los archivos se almacenan en MinIO/S3 con URLs firmadas temporales
 - Validación: El servidor valida tipo MIME y extensión antes de procesar
-- Compresión: Se recomienda comprimir videos antes de subir para optimizar almacenamiento
 - Metadatos IA: Campos como \`prompt\`, \`seed\`, \`model_name\` se guardan en \`lineage\` (JSON)
 - Seguridad: URLs firmadas con expiración para acceso controlado
-- UI: El frontend detecta automáticamente el tipo de archivo y muestra preview apropiado (video player, image viewer, text reader)
+- UI: El frontend detecta automáticamente el tipo de archivo y muestra preview apropiado (image viewer, text reader)
 
 **Respuesta:**
 Retorna la versión actualizada con el nuevo \`filePath\` que contiene la URL pública del archivo.
@@ -899,7 +871,7 @@ Retorna la versión actualizada con el nuevo \`filePath\` que contiene la URL p�
           type: 'string',
           format: 'binary',
           description:
-            'Archivo principal de la versión. Soporta videos (MP4, MOV, AVI, WEBM), imágenes (PNG, JPG, WEBP, EXR) y archivos de texto (TXT, MD, JSON). Tamaño máximo: 2GB.',
+            'Archivo principal de la versión. Soporta imágenes (PNG, JPG, WEBP) y archivos de texto (TXT, MD, JSON). Tamaño máximo: 2GB.',
         },
       },
       required: ['file'],

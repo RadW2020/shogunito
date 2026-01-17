@@ -742,7 +742,7 @@ export class VersionsService {
     );
 
     // Check if file is an image and generate thumbnail automatically
-    const isImage = file.mimetype?.startsWith('image/') && file.mimetype !== 'image/x-exr';
+    const isImage = file.mimetype?.startsWith('image/');
     let thumbnailPath: string | undefined;
 
     if (isImage && file.buffer) {
@@ -930,7 +930,7 @@ export class VersionsService {
         code: sequenceCode,
         description: dto.description,
         statusId: sequenceStatusId,
-        duration: dto.duration,
+
         storyId: dto.storyId,
         createdBy: userContext?.userId ?? null,
         assignedTo: dto.assignedTo,

@@ -545,12 +545,11 @@ export class MinioService {
       case 'media':
         return {
           allowedTypes: [
-            'image/x-exr',
             'image/png', // For sequences/storyboards
             'image/jpeg',
             'image/webp',
             'text/plain', // For prompts
-            'application/octet-stream', // For .exr files
+            'application/octet-stream',
           ],
           maxSize: this.getMaxSizeInBytes('MEDIA_MAX_SIZE_MB', 2048),
         };

@@ -134,6 +134,7 @@ services:
       MINIO_USE_SSL: "false"
       MINIO_ACCESS_KEY: minio
       MINIO_SECRET_KEY: minio123
+      MINIO_PUBLIC_ENDPOINT: http://localhost:9000
       # Registration
       REQUIRE_INVITATION_CODE: "false"
     ports:

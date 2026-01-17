@@ -143,7 +143,7 @@ export const VersionsTab: React.FC<VersionsTabProps> = ({
               className="card overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
               onClick={() => onItemClick('versions', version)}
             >
-              <div className="relative aspect-video bg-gray-200">
+              <div className="relative aspect-square bg-gray-200">
                 {version.thumbnailPath ? (
                   <img
                     src={version.thumbnailPath}
@@ -310,38 +310,7 @@ export const VersionsTab: React.FC<VersionsTabProps> = ({
                 handleFileClick(item);
               }}
             >
-              {fileType === 'video' ? (
-                <>
-                  <video
-                    src={item.filePath}
-                    className="w-16 h-9 object-cover rounded border hover:opacity-80 transition-opacity"
-                    controls={false}
-                    muted
-                    onError={(e) => {
-                      // Fallback to icon if video fails to load
-                      const videoElement = e.target as HTMLVideoElement;
-                      const parent = videoElement.parentElement;
-                      if (parent) {
-                        parent.innerHTML = `
-                          <div class="w-16 h-9 bg-blue-100 rounded border flex items-center justify-center" title="Render File">
-                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m0 0V1a1 1 0 011-1h2a1 1 0 011 1v18a1 1 0 01-1 1H4a1 1 0 01-1-1V1a1 1 0 011-1h2a1 1 0 011 1v3m0 0h8"></path>
-                            </svg>
-                          </div>
-                        `;
-                      }
-                    }}
-                  />
-                  {/* Play button overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="w-6 h-6 bg-black bg-opacity-60 rounded-full flex items-center justify-center">
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M8 5v10l7-5-7-5z" />
-                      </svg>
-                    </div>
-                  </div>
-                </>
-              ) : fileType === 'image' ? (
+              {fileType === 'image' ? (
                 <img
                   src={item.filePath}
                   alt="File preview"
@@ -397,9 +366,7 @@ export const VersionsTab: React.FC<VersionsTabProps> = ({
               {/* Tooltip */}
               <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-black bg-opacity-75 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
                 Click to open{' '}
-                {fileType === 'video'
-                  ? 'video'
-                  : fileType === 'image'
+                {fileType === 'image'
                     ? 'image'
                     : fileType === 'text'
                       ? 'text file'

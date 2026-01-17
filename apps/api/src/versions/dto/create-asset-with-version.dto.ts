@@ -16,7 +16,7 @@ export class CreateAssetWithVersionDto {
   @IsEnum(AssetType)
   @ApiProperty({
     description:
-      'Tipo de asset según su función en el proyecto (subtitles, imagen, audio, script, text, video)',
+      'Tipo de asset según su función en el proyecto (subtitles, imagen, audio, script, text)',
     enum: AssetType,
     example: AssetType.DIRECTOR_SCRIPT,
     enumName: 'AssetType',
