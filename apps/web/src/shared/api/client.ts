@@ -725,20 +725,20 @@ class ApiService {
     });
   }
 
-  async updateNote(id: number, note: Partial<Note>): Promise<Note> {
+  async updateNote(id: string, note: Partial<Note>): Promise<Note> {
     return this.request<Note>(`/notes/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(note),
     });
   }
 
-  async deleteNote(id: number): Promise<void> {
+  async deleteNote(id: string): Promise<void> {
     return this.requestNoContent(`/notes/${id}`, {
       method: 'DELETE',
     });
   }
 
-  async uploadNoteAttachment(noteId: number, file: File): Promise<Note> {
+  async uploadNoteAttachment(noteId: string, file: File): Promise<Note> {
     const formData = new FormData();
     formData.append('attachment', file);
 
@@ -749,7 +749,7 @@ class ApiService {
     });
   }
 
-  async removeNoteAttachment(noteId: number, attachmentId: string): Promise<Note> {
+  async removeNoteAttachment(noteId: string, attachmentId: string): Promise<Note> {
     return this.request<Note>(`/notes/${noteId}/attachments/${attachmentId}`, {
       method: 'DELETE',
     });
@@ -789,7 +789,7 @@ class ApiService {
     });
   }
 
-  async deleteStatus(id: number): Promise<void> {
+  async deleteStatus(id: string): Promise<void> {
     return this.requestNoContent(`/statuses/${id}`, {
       method: 'DELETE',
     });

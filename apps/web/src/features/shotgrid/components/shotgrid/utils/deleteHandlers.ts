@@ -80,6 +80,12 @@ export async function handleDeleteSelected({
         }
         break;
 
+      case 'status':
+        for (const id of ids) {
+          await apiService.deleteStatus(id);
+        }
+        break;
+
 
       default:
         console.log(`Delete functionality for ${activeTab} not implemented yet`);

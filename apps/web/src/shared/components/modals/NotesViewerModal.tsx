@@ -55,7 +55,7 @@ export const NotesViewerModal: React.FC<NotesViewerModalProps> = ({
   const handleMarkAsRead = async (noteId: string) => {
     try {
       await updateNoteMutation.mutateAsync({
-        id: Number(noteId),
+        id: noteId,
         data: { isRead: true },
       });
       // React Query will automatically update the cache and refresh the UI
@@ -67,7 +67,7 @@ export const NotesViewerModal: React.FC<NotesViewerModalProps> = ({
   const handleDeleteNote = async (noteId: string) => {
     if (confirm('Are you sure you want to delete this note?')) {
       try {
-        await deleteNoteMutation.mutateAsync(Number(noteId));
+        await deleteNoteMutation.mutateAsync(noteId);
         onRefresh?.();
       } catch (error) {
         console.error('Error deleting note:', error);

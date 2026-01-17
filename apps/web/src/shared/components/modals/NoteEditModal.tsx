@@ -18,7 +18,7 @@ export const NoteEditModal: React.FC<NoteEditModalProps> = ({ note, isOpen, onCl
     setIsSaving(true);
     try {
       // Call the API to update the note
-      const updatedNote = await apiService.updateNote(Number(editedNote.id), {
+      const updatedNote = await apiService.updateNote(editedNote.id, {
         subject: editedNote.subject,
         content: editedNote.content,
         isRead: editedNote.isRead,

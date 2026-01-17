@@ -41,7 +41,7 @@ export function useUpdateNote() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: any }) => apiService.updateNote(id, data),
+    mutationFn: ({ id, data }: { id: string; data: any }) => apiService.updateNote(id, data),
     onSuccess: (updatedNote) => {
       // Invalidate all notes queries to refresh the UI
       queryClient.invalidateQueries({ queryKey: ['notes'] });
@@ -60,7 +60,7 @@ export function useDeleteNote() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: number) => apiService.deleteNote(id),
+    mutationFn: (id: string) => apiService.deleteNote(id),
     onSuccess: (deletedNote: any) => {
       // Invalidate all notes queries
       queryClient.invalidateQueries({ queryKey: ['notes'] });
